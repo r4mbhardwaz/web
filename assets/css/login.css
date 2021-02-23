@@ -1,0 +1,21 @@
+form {
+	display: grid;
+	grid-template-areas: "paragraph paragraph" "user pass" "button empty";
+	grid-gap: 20px;
+	grid-template-columns: 300px 300px;
+}
+form > p {
+	margin: 0;
+	grid-area: paragraph;
+}
+form > input {}
+form > input[name=user] {
+	grid-area: user;
+}
+form > input[name=pass] {
+	grid-area: pass;
+}
+form > button {
+	grid-area: button;
+	padding: 15px;
+}

@@ -1,0 +1,60 @@
+.buttons {
+	position: absolute;
+	right: 0;
+	top: 0;
+	display: flex;
+	justify-content: space-between;
+}
+.buttons > button {
+	margin-left: 15px;
+}
+div.header {
+	display: grid;
+	grid-template-areas:	"image heading"
+							"image description"
+							"image quality";
+	width: 60%;
+	margin: 50px 32.5% 50px 7.5%;
+	grid-template-columns: 60px 1fr;
+	grid-template-rows: 40px 20px 20px;
+	grid-gap: 10px 20px;
+}
+div.header img {
+	grid-area: image;
+	width: 60px;
+}
+div.header h1 {
+	grid-area: heading;
+	margin: 0;
+	display: flex;
+	justify-content: space-between;
+}
+div.header p {
+	grid-area: description;
+	margin: 0;
+}
+div.header span {
+	grid-area: quality;
+	margin: 0;
+}
+
+.intents-box {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+.intents-box > div.intent {
+	width: 24%;
+	display: grid;
+	grid-template-areas: "name" "data" "quality";
+	grid-template-columns: unset;
+	grid-template-rows: unset;
+	grid-gap: 15px;
+}
+.intents-box > div.intent > span.description {
+	grid-area: name;
+	font-size: 18px;
+}
+.intents-box > div.intent > span.tests {
+	grid-area: data;
+}

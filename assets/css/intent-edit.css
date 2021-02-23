@@ -1,0 +1,167 @@
+.main-container {
+	display: grid;
+	grid-template-areas: "slots values";
+	grid-gap: 35px;
+	grid-template-columns: 325px 1fr;
+}
+.main-container > .slots {
+	grid-area: slots;
+}
+.main-container > .values {
+	grid-area: values;
+}
+
+.slots-info {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 10px;
+	flex-wrap: wrap;
+}
+.slots-info button {
+	padding: 0 0 0 15px;
+}
+
+
+.slot {
+	border-radius: var(--border-radius);
+	background-color: #fff;
+	position: relative;
+	overflow: hidden;
+	display: grid;
+	grid-template-areas: "name" "values";
+	grid-gap: 15px;
+	padding: 20px 25px;
+	box-shadow: var(--box-shadow);
+	margin-top: 15px;
+}
+.slot.empty {
+	grid-template-areas: none;
+}
+.slot > .side-color {
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 100%;
+	width: 5px;
+}
+.slot > .name {
+	font-size: 18px;
+}
+.slot > .values {
+	font-size: 16px;
+}
+.slot > i {
+	cursor: pointer;
+}
+.slot > .edit {
+	position: absolute;
+	right: 45px;
+	top: 15px;
+}
+.slot > .delete {
+	position: absolute;
+	right: 15px;
+	top: 15px;
+}
+
+.slots-container > button {
+	width: 100%;
+	margin: 10px auto 15px;
+	padding-right: 29%;
+    padding-left: 29%;
+}
+
+.main-container > .values > .input-field {
+	background-color: #fff;
+	box-shadow: var(--box-shadow);
+	border-radius: var(--border-radius);
+	margin-bottom: 500px;
+}
+.values > .input-field > .input-new {
+	border: 2px solid var(--light-grey);
+	border-style: none none solid none;
+	display: grid;
+	grid-template-columns: 1fr 105px;
+	padding: 20px;
+	grid-gap: 15px;
+}
+.values > .input-field > .input-new > input {
+	background-color: var(--light-grey);
+}
+.values > .input-field > .input-new > button {
+	color: var(--blue) !important;
+}
+
+.training-examples {
+	padding: 0 20px;
+}
+.training-examples > .training-example {
+	padding: 17px 5px;
+	display: grid;
+	grid-template-columns: 1fr 125px;
+	align-items: center;
+	border: 2px solid var(--light-grey);
+    border-style: none none solid none;
+}
+.training-examples > .training-example:last-child {
+	border: none;
+}
+.training-examples > p {
+	margin: 0;
+	padding: 20px 5px;
+}
+p.highlightable {
+	margin: 0;
+}
+
+
+/* intent-slot-connector.js */
+.slot-tooltip {
+	position: fixed;
+	width: fit-content;
+	padding: 10px 10px 0px 10px;
+	box-shadow: var(--box-shadow);
+	transform: translate(-50px, 55px);
+	background-color: #fff;
+	border-radius: var(--border-radius);
+	transition: .2s;
+	visibility: hidden;
+	opacity: 0;
+}
+.slot-tooltip.visible {
+	visibility: visible;
+	opacity: 1;
+	transform: translate(-50px, 5px);
+}
+.slot-tooltip::after {
+	content: "";
+	position: absolute;
+	top: -5px;
+	left: 0;
+	right: 0;
+	width: 20px;
+	height: 20px;
+	margin: auto;
+	transform: rotate(45deg);
+	background-color: #fff;
+	border-radius: 5px 0 0 0;
+	box-shadow: var(--box-shadow);
+	z-index: -1;
+}
+.slot-tooltip > div {
+	padding: 7px;
+	cursor: pointer;
+	border-radius: var(--border-radius);
+	color: #fff;
+	margin-bottom: 10px;
+}
+span.highlighter {
+	padding: 5px;
+	border-radius: var(--border-radius);
+}
+.training-example {
+
+}
+
+

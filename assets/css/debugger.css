@@ -1,0 +1,138 @@
+#contents {
+	overflow: auto;
+	max-height: 70vh;
+	margin: 50px 0;
+	padding-right: 50px;
+	width: 100%;
+}
+
+.group {
+	background-color: #fff;
+	border-radius: 7px;
+	padding: 20px;
+	margin-bottom: 30px;
+	border: 2px solid var(--light-grey);
+	height: 100%;
+	max-height: 60px;
+	/* transition: all 100ms linear; */
+	overflow: hidden;
+}
+.group.opened {
+	max-height: 100%;
+}
+
+.group > div {
+	display: grid;
+	grid-template-areas:
+		"icon header"
+		"data data";
+	grid-template-columns: 30px 1fr;
+	grid-template-rows: 21px 1fr;
+	grid-gap: 15px;
+}
+
+.group > div > i {
+	grid-area: icon;
+}
+
+.group > div > p {
+	grid-area: header;
+	margin: 2px 0px;
+}
+
+.group > div:not(:last-child) {
+	margin-bottom: 25px;
+	border: 2px solid var(--light-grey);
+	border-style: none none solid none;
+	padding-bottom: 25px;
+}
+
+.group > div > span {
+	grid-area: data;
+	white-space: pre-wrap;
+	background-color: var(--light-grey);
+	border-radius: 7px;
+	padding: 10px;
+	/* width: fit-content; */
+	/* display: block; */
+}
+
+section.intro {
+	margin-bottom: 25px;
+}
+
+#buttons {
+	position: absolute;
+	top: -25px;
+	right: 0;
+	display: flex;
+}
+#buttons > button {
+	margin-left: 10px;
+}
+#buttons > button.filter {
+	transition: .2s;    
+}
+#buttons > button.filter.hidden {
+	opacity: 0;
+	visibility: hidden;
+}
+
+
+.input-box.console {
+	padding-bottom: 20px !important;
+	height: calc(100vh - 100px) !important;
+	display: grid;
+	grid-template-areas:
+		"header header header none2"
+		"input input result devices"
+		"body body result devices"
+		"button none none none";
+	grid-template-columns: 145px 1fr 1fr 300px;
+	grid-template-rows: 50px 60px 1fr 50px;
+	grid-gap: 20px;
+	width: 85vw;
+}
+.input-box.console.visible {
+	top: 50px;
+}
+
+.input-box.console .header {
+	grid-area: header;
+}
+#console-close {
+	cursor:pointer;
+	position:absolute;
+	top:10px;
+	right:10px;
+}
+#console-url {
+	grid-area: input;
+}
+#console-url, #console-body, #console-devices {
+	width: 100%;
+	box-shadow: none;
+	border: 2px solid var(--light-grey);
+}
+#console-body {
+	grid-area: body;
+	height: 100%;
+	resize: none;
+	transition: 0s;
+}
+#console-send {
+	margin: 0;
+	grid-area: button;
+}
+#console-devices {
+	grid-area: devices !important;
+}
+#console-result, #console-devices {
+	grid-area: result;
+	white-space: pre-wrap;
+	display: block;
+	overflow: auto;
+	border: 2px solid var(--light-grey);
+	padding: 10px 15px;
+	border-radius: var(--border-radius);
+}

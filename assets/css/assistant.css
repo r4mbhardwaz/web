@@ -1,0 +1,6 @@
+.main-container > form {
+	display: grid;
+	grid-template-areas: "name name wakeword language" "text text text text" "skills skills skills skills" "submit empty empty empty";
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	grid-gap: 20px;
+}

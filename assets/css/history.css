@@ -1,0 +1,128 @@
+h1 {
+	background-color: var(--blue);
+	color: #fff;
+	margin: 0px;
+	text-align: center;
+	padding: 25px 0;
+}
+
+:root {
+	--transition: .2s;
+}
+
+.content {
+	width: 90%;
+	margin: 25px auto;
+	grid-template-columns: 15px 1fr;
+	position: relative;
+}
+.content > #timeline {
+	width: 2px;
+	height: calc(100% - 14px);
+	border-radius: 100px;
+	background-color: var(--blue);
+	position: absolute;
+	left: 5px;
+	margin: 7px 0;
+	z-index: -1;
+	transition: .2s;
+}
+.content > #updates {
+	width: 90%;
+	margin-left: 10%;
+	display: flex;
+	flex-direction: column-reverse;
+	position: relative;
+}
+.content > #updates > div {
+	width: 100%;
+	position: absolute;
+	transform: scale(1);
+	transition: var(--transition);
+	opacity: 1;
+	margin-bottom: 50px;	/* not a clean solution, but it works */
+}
+.content > #updates > div.error {
+	border: 2px solid var(--red);
+	border-radius: var(--border-radius);
+}
+.content > #updates > div.error > .dot {
+	color: var(--red);
+}
+.content > #updates > div.info {
+	border: 2px solid var(--blue);
+	border: 2px solid var(--green);
+	border-radius: var(--border-radius);
+}
+.content > #updates > div.info > .dot {
+	color: var(--blue);
+	color: var(--green);
+}
+.content > #updates > div.hidden {
+	transform: translateY(100px) scale(0.5);
+	z-index: -1;
+	opacity: 0;
+}
+.content > #updates > div > div.data {
+	display: grid;
+	grid-template-areas: "action" "utterance";
+	grid-template-columns: 1fr;
+	grid-gap: 15px;
+	align-items: center;
+	position: relative;
+	background-color: #fff;
+	border-radius: var(--border-radius);
+	padding: 20px;
+	box-shadow: var(--box-shadow);
+}
+.content > #updates > div.hidden > .dot {
+	opacity: 0;
+}
+.content > #updates > div > .dot {
+	width: 40px;
+    height: 40px;
+    /* border-radius: 50%; */
+    /* border: 2px solid var(--blue); */
+    background-color: #f9f9f9;
+    position: absolute;
+    right: calc(90vw - 40px/1.5);
+    top: calc(50% - 40px / 2);
+	transition: var(--transition);
+	opacity: 1;
+	font-family: 'Material Icons Round';
+	color: var(--blue);
+	text-align: center;
+	line-height: 40px;
+}
+.content > #updates .action {
+	grid-area: action;
+	font-size: 18px;
+}
+.content > #updates .action > i {
+	margin: 0 10px;
+	font-size: 15px;
+	line-height: 15px;
+}
+.content > #updates .time {
+	grid-area: time;
+	font-size: 13px;
+	color: #999;
+	position: absolute;
+	right: 10px;
+	top: 10px;
+}
+.content > #updates .utterance {
+	grid-area: utterance;
+	font-size: 16px;
+}
+.content > #updates .utterance.nobrackets::before,
+.content > #updates .utterance.nobrackets::after {
+	display: none;
+}
+.content > #updates .utterance::before,
+.content > #updates .utterance::after {
+	content: '"';
+}
+.content > #updates {
+
+}

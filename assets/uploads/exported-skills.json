@@ -1,0 +1,39 @@
+{
+	"skills": {
+		"00000000": {
+			"name": "Test",
+			"description": "Ein Skill zum testen",
+			"script": "test.py",
+			"image": "cloud.svg",
+			"intents": {
+				"getTest": {
+					"slots": [
+						"test1", "test2"
+					],
+					"utterances": [
+						{
+							"data": [
+								{
+									"text": "This is a test"
+								}
+							]
+						}
+					]
+				}
+			}
+		}
+	},
+	"slots": {
+		"test1": {
+			"data": [
+				{
+					"value": "test",
+					"synonyms": ["test1", "test2"]
+				}
+			],
+			"automatically_extensible": true,
+			"matching_strictness": 1,
+			"use_synonyms": true
+		}
+	}
+}

@@ -1,0 +1,42 @@
+{
+	"entities": {
+		"color": {
+			"automatically_extensible": true,
+			"data": [],
+			"matching_strictness": 1,
+			"use_synonyms": true 
+		},
+		"room": {
+			"automatically_extensible": true,
+			"data": [
+				{
+					"value": "garden",
+					"synonyms": []
+				},
+				{
+					"value": "garage",
+					"synonyms": []
+				}
+			],
+			"matching_strictness": 1,
+			"use_synonyms": true 
+		}
+	},
+	"intents": {
+		"turn_lights_on": {
+			"utterances": [
+				{
+					"data": [
+						{ "text": "turn on the lights in the " },
+						{
+							"entity": "room",
+							"slot_name": "room",
+							"text": "kitchen"
+						}
+					]
+				}
+			]
+		}
+	},
+	"language": "en"
+}

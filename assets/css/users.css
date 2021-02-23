@@ -1,0 +1,25 @@
+.users {
+	margin-top: 50px;
+}
+.users > .user.first {
+	margin-bottom: 20px;
+	padding-bottom: 20px;
+	border: 2px solid var(--light-grey);
+	border-style: none none solid none;
+}
+.users > .user {
+	display: grid;
+	grid-template-areas: "user pass button span";
+	grid-template-columns: 250px 250px 130px 1fr;
+	align-items: center;
+	grid-gap: 20px;
+	padding: 0 20px;
+	margin-bottom: 25px;
+
+}
+.users > .user > button {
+	height: 100%;
+}
+.users > .user.new {
+	grid-template-columns: 175px 1fr 0px 0px;
+}

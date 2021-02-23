@@ -1,0 +1,9 @@
+.slots {
+	margin-top: 20px;
+}
+.slot {
+	grid-template-areas: unset !important;
+}
+.slot > span.name {
+	font-size: 18px;
+}
