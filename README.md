@@ -1,49 +1,46 @@
 # Jarvis Server
 
-Web UI for <a href="https://github.com/open-jarvis/jarvis">Jarvis</a>. Lets you create new skills, intents, slots, datasets and an assistant within minutes.
-
-
+Web UI for <a href="https://github.com/open-jarvis/jarvis">Jarvis</a>. Create new skills, intents, slots, datasets and an assistant within minutes.
 
 ## Contents
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
+
+* [Prerequisites](#prerequisites)
+* [Installation](#installation)
+* [Usage](#usage)
 	1. [Create a skill](#1-create-a-skill)
-		- [Name](#name)
-		- [Script path](#script-path)
-		- [Description](#description)
+    	* [Name](#name)
+    	* [Script path](#script-path)
+    	* [Description](#description)
 	2. [Create an intent](#2-create-an-intent)
 	3. [Add training examples](#3-add-training-examples)
 	4. [Add a slot](#4-add-a-slot)
-		- [Slot name](#slot-name)
-		- [Training values](#training-values)
-		- [Tweak the settings](#tweak-the-settings)
+    	* [Slot name](#slot-name)
+    	* [Training values](#training-values)
+    	* [Tweak the settings](#tweak-the-settings)
 	5. [Set up your assistant](#5-set-up-your-assistant)
-
-
 
 ## Prerequisites
 
-This project can be installed on every device with a http server.  
-It's recommended to use a Raspberry Pi 3B+ (at least 16GB disk space) with a running <a href="https://github.com/open-jarvis/jarvis">Jarvis</a> instance.
-
-
+This project can be installed on every device with an apache http server.  
+It's recommended to use a Raspberry Pi 3B+ (at least 16GB disk space) with a running <a href="https://github.com/open-jarvis/server">Jarvis Server</a> instance.
 
 ## Installation
 
 This project can be cloned right into the document root of your http server.  
 If you have no apache server running yet, install it with the following commands:
 
-```bash
-# install apache on the
+``` bash
+# update your system
 sudo apt update -y
+
+# install apache
 sudo apt install apache2 -y
-# install php
+
+# install  php
 sudo apt install php libapache2-mod-php php-dev php-pear libmosquitto1 libmosquitto-dev -y
 sudo a2enmod headers
 sudo a2enmod rewrite
 sudo systemctl restart apache2
-
 
 sudo nano /etc/apache2/apache2.conf
 
@@ -53,26 +50,23 @@ sudo nano /etc/apache2/apache2.conf
 # </Directory>
 ```
 
-After you successfully installed the http server, clone the project into the document root:
+After you successfully installed the apache server, clone the project into the document root:
 
-```bash
+``` bash
 # change ownership (php needs this, otherwise it won't be able to write config files)
-sudo chown -R pi:pi /var/www/html
-sudo rm -rf /var/www/html/*
+sudo chown -R pi:pi /var/www
+sudo rm -rf /var/www/*
 
 # clone the repo right into the document root
-cd /var/www/html
-git clone https://github.com/open-jarvis/jarvis-server .
-rm -rf /var/www/html/deleteme # deletes images and github stuff
+cd /var/www
+git clone https://github.com/open-jarvis/web .
+rm -rf /var/www/readme-assets # deletes unused images
 ```
-
-
 
 ## Usage
 
 This Web UI is the dashboard and control center for your Jarvis assistant.
 Jarvis uses a skill and intent structure to filter spoken voice and convert it into machine-readable format.  
-
 
 ### 1) Create a skill  
 
@@ -81,21 +75,23 @@ All of your skills have a name, a logo and an executable path.
 
 Go to 127.0.0.1 (or your Raspberry Pi IP Address) and click "Add a skill".
 
-<img src="./deleteme/new-skill.png">
+<img src="./readme-assets/new-skill.png">
 
 Fill in all the fields:
 
 #### Name
+
 Specify a name for your skill <b>Weather</b>, <b>Calculator</b>, or <b>Lights</b> would be awesome names.
 
 #### Script path
-This is the name of your skill directory (eg. <b>weather</b> for /home/pi/jarvis/skills/<b>weather</b>). This directory needs to contain a <b>`skill.py`</b> file which is called if an intent of type <b>Weather</b> gets detected.
+
+This is the name of your skill directory (eg. <b>weather</b> for /home/pi/jarvis/skills/<b>weather</b>). This directory needs to contain a <b> `skill.py` </b> file which is called if an intent of type <b>Weather</b> gets detected.
 
 #### Description
+
 Add a short description. This is optional but good for documentation purposes.
 
-<img src="./deleteme/add-a-skill.png">
-
+<img src="./readme-assets/add-a-skill.png">
 
 ### 2) Create an intent
 
@@ -105,16 +101,14 @@ You can add as many intents as you want to a skill.
 <br>
 Click "Create Intent" and enter the intent name (needs to be [A-Za-z0-9_-]), press ok and click on the box that just appeared.
 
-<img src="./deleteme/add-an-intent.png">
-<img src="./deleteme/intent-name.png">
-
+<img src="./readme-assets/add-an-intent.png">
+<img src="./readme-assets/intent-name.png">
 
 ### 3) Add training examples
 
 Type your training examples (sample sentences) and press enter or "Add":
 
-<img src="./deleteme/training-examples.png">
-
+<img src="./readme-assets/training-examples.png">
 
 ### 4) Add a slot
 
@@ -122,23 +116,20 @@ As you add more and more examples, you'll soon get to a point where you can't ad
 
 For example: What should Jarvis do with "Paris" in this sentence? How should he filter it out?
 
-<img src="./deleteme/training-example-empty-slot.png">
+<img src="./readme-assets/training-example-empty-slot.png">
 
 That's what slots are for! Create a new slot by clicking "Add new Slot" and "Create new Slot"
 
-<img src="./deleteme/slots.png">
-<img src="./deleteme/create-new-slot.png">
-
+<img src="./readme-assets/slots.png">
+<img src="./readme-assets/create-new-slot.png">
 
 #### Slot name
 
 Add a name for your slot. <b>city</b> would be a good choice.
 
-
 #### Training values
 
 Enter "Paris" and press enter. If you know any other names for Paris, enter them in the "Synonyms field".
-
 
 #### Tweak the settings
 
@@ -147,26 +138,24 @@ By hovering over the info boxes, you'll get more detailled information on the se
   
 Click "Back" and select the slot you just created. It'll be added to the intent you were editing. The slots container should look like the following now:
 
-<img src="./deleteme/intent-slots.png">
+<img src="./readme-assets/intent-slots.png">
 
 When you select the text "Paris" in the training example, you'll see a tooltip where you can choose a slot.
 
-<img src="./deleteme/add-slot-to-training-example.png">
-<img src="./deleteme/add-slot-to-training-example-after.png">
+<img src="./readme-assets/add-slot-to-training-example.png">
+<img src="./readme-assets/add-slot-to-training-example-after.png">
 
 We only added one slot for our example, but you can add an unlimited amount of slots to your intents and training examples.
-
-
 
 ### 5) Set up your assistant
 
 Click on the "Assistant" button in the navigation bar.
 
-<img src="./deleteme/assistant-nav.png">
+<img src="./readme-assets/assistant-nav.png">
 
 Fill in a name for your assistant, the wakeword and the language:
 
-<img src="./deleteme/assistant.png">
+<img src="./readme-assets/assistant.png">
 
 Congratulations! You've just created your first AI home assistant.  
-Now, you just need to go to `/home/pi/jarvis/skills/weather/` and add a good backend (in `skill.py`). More on how to write a good skill can be found here: <a href="https://open-jarvis.github.io/">https://open-jarvis.github.io/</a>
+Now, you just need to go to `/home/pi/jarvis/skills/weather/` and add a good backend (in `skill.py` ). More on how to write a good skill can be found here: <a href="https://open-jarvis.github.io/">https://open-jarvis.github.io/</a>
