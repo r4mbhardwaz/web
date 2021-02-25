@@ -33,34 +33,21 @@ If you have no apache server running yet, install it with the following commands
 # update your system
 sudo apt update -y
 
-# install apache
-sudo apt install apache2 -y
-
-# install  php
-sudo apt install php libapache2-mod-php php-dev php-pear libmosquitto1 libmosquitto-dev -y
-sudo a2enmod headers
-sudo a2enmod rewrite
-sudo systemctl restart apache2
-
-sudo nano /etc/apache2/apache2.conf
-
-# Enable .htaccess:
-# <Directory "/var/www">
-#     AllowOverride All
-# </Directory>
+# install python framework
+sudo -H pip3 install --upgrade flask
 ```
 
 After you successfully installed the apache server, clone the project into the document root:
 
 ``` bash
-# change ownership (php needs this, otherwise it won't be able to write config files)
-sudo chown -R pi:pi /var/www
-sudo rm -rf /var/www/*
+JARVIS_INSTALLDIR=/jarvis/server
+# clear web directory, if files already exist
+sudo rm -rf $JARVIS_INSTALLDIR/*
 
 # clone the repo right into the document root
-cd /var/www
+cd $JARVIS_INSTALLDIR
 git clone https://github.com/open-jarvis/web .
-rm -rf /var/www/readme-assets # deletes unused images
+rm -rf $JARVIS_INSTALLDIR/readme-assets # deletes unused images
 ```
 
 ## Usage

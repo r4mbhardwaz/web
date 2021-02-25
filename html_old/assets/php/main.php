@@ -38,64 +38,68 @@ if (!isset($_SESSION["logged_in"]) && $_SERVER["PHP_SELF"] !== "/login.php") {
 
 
 ####### HELPER FUNCTIONS
-function isMobile() {
+function isMobile()
+{
 	return preg_match("/(android|webos|avantgo|iphone|ipad|ipod|blackberry|iemobile|bolt|boost|cricket|docomo|fone|hiptop|mini|opera mini|kitkat|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
 }
 
-function randstr($length = 10, $characters='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') {
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $randomString;
+function randstr($length = 10, $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+{
+	$charactersLength = strlen($characters);
+	$randomString = '';
+	for ($i = 0; $i < $length; $i++) {
+		$randomString .= $characters[rand(0, $charactersLength - 1)];
+	}
+	return $randomString;
 }
 
-function secondsToTime($inputSeconds) {
-    $secondsInAMinute = 60;
-    $secondsInAnHour = 60 * $secondsInAMinute;
-    $secondsInADay = 24 * $secondsInAnHour;
+function secondsToTime($inputSeconds)
+{
+	$secondsInAMinute = 60;
+	$secondsInAnHour = 60 * $secondsInAMinute;
+	$secondsInADay = 24 * $secondsInAnHour;
 
-    // Extract days
-    $days = floor($inputSeconds / $secondsInADay);
+	// Extract days
+	$days = floor($inputSeconds / $secondsInADay);
 
-    // Extract hours
-    $hourSeconds = $inputSeconds % $secondsInADay;
-    $hours = floor($hourSeconds / $secondsInAnHour);
+	// Extract hours
+	$hourSeconds = $inputSeconds % $secondsInADay;
+	$hours = floor($hourSeconds / $secondsInAnHour);
 
-    // Extract minutes
-    $minuteSeconds = $hourSeconds % $secondsInAnHour;
-    $minutes = floor($minuteSeconds / $secondsInAMinute);
+	// Extract minutes
+	$minuteSeconds = $hourSeconds % $secondsInAnHour;
+	$minutes = floor($minuteSeconds / $secondsInAMinute);
 
-    // Extract the remaining seconds
-    $remainingSeconds = $minuteSeconds % $secondsInAMinute;
-    $seconds = ceil($remainingSeconds);
+	// Extract the remaining seconds
+	$remainingSeconds = $minuteSeconds % $secondsInAMinute;
+	$seconds = ceil($remainingSeconds);
 
-    // Format and return
-    $timeParts = [];
-    $sections = [
-        'd' => (int)$days,
-        'h' => (int)$hours,
-        'min' => (int)$minutes,
-        's' => (int)$seconds,
-    ];
+	// Format and return
+	$timeParts = [];
+	$sections = [
+		'd' => (int)$days,
+		'h' => (int)$hours,
+		'min' => (int)$minutes,
+		's' => (int)$seconds,
+	];
 
-    foreach ($sections as $name => $value){
-        if ($value > 0){
-            $timeParts[] = $value.$name;
-        }
-    }
+	foreach ($sections as $name => $value) {
+		if ($value > 0) {
+			$timeParts[] = $value . $name;
+		}
+	}
 
-    return implode(' ', $timeParts);
+	return implode(' ', $timeParts);
 }
 ####### HELPER FUNCTIONS END
 
 
 
 ####### SCORING SYSTEM
-function getSkillQuality($skillId, $asHTML=False, $intentMessage=True) {
+function getSkillQuality($skillId, $asHTML = False, $intentMessage = True)
+{
 	global $skills, $qualities, $colors;
-	
+
 
 	######################  DATA GATHERING
 	$quality = 0;
@@ -113,7 +117,9 @@ function getSkillQuality($skillId, $asHTML=False, $intentMessage=True) {
 		if ($asHTML) {
 			if ($intentMessage) {
 				return "<span style='color:" . $colors[3] . "'>Add intents or training examples to measure quality</span>";
-			} else { return; }
+			} else {
+				return;
+			}
 		} else {
 			return -1;
 		}
@@ -121,7 +127,7 @@ function getSkillQuality($skillId, $asHTML=False, $intentMessage=True) {
 
 	foreach ($allUtterancesArray as $utterance) {
 		if (count($utterance) > 1) {
-			$slotPercentageInTrainingExamples ++;
+			$slotPercentageInTrainingExamples++;
 		}
 	}
 
@@ -137,35 +143,45 @@ function getSkillQuality($skillId, $asHTML=False, $intentMessage=True) {
 	######################  DATA INTERPRETATION
 	$intentCountScore = 1 / $intentCount;
 	$slotPercentageInTrainingExamplesScore = $slotPercentageInTrainingExamples;
-	
 
-	$score = 	0.10 * $intentCountScore 						+ 
-				0.35 * $slotPercentageInTrainingExamplesScore	+
-				0.55 * $intentPoints;
+
+	$score = 	0.10 * $intentCountScore 						+
+		0.35 * $slotPercentageInTrainingExamplesScore	+
+		0.55 * $intentPoints;
 	######################  DATA INTERPRETATION FINISHED
 
-	
+
 	if ($asHTML) {
-	
+
 		$infoBox = "<i	style='cursor:pointer;margin-left:10px;'
 						onmouseover=\"showInfoBox(this, 'You can improve the quality {{percentage}} by <br><br>- adding more intents {{percentageIntents}} <br>- adding slots to your training examples {{percentageSlots}} <br>- improving existing intents {{percentageSingleIntents}}')\"
 						onmouseout=\"removeInfoBox()\"
 					>info</i>";
-	
+
 		$color = getColorForScore($score);
 		$quality = getQualityStringForScore($score);
 		$score = number_format($score, 3);
-		$infoBox = 	str_replace("{{percentageIntents}}", 			addslashes("<span style='color:".getColorForScore($intentCountScore)."'>(" . number_format($intentCountScore*100, 1) . "%)</span>"),
-					str_replace("{{percentageSlots}}",				addslashes("<span style='color:".getColorForScore($slotPercentageInTrainingExamplesScore)."'>(" . number_format($slotPercentageInTrainingExamplesScore*100, 1) . "%)</span>"), 
-					str_replace("{{percentageSingleIntents}}",		addslashes("<span style='color:".getColorForScore($intentPoints)."'>(" . number_format($intentPoints*100, 1) . "%)</span>"), 
-					str_replace("{{percentage}}",					addslashes("<span style='color:$color'>(" . number_format($score*100, 1) . "%)</span>"), $infoBox))));
+		$infoBox = 	str_replace(
+			"{{percentageIntents}}",
+			addslashes("<span style='color:" . getColorForScore($intentCountScore) . "'>(" . number_format($intentCountScore * 100, 1) . "%)</span>"),
+			str_replace(
+				"{{percentageSlots}}",
+				addslashes("<span style='color:" . getColorForScore($slotPercentageInTrainingExamplesScore) . "'>(" . number_format($slotPercentageInTrainingExamplesScore * 100, 1) . "%)</span>"),
+				str_replace(
+					"{{percentageSingleIntents}}",
+					addslashes("<span style='color:" . getColorForScore($intentPoints) . "'>(" . number_format($intentPoints * 100, 1) . "%)</span>"),
+					str_replace("{{percentage}}",					addslashes("<span style='color:$color'>(" . number_format($score * 100, 1) . "%)</span>"), $infoBox)
+				)
+			)
+		);
 		return "<span class='iconbutton' style='width:fit-content;color:$color'>$quality $infoBox</span>";
 	} else {
 		return $score;
 	}
 }
 
-function getIntentQuality($intentName, $asHTML=false) {
+function getIntentQuality($intentName, $asHTML = false)
+{
 	global $qualities, $colors, $bestUtteranceCount;
 
 	$intent = getIntentInfo($intentName);
@@ -195,67 +211,87 @@ function getIntentQuality($intentName, $asHTML=false) {
 	}
 
 
-	$a = -1.5/(2*pow($bestUtteranceCount,2));
-	$b = (1-pow($bestUtteranceCount, 2)*$a)/$bestUtteranceCount;
+	$a = -1.5 / (2 * pow($bestUtteranceCount, 2));
+	$b = (1 - pow($bestUtteranceCount, 2) * $a) / $bestUtteranceCount;
 	$utterancesCountScore = $a * pow($utterancesCount, 2) + $b * $utterancesCount;
-	
+
 	$slotPercentageInTrainingExamplesScore = $slotPercentageInTrainingExamples * 1.2;
-	
+
 	######################  DATA INTERPRETATION FINISHED
-	
+
 	$score =	0.10 * $slotCountScore			+
-				0.75 * $utterancesCountScore	+
-				0.15 * $slotPercentageInTrainingExamplesScore;
-		
+		0.75 * $utterancesCountScore	+
+		0.15 * $slotPercentageInTrainingExamplesScore;
+
 	if ($asHTML) {
 
 		$infoBox = "<i	style='cursor:pointer;margin-left:10px;'
 						onmouseover=\"showInfoBox(this, 'You can improve the quality {{percentage}} by <br><br>- adding more slots {{percentageNumberSlots}} <br>- adding more training examples {{percentageTrainingExamples}} <br>- adding slots to your training examples {{percentageSlots}}')\"
 						onmouseout=\"removeInfoBox()\"
 					>info</i>";
-	
+
 		$color = getColorForScore($score);
 		$quality = getQualityStringForScore($score);
 		$score = number_format($score, 3);
-		$infoBox = 	str_replace("{{percentageNumberSlots}}", 		addslashes("<span style='color:".getColorForScore($slotCountScore)."'>(" . number_format($slotCountScore*100, 1) . "%)</span>"),
-					str_replace("{{percentageTrainingExamples}}",	addslashes("<span style='color:".getColorForScore($utterancesCountScore)."'>(" . number_format($utterancesCountScore*100, 1) . "%)</span>"),
-					str_replace("{{percentageSlots}}",				addslashes("<span style='color:".getColorForScore($slotPercentageInTrainingExamplesScore)."'>(" . number_format($slotPercentageInTrainingExamplesScore*100, 1) . "%)</span>"), 
-					str_replace("{{percentage}}",					addslashes("<span style='color:$color'>(" . number_format($score*100, 1) . "%)</span>"), $infoBox))));
+		$infoBox = 	str_replace(
+			"{{percentageNumberSlots}}",
+			addslashes("<span style='color:" . getColorForScore($slotCountScore) . "'>(" . number_format($slotCountScore * 100, 1) . "%)</span>"),
+			str_replace(
+				"{{percentageTrainingExamples}}",
+				addslashes("<span style='color:" . getColorForScore($utterancesCountScore) . "'>(" . number_format($utterancesCountScore * 100, 1) . "%)</span>"),
+				str_replace(
+					"{{percentageSlots}}",
+					addslashes("<span style='color:" . getColorForScore($slotPercentageInTrainingExamplesScore) . "'>(" . number_format($slotPercentageInTrainingExamplesScore * 100, 1) . "%)</span>"),
+					str_replace("{{percentage}}",					addslashes("<span style='color:$color'>(" . number_format($score * 100, 1) . "%)</span>"), $infoBox)
+				)
+			)
+		);
 		return "<span class='iconbutton' style='width:fit-content;color:$color'>$quality $infoBox</span>";
 	} else {
 		return $score;
 	}
 }
 
-function getColorForScore($percentage) {
+function getColorForScore($percentage)
+{
 	global $colors;
-	if ($percentage > 0.70) {	return $colors[0];	}
-	if ($percentage > 0.50) {	return $colors[1];	}
+	if ($percentage > 0.70) {
+		return $colors[0];
+	}
+	if ($percentage > 0.50) {
+		return $colors[1];
+	}
 	return $colors[2];
 }
 
-function getQualityStringForScore($percentage) {
+function getQualityStringForScore($percentage)
+{
 	global $qualities;
-	if ($percentage > 0.70) {	return $qualities[0];	}
-	if ($percentage > 0.50) {	return $qualities[1];	}
+	if ($percentage > 0.70) {
+		return $qualities[0];
+	}
+	if ($percentage > 0.50) {
+		return $qualities[1];
+	}
 	return $qualities[2];
 }
 ####### SCORING SYSTEM END
 
 
 
-function sortTrainingExamplesForIntent($intentName) {
+function sortTrainingExamplesForIntent($intentName)
+{
 	global $skills;
 	$skillId = getSkillIdForIntent($intentName);
 
-	usort($skills["skills"][$skillId]["intents"][$intentName]["utterances"], function($a,$b) {
+	usort($skills["skills"][$skillId]["intents"][$intentName]["utterances"], function ($a, $b) {
 		$fullString1 = "";
 		$fullString2 = "";
 
-		for ($i = 0; $i < count($a["data"]); $i++) { 
+		for ($i = 0; $i < count($a["data"]); $i++) {
 			$fullString1 .= $a["data"][$i]["text"];
 		}
-		for ($i = 0; $i < count($b["data"]); $i++) { 
+		for ($i = 0; $i < count($b["data"]); $i++) {
 			$fullString2 .= $b["data"][$i]["text"];
 		}
 
@@ -263,7 +299,8 @@ function sortTrainingExamplesForIntent($intentName) {
 	});
 }
 
-function getAllUtterances($skillId, $flatten=false) {
+function getAllUtterances($skillId, $flatten = false)
+{
 	global $skills;
 	$count = [];
 	foreach ($skills["skills"][$skillId]["intents"] as $intent => $data) {
@@ -279,9 +316,10 @@ function getAllUtterances($skillId, $flatten=false) {
 	}
 }
 
-function deleteSlotFromIntent($slot, $intent) {
+function deleteSlotFromIntent($slot, $intent)
+{
 	global $skills;
-	
+
 	$skill_id = getSkillIdForIntent($intent);
 
 	$i = 0;
@@ -293,7 +331,7 @@ function deleteSlotFromIntent($slot, $intent) {
 		}
 		$i++;
 	}
-	
+
 	if ($ind === false) {
 		return false;
 	}
@@ -301,7 +339,7 @@ function deleteSlotFromIntent($slot, $intent) {
 	array_splice($skills["skills"][$skill_id]["intents"][$intent]["slots"], $ind, 1);
 
 	$x = 0;
-	foreach($skills["skills"][$skill_id]["intents"][$intent]["utterances"] as $utt) {
+	foreach ($skills["skills"][$skill_id]["intents"][$intent]["utterances"] as $utt) {
 		$uttData = $utt["data"];
 
 		$z = 0;
@@ -331,14 +369,14 @@ function deleteSlotFromIntent($slot, $intent) {
 						deleteIndexFromArray($uttData, $z);
 					}
 				} else {
-					if ( isset($uttData[$z - 1]["entity"], $uttData[$z + 1]["entity"]) ) {	// if between slots, keep as text
+					if (isset($uttData[$z - 1]["entity"], $uttData[$z + 1]["entity"])) {	// if between slots, keep as text
 						unset($uttData[$z]["entity"]);
 						unset($uttData[$z]["slot_name"]);
-					} elseif ( isset($uttData[$z - 1]["entity"]) && !isset($uttData[$z + 1]["entity"]) ) { // if previous is slot
+					} elseif (isset($uttData[$z - 1]["entity"]) && !isset($uttData[$z + 1]["entity"])) { // if previous is slot
 						$uttData[$z + 1]["text"] = $uttData[$z]["text"] . $uttData[$z + 1]["text"];
 						deleteIndexFromArray($uttData, $z);
 						$z = -1;
-					} elseif ( !isset($uttData[$z - 1]["entity"]) && isset($uttData[$z + 1]["entity"]) ) { // if next is slot
+					} elseif (!isset($uttData[$z - 1]["entity"]) && isset($uttData[$z + 1]["entity"])) { // if next is slot
 						$uttData[$z - 1]["text"] .= $uttData[$z]["text"];
 						deleteIndexFromArray($uttData, $z);
 						$z = -1;
@@ -356,15 +394,17 @@ function deleteSlotFromIntent($slot, $intent) {
 
 		$skills["skills"][$skill_id]["intents"][$intent]["utterances"][$x]["data"] = $uttData;
 
-		$x ++;
+		$x++;
 	}
 }
 
-function deleteIndexFromArray(&$a, $index) {
+function deleteIndexFromArray(&$a, $index)
+{
 	array_splice($a, $index, 1);
 }
 
-function filterSynonyms($a) {
+function filterSynonyms($a)
+{
 	if (count($a) == 1 && $a[0] == "") {
 		return [];
 	} else {
@@ -372,7 +412,8 @@ function filterSynonyms($a) {
 	}
 }
 
-function getSkillFileSize($formatted=false) {
+function getSkillFileSize($formatted = false)
+{
 	if ($formatted) {
 		return formatSizeUnits(filesize($_SERVER['DOCUMENT_ROOT'] . "/database/skills.json"));
 	} else {
@@ -380,30 +421,27 @@ function getSkillFileSize($formatted=false) {
 	}
 }
 
-function formatSizeUnits($bytes) {
+function formatSizeUnits($bytes)
+{
 	if ($bytes >= 1073741824) {
 		$bytes = number_format($bytes / 1073741824, 2) . ' GB';
-	}
-	elseif ($bytes >= 1048576) {
+	} elseif ($bytes >= 1048576) {
 		$bytes = number_format($bytes / 1048576, 2) . ' MB';
-	}
-	elseif ($bytes >= 1024) {
+	} elseif ($bytes >= 1024) {
 		$bytes = number_format($bytes / 1024, 2) . ' KB';
-	}
-	elseif ($bytes > 1) {
+	} elseif ($bytes > 1) {
 		$bytes = $bytes . ' bytes';
-	}
-	elseif ($bytes == 1) {
+	} elseif ($bytes == 1) {
 		$bytes = $bytes . ' byte';
-	}
-	else {
+	} else {
 		$bytes = '0 bytes';
 	}
 
 	return $bytes;
 }
 
-function getSkillForIntent($name) {
+function getSkillForIntent($name)
+{
 	global $skills;
 	foreach ($skills["skills"] as $skill => $data) {
 		if (isset($data["intents"][$name])) {
@@ -413,7 +451,8 @@ function getSkillForIntent($name) {
 	return false;
 }
 
-function getSkillIdForIntent($name) {
+function getSkillIdForIntent($name)
+{
 	global $skills;
 	foreach ($skills["skills"] as $skill => $data) {
 		if (isset($data["intents"][$name])) {
@@ -423,7 +462,8 @@ function getSkillIdForIntent($name) {
 	return false;
 }
 
-function getSynonymCount($slot) {
+function getSynonymCount($slot)
+{
 	global $skills;
 	$s = 0;
 
@@ -434,7 +474,8 @@ function getSynonymCount($slot) {
 	return $s;
 }
 
-function getIntentInfo($name) {
+function getIntentInfo($name)
+{
 	$s = getSkillForIntent($name);
 	if ($s === false) {
 		return false;
@@ -442,7 +483,8 @@ function getIntentInfo($name) {
 	return $s["intents"][$name];
 }
 
-function getAllIntents() {
+function getAllIntents()
+{
 	global $skills;
 	$ints = [];
 	foreach ($skills["skills"] as $skill => $data) {
@@ -451,23 +493,29 @@ function getAllIntents() {
 	return flatten($ints);
 }
 
-function flatten(array $array) {
-    $return = array();
-    array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
-    return $return;
+function flatten(array $array)
+{
+	$return = array();
+	array_walk_recursive($array, function ($a) use (&$return) {
+		$return[] = $a;
+	});
+	return $return;
 }
 
-function writeSkills() {
+function writeSkills()
+{
 	global $skills;
 	// return file_put_contents($_SERVER['DOCUMENT_ROOT'] . "/database/skills.json", json_encode($skills, JSON_PRETTY_PRINT), LOCK_EX);
 	return file_put_contents($_SERVER['DOCUMENT_ROOT'] . "/database/skills.json", json_encode($skills), LOCK_EX);
 }
 
-function getSkills() {
+function getSkills()
+{
 	return json_decode(file_get_contents($_SERVER['DOCUMENT_ROOT'] . "/database/skills.json"), true);
 }
 
-function getIconForDeviceType($type) {
+function getIconForDeviceType($type)
+{
 	switch ($type) {
 		case 'computer':
 			return "desktop_mac";
@@ -481,7 +529,8 @@ function getIconForDeviceType($type) {
 			return "devices_other";
 	}
 }
-function getIconForConnectionType($type) {
+function getIconForConnectionType($type)
+{
 	switch ($type) {
 		case 'app':
 			return "phonelink_ring";
@@ -492,17 +541,20 @@ function getIconForConnectionType($type) {
 	}
 }
 
-function getJarvisConfig($file="/database/jarvis.conf") {
+function getJarvisConfig($file = "/database/jarvis.conf")
+{
 	$filepath = $_SERVER["DOCUMENT_ROOT"] . "/$file";
 	return json_decode(file_get_contents($filepath), true);
 }
-function setJarvisConfig($key, $value, $file="/database/jarvis.conf") {
+function setJarvisConfig($key, $value, $file = "/database/jarvis.conf")
+{
 	$cnf = getJarvisConfig($file);
 	$cnf[$key] = $value;
 	$filepath = $_SERVER["DOCUMENT_ROOT"] . "/$file";
 	@file_put_contents($filepath, json_encode($cnf));
 }
-function getWebExtensions($fornav=false) {
+function getWebExtensions($fornav = false)
+{
 	$c = getJarvisConfig();
 
 	if (!array_key_exists("loaded_apps", $c)) {
@@ -512,7 +564,7 @@ function getWebExtensions($fornav=false) {
 	if ($fornav) {
 		$code = "";
 
-		for ($i = 0; $i < count($c["loaded_apps"]); $i++) { 
+		for ($i = 0; $i < count($c["loaded_apps"]); $i++) {
 			$app = $c["loaded_apps"][$i];
 
 			if ($app["web-extension"]["loaded"]) {
@@ -552,22 +604,24 @@ $nav = "
 ";
 
 
-function displaySideBar() {
+function displaySideBar()
+{
 	echo "<div id='sidebar'>
 		<h2>Jarvis - NLU</h2>
 		<input id='commander' class='noshadow' placeholder='Enter a command'>
 		<pre><code id='resulter'></code></pre>
 	</div>";
 }
-function displayFooter() {
+function displayFooter()
+{
 	global $_PAGESTART;
 	echo "<div id='append-your-dom-elements-here' style='z-index:1'></div>
 	<div id='no-break'></div>
 	<div id='service-status'>
 		<div class='sub'>	
 			<div>
-				<span>Skills-size:</span><!--".getSkillFileSize()."-->
-				<span class='".(getSkillFileSize() < pow(2, 20) ? "green" : "red")."'>".getSkillFileSize(true)."</span>
+				<span>Skills-size:</span><!--" . getSkillFileSize() . "-->
+				<span class='" . (getSkillFileSize() < pow(2, 20) ? "green" : "red") . "'>" . getSkillFileSize(true) . "</span>
 			</div>
 		</div>
 		<div class='sub'></div>
