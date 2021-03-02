@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis</title>
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script src="/assets/js/chart.js"></script>
+    <script type="module" src="/assets/js/global.js"></script>
+</head>
+
+<body>
+    <div class="container" id="swup">
+        <div class="row">
+            <nav class="breadcrumb">
+                <a href="/">Jarvis Server</a>
+                <a href="/assistant">Skills</a>
+                <a href="/skill/edit/{{ skill.id }}">{{ skill.name }}</a>
+            </nav>
+        </div>
+
+        <h1><i class="{{ skill.icon.color }}">{{ skill.icon.icon }}</i> {{ skill.name }}</h1>
+
+        <div class="grid">
+            <div class="row-s-1 row-e-1 col-s-1 col-e-4">
+                <p class="v-center fat large">{{ slots|length }} Slots
+                    <i style="cursor: pointer; margin: 0 0 3px 15px" onmouseover="showInfoBox(this, `Slots are used to extract the <span class=\'green\'>parameters</span> that may be contained in a sentence.<br><br>For example, let’s consider this sentence:<br><span class=\'blue\'>&quot;Turn on the light in the kitchen&quot;</span><br>Let\'s assume we have an intent called <span class=\'green\'>switchLightOn</span>, now there is an additional piece of information which is contained in the word <span class=\'green\'>&quot;kitchen&quot;</span>.<br>This intent contains one slot, which is the room in which the light should be turned on.<br><br>Let’s consider another example:<br><span class=\'blue\'>&quot;Find me a flight from Paris to Tokyo&quot;</span><br>Here we assume we have an intent called <span class=\'green\'>searchFlight</span>, and now there are two slots in the sentence being contained in <span class=\'green\'>&quot;Paris&quot;</span> and <span class=\'green\'>&quot;Tokyo&quot;</span>. These two values are of the same type as they both correspond to a <span class=\'green\'>location</span> however they have different roles, as <span class=\'orange\'>Paris is the departure</span> and <span class=\'orange\'>Tokyo is the arrival</span>.<br><br>In this context, we call location a slot type (or entity) and departure and arrival are slot names.`)"
+                        onmouseout="removeInfoBox()">info</i>
+                </p>
+            </div>
+            <div class="h-fill row-s-2 row-e-2 col-s-1 col-e-4">
+                <div>
+                    <button class="v-center h-center" onclick="swup.loadPage({url:'/slot/edit/{{ skill.id }}'})"> <i>add</i> Add a slot </button>
+                </div>
+                {% for slot in slots: %}
+                <div>
+
+                </div>
+                {% endfor %}
+            </div>
+            <div class="row-s-1 row-e-1 col-s-4 col-e-12"></div>
+        </div>
+
+        <div id="no-break"></div>
+    </div>
+</body>
+
+</html>

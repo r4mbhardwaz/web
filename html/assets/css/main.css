@@ -8,6 +8,7 @@
 @import "navigation.css";
 @import "forms.css";
 @import "notifications.css";
+@import "custom.css";
 
 /* global settings */
 
@@ -25,10 +26,6 @@ body {
     margin: 0;
     background-color: var(--background-color);
     user-select: none;
-}
-
-.hidden {
-    display: none;
 }
 
 pre {

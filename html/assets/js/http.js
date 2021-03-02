@@ -1,5 +1,5 @@
 /* HTTP */
-export function get(url, args = {}) {
+window.get = function(url, args = {}) {
     url = (url.includes("?") ? url + "&_no_cache=" + Date.now() : url + "?_no_cache=" + Date.now());
     console.log("[get]", url);
     return new Promise(function(accept, reject) {
@@ -23,7 +23,7 @@ export function get(url, args = {}) {
     });
 }
 
-export function post(url, jsonData) {
+window.post = function(url, jsonData) {
     return new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest();
         xhr.open("POST", url, true);
@@ -41,7 +41,7 @@ export function post(url, jsonData) {
     });
 }
 
-export function postToUrl(path, params, method = 'post') {
+window.postToUrl = function(path, params, method = 'post') {
     const form = document.createElement('form');
     form.method = method;
     form.action = path;
@@ -61,7 +61,7 @@ export function postToUrl(path, params, method = 'post') {
     form.submit();
 }
 
-export function getParam(n) {
+window.getParam = function(n) {
     var url_string = window.location.href
     var url = new URL(url_string);
     return url.searchParams.get(n);

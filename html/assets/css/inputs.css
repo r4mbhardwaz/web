@@ -6,8 +6,8 @@
 button,
 input,
 textarea,
-.button,
-.input {
+select,
+.button {
     border: 2px solid var(--border-color);
     border-radius: var(--border-radius);
     background-color: transparent;
@@ -17,12 +17,12 @@ textarea,
 
 button,
 input,
-.button,
-.input {
+.button {
     transition: var(--transition);
 }
 
 button,
+select,
 .button {
     cursor: pointer;
 }
@@ -93,30 +93,29 @@ input[type=radio]+label {
     margin-left: 15px;
 }
 
+input[type=range] {
+    padding: 0;
+    width: 100px;
+}
+
+input[type=range]+label {
+    margin-left: 15px;
+}
+
 input[type=checkbox],
 input[type=radio] {
-    --active: var(--green);
-    --active-inner: #fff;
-    --input-border: var(--red);
-    --input-border-hover: var(--green);
-    --background: transparent;
-    --disabled: #F5F9FF;
-    --disabled-inner: #E4ECFA;
-    --shadow-inner: rgba(18, 22, 33, .1);
-    --border-width: 2px;
-    height: 21px;
+    --active: var(--blue);
+    --disabled: var(--grey);
+    height: 18px;
+    width: 18px;
+    padding: 10px;
+    cursor: pointer;
     outline: none;
     position: relative;
+    border: 2px solid var(--grey);
+    background-color: #fff;
     -webkit-appearance: none;
     -moz-appearance: none;
-    margin: 0;
-    padding: 0;
-    box-shadow: none;
-    cursor: pointer;
-    height: 21px;
-    border: var(--border-width) solid var(--input-border);
-    background: var(--background);
-    transition: var(--transition);
 }
 
 input[type=checkbox]:after,
@@ -126,7 +125,6 @@ input[type=radio]:after {
     left: 0;
     top: 0;
     position: absolute;
-    transition: var(--transition);
 }
 
 input[type=checkbox]:checked,
@@ -135,34 +133,11 @@ input[type=radio]:checked {
     border-color: var(--active);
 }
 
-input[type=checkbox]:checked:after,
-input[type=radio]:checked:after {
-    filter: drop-shadow(0 1px 2px var(--shadow-inner));
-    opacity: var(--transition);
-    /*transition: opacity 0.3s ease, filter 0.3s ease, transform 0.4s cubic-bezier(0.175, 0.88, 0.32, 1.2);*/
-}
-
 input[type=checkbox]:disabled,
 input[type=radio]:disabled {
     cursor: not-allowed;
     opacity: 0.9;
     background: var(--disabled);
-}
-
-input[type=checkbox]:disabled:checked,
-input[type=radio]:disabled:checked {
-    background: var(--disabled-inner);
-    border-color: var(--input-border);
-}
-
-input[type=checkbox]:hover:not(:checked):not(:disabled),
-input[type=radio]:hover:not(:checked):not(:disabled) {
-    border-color: var(--input-border-hover);
-}
-
-input[type=checkbox]:not(.switch),
-input[type=radio]:not(.switch) {
-    width: 21px;
 }
 
 input[type=checkbox]:not(.switch):after,
@@ -182,12 +157,12 @@ input[type=checkbox]:not(.switch) {
 input[type=checkbox]:not(.switch):after {
     width: 5px;
     height: 10px;
-    border: 3px solid var(--active-inner);
+    border: 3px solid #fff;
     border-top: 0;
     border-left: 0;
-    left: 5px;
-    top: 1px;
-    transform: rotate(20deg);
+    left: 6px;
+    top: 2px;
+    transform: rotate(30deg);
     border-radius: 1px;
 }
 
@@ -199,20 +174,23 @@ input[type=checkbox].switch {
     width: 4rem;
     border-radius: 9999rem;
     height: 1.75rem;
+    border-color: var(--grey) !important;
+    background: #fff;
 }
 
-input[type=checkbox].switch {
-    border-color: var(--grey) !important;
+input[type=checkbox].switch:checked {
+    background: var(--green);
 }
 
 input[type=checkbox].switch:after {
     left: -0.2rem;
-    top: -0.2rem;
+    top: -0.25rem;
     border-radius: 50%;
     width: 2rem;
     height: 2rem;
-    background: var(--active-inner);
+    background: #fff;
     transition: var(--transition);
+    box-shadow: var(--box-shadow-level-3);
 }
 
 input[type=checkbox].switch:hover:not(:checked)::after,
@@ -222,7 +200,7 @@ input[type=radio].switch:hover:not(:checked)::after {
 }
 
 input[type=checkbox].switch:checked:after {
-    background: var(--active-inner);
+    background: #fff;
     transform: translate(2.25rem);
 }
 
@@ -259,19 +237,23 @@ input:not(:placeholder-shown)+span {
 
 i[data-visibilityfor] {
     cursor: pointer;
-    transform: translate(-2.5rem, 0.5rem);
+    transform: translate(-2.5rem);
+    position: absolute;
+    right: -1.5rem;
 }
 
 
 /* For IE Browsers*/
 
-div.input-group {
-    margin: 20px 0 5px;
+div.input {
+    margin: 0 0 15px;
     position: relative;
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    position: relative;
 }
 
-div.input-group>span {
+div.input>span {
     padding: 0.85rem;
     pointer-events: none;
     position: absolute;
@@ -284,13 +266,13 @@ div.input-group>span {
     color: var(--darker-grey);
 }
 
-div.input-group>input {
+div.input>input {
     padding: 10px;
-    width: 80%;
+    width: 100%;
 }
 
-div.input-group>input:focus+span,
-div.input-group>input:not(:placeholder-shown)+span {
+div.input>input:focus+span,
+div.input>input:not(:placeholder-shown)+span {
     opacity: 1;
     transform: scale(0.75) translateY(-125%) translateX(-15%);
     padding: 0;
@@ -299,10 +281,25 @@ div.input-group>input:not(:placeholder-shown)+span {
 
 /* For IE Browsers*/
 
-div.input-group>input:focus+span,
-div.input-group>input:not(:-ms-input-placeholder)+span {
+div.input>input:focus+span,
+div.input>input:not(:-ms-input-placeholder)+span {
     opacity: 1;
     transform: scale(0.75) translateY(-100%) translateX(-15%);
+}
+
+div.input.file>input[type=file] {
+    opacity: 0;
+    position: fixed;
+    z-index: -1;
+    left: -10000px;
+    top: -10000px;
+    width: 0.1px;
+    height: 0.1px;
+}
+
+div.input.file>label {
+    cursor: pointer;
+    text-align: center;
 }
 
 .checkbox-sides {
@@ -310,4 +307,62 @@ div.input-group>input:not(:-ms-input-placeholder)+span {
     align-items: center;
     /* justify-content; */
     /* width: 75%; */
+}
+
+.chooser {
+    --image-size: 30px;
+    --margin: 4px;
+    display: grid;
+    grid-template-areas: "current_item all_items";
+    grid-template-columns: var(--image-size) 1fr;
+    grid-gap: 1rem;
+    position: relative;
+}
+
+.chooser>.current {
+    grid-area: current_item;
+    width: var(--image-size);
+    height: var(--image-size);
+    margin-top: 10px;
+}
+
+.chooser>.search {
+    grid-area: all_items;
+    transition: .2s;
+    height: 200px;
+    overflow-y: auto;
+    position: relative;
+}
+
+.chooser>.search>.input {
+    margin-top: 10px;
+}
+
+.chooser>.search div div {
+    margin: var(--margin);
+}
+
+.chooser>.search img {
+    width: var(--image-size);
+    height: var(--image-size);
+}
+
+.chooser>.colors {
+    position: absolute;
+    right: -30px;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.chooser>.colors>div {
+    width: 25px;
+    height: 25px;
+    margin-bottom: 2px;
+    padding: 0;
+    cursor: pointer;
+}
+
+.chooser>.search>.icons>div>div {
+    cursor: pointer;
 }

@@ -1,6 +1,7 @@
 import { Swup } from "./swup.js";
 
 export const swup = new Swup({
+    cache: false,
     plugins: [new SwupPreloadPlugin(), new SwupProgressPlugin({
         delay: 0
     }), new SwupScrollPlugin({

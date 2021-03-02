@@ -3,8 +3,7 @@
 
 /* a large card */
 
-div.card,
-div.chooser-box {
+div.box {
     border: 2px solid var(--border-color);
     border-radius: var(--border-radius);
     padding: var(--padding-large);
@@ -13,19 +12,111 @@ div.chooser-box {
     position: relative;
 }
 
-div.card>i {
+div.box:not(.centered)>i {
     position: absolute;
     right: 20px;
     top: 15px;
 }
 
-div.card>label {
+div.box>label {
     display: block;
     font-size: 1.5rem;
     margin-bottom: 10px;
 }
 
-div.card.select:hover {
+div.box.clickable:hover {
     cursor: pointer;
     box-shadow: var(--box-shadow-level-1);
+}
+
+div.box.centered>.icon {
+    display: block;
+    border-radius: 99px;
+    height: 35px;
+    width: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+div.box.centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+div.box.centered>* {
+    text-align: center;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+div.box.centered>*:last-child {
+    margin-bottom: 0;
+}
+
+div.box.centered>.icon>i {
+    color: #fff;
+}
+
+div.box>.settings>i {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transition: .2s;
+    border-radius: 99px;
+    padding: 5px;
+    font-size: 20px;
+}
+
+div.box>.settings:hover>i {
+    background-color: var(--light-grey);
+}
+
+div.box>.settings>.options {
+    position: absolute;
+    top: 40px;
+    right: 20px;
+    z-index: 10;
+    visibility: hidden;
+    padding: 15px 0px;
+    background-color: #fff;
+    border: 2px solid var(--light-grey);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-level-2);
+}
+
+div.box>.settings>.options.visible {
+    visibility: visible;
+}
+
+div.box>.settings>.options>* {
+    justify-content: flex-start;
+    padding: 10px 20px;
+    transition: .2s;
+}
+
+div.box>.settings>.options>*:hover {
+    background-color: var(--red);
+    color: #fff;
+}
+
+div.box>.settings>.options>*:last-child {
+    justify-content: flex-start;
+    margin: 0 0 0 0;
+}
+
+div.box>.settings>.options>*>i {
+    margin-right: 15px;
+    font-size: 19px;
+}
+
+div.box.input-padding {
+    padding-top: 30px;
+}
+
+div.box.space {
+    border: none;
+    padding: 0px 20px 15px;
 }

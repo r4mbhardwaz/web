@@ -28,11 +28,11 @@ error_reporting(E_ALL);
 
 
 session_start();
-if (!isset($_SESSION["logged_in"]) && $_SERVER["PHP_SELF"] !== "/login.php") {
-	$_SESSION["returnUri"] = $_SERVER["REQUEST_URI"];
-	header("Location: /login");
-	die();
-}
+// if (!isset($_SESSION["logged_in"]) && $_SERVER["PHP_SELF"] !== "/login.php") {
+// 	$_SESSION["returnUri"] = $_SERVER["REQUEST_URI"];
+// 	header("Location: /login");
+// 	die();
+// }
 
 
 

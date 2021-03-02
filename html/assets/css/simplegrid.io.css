@@ -8,6 +8,9 @@
 
 h1 {
     font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
 }
 
 h2 {
@@ -175,7 +178,7 @@ p {
 @media only screen and (min-width: 33.75em) {
     /* 540px */
     .container {
-        width: 80%;
+        width: 85%;
     }
 }
 
@@ -225,7 +228,268 @@ p {
 @media only screen and (min-width: 60em) {
     /* 960px */
     .container {
-        width: 75%;
-        max-width: 60rem;
+        width: 90%;
+        max-width: 65rem;
     }
+}
+
+.table {
+    display: flex;
+    flex-direction: column;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-gap: 10px;
+}
+
+.grid.gap-medium {
+    grid-gap: 20px;
+}
+
+.grid.gap-large {
+    grid-gap: 30px;
+}
+
+.grid.gap-larger {
+    grid-gap: 50px;
+}
+
+.grid>.left {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.grid>.right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.grid>.middle {
+    display: flex;
+    justify-content: center;
+}
+
+.grid>.line {
+    width: 100%;
+    height: 2px;
+    background-color: var(--grey);
+    border-radius: var(--border-color);
+}
+
+.grid>div,
+.grid>div>div,
+.grid>div>input:not([type=checkbox], [type=radio], [type=range]),
+.grid>div>button,
+.grid>div>textarea,
+.grid>div>select {
+    width: 100%;
+}
+
+.grid .h-fill input,
+.grid .h-fill button,
+.grid .h-fill div {
+    width: 100%;
+}
+
+.grid .v-fill input,
+.grid .v-fill button,
+.grid .v-fill div {
+    height: 100%;
+}
+
+.grid .fill input,
+.grid .fill button,
+.grid .fill div {
+    width: 100%;
+    height: 100%;
+}
+
+.grid div.input {
+    margin: 0;
+}
+
+.row-s-1 {
+    grid-row-start: 1;
+}
+
+.row-s-2 {
+    grid-row-start: 2;
+}
+
+.row-s-3 {
+    grid-row-start: 3;
+}
+
+.row-s-4 {
+    grid-row-start: 4;
+}
+
+.row-s-5 {
+    grid-row-start: 5;
+}
+
+.row-s-6 {
+    grid-row-start: 6;
+}
+
+.row-s-7 {
+    grid-row-start: 7;
+}
+
+.row-s-8 {
+    grid-row-start: 8;
+}
+
+.row-s-9 {
+    grid-row-start: 9;
+}
+
+.row-s-10 {
+    grid-row-start: 10;
+}
+
+.row-e-1 {
+    grid-row-end: 1;
+}
+
+.row-e-2 {
+    grid-row-end: 2;
+}
+
+.row-e-3 {
+    grid-row-end: 3;
+}
+
+.row-e-4 {
+    grid-row-end: 4;
+}
+
+.row-e-5 {
+    grid-row-end: 5;
+}
+
+.row-e-6 {
+    grid-row-end: 6;
+}
+
+.row-e-7 {
+    grid-row-end: 7;
+}
+
+.row-e-8 {
+    grid-row-end: 8;
+}
+
+.row-e-9 {
+    grid-row-end: 9;
+}
+
+.row-e-10 {
+    grid-row-end: 10;
+}
+
+.col-s-1 {
+    grid-column-start: 1;
+}
+
+.col-s-2 {
+    grid-column-start: 2;
+}
+
+.col-s-3 {
+    grid-column-start: 3;
+}
+
+.col-s-4 {
+    grid-column-start: 4;
+}
+
+.col-s-5 {
+    grid-column-start: 5;
+}
+
+.col-s-6 {
+    grid-column-start: 6;
+}
+
+.col-s-7 {
+    grid-column-start: 7;
+}
+
+.col-s-8 {
+    grid-column-start: 8;
+}
+
+.col-s-9 {
+    grid-column-start: 9;
+}
+
+.col-s-10 {
+    grid-column-start: 10;
+}
+
+.col-s-11 {
+    grid-column-start: 11;
+}
+
+.col-s-12 {
+    grid-column-start: 12;
+}
+
+.col-s-13 {
+    grid-column-start: 13;
+}
+
+.col-e-1 {
+    grid-column-end: 1;
+}
+
+.col-e-2 {
+    grid-column-end: 2;
+}
+
+.col-e-3 {
+    grid-column-end: 3;
+}
+
+.col-e-4 {
+    grid-column-end: 4;
+}
+
+.col-e-5 {
+    grid-column-end: 5;
+}
+
+.col-e-6 {
+    grid-column-end: 6;
+}
+
+.col-e-7 {
+    grid-column-end: 7;
+}
+
+.col-e-8 {
+    grid-column-end: 8;
+}
+
+.col-e-9 {
+    grid-column-end: 9;
+}
+
+.col-e-10 {
+    grid-column-end: 10;
+}
+
+.col-e-11 {
+    grid-column-end: 11;
+}
+
+.col-e-12 {
+    grid-column-end: 12;
+}
+
+.col-e-13 {
+    grid-column-end: 13;
 }

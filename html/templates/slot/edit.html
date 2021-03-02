@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis</title>
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script src="/assets/js/chart.js"></script>
+    <script type="module" src="/assets/js/global.js"></script>
+</head>
+
+<body>
+    <form class="container" id="swup" method="POST">
+        <div class="row">
+            <nav class="breadcrumb">
+                <a href="/">Jarvis Server</a>
+                <a href="/assistant">Skills</a>
+                <a href="/skill/edit/{{ skill.id }}">{{ skill.name }}</a>
+                <a href="/slot/edit/{{ skill.id }}/{{ slot.id }}">{% if slot.name == "New Slot": %}Create{% else: %}Edit{% endif %} Slot</a>
+            </nav>
+        </div>
+
+        <h1> <i>category</i> {% if slot.name == "New Slot": %}Create a new Slot{% else: %}Edit Slot{% endif %} <i style="cursor: pointer; margin-left: 20px" onmouseover="showInfoBox(this, 'A slot (also called entity) is a parameter in a spoken sentence. <br><br> For example: <br>\'Book me a flight to <span class=\'blue\'>New York</span>\', <br><br><span class=\'blue\'>New York</span> would be the slot value in a slot called \'City\'')"
+                onmouseout="removeInfoBox()">info</i> </h1>
+
+        <div class="grid gap-large">
+            <div class="input row-s-1 row-e-1 col-s-1 col-e-5">
+                <input type="text" placeholder=" " name="slot-name" id="slot-name" value="{{ "" if slot.name == "New Slot" else slot.name }}" data-id="{{ slot.id }}">
+                <span>Slot name (city, location, etc...)</span>
+            </div>
+
+            <div class="v-center middle row-s-1 row-e-1 col-s-5 col-e-9">
+                <input type="checkbox" name="slot-extensible" id="slot-extensible" {{ "checked" if slot.extensible else "" }} data-id="{{ slot.id }}">
+                <label class="v-center" for="slot-extensible">Automatically extensible
+                    <i style="cursor: pointer; margin: 0 0 2px 15px" onmouseover="showInfoBox(this, 'Check this box if you want Jarvis to automatically extend this slot at runtime.<br><br>If you want to use this slot for a light bulb and only want to accept a fixed set of colors (eg. red, green, blue), you shouldn\'t use this feature. \'Invalid\' colors (yellow, white, etc...) will be filtered out when unticked.<br><br>When you want to use this slot for a music player you should use this feature. You simply cannot provide all the artists and songs you want to hear, so Jarvis will automatically classify this information for you')" onmouseout="removeInfoBox()">info</i>
+                </label>
+            </div>
+
+            <div class="v-center right row-s-1 row-e-1 col-s-9 col-e-13">
+                <input type="range" name="slot-strictness" id="slot-strictness" min="0" max="1" value="{{ slot.strictness }}" step="0.01">
+                <label class="v-center" for="slot-strictness">Matching Strictness
+                    <i style="cursor: pointer; margin: 0 0 0 15px" onmouseover="showInfoBox(this, 'Controls the matching strictness of the slot. <br><br> 0.8 - 1 is recommended')" onmouseout="removeInfoBox()">info</i>
+                </label>
+            </div>
+
+            <div class="row-s-2 row-e-2 col-s-1 col-e-13">
+                <h2>Values</h2>
+                <div class="v-center">
+                    <input type="checkbox" name="slot-synonyms" id="slot-synonyms" {{ "checked" if slot.get("use-synonyms") else "" }} data-id="{{ slot.id }}">
+                    <label for="slot-synonyms">Use synonyms (Multiple synonyms must be seperated with commas)</label>
+                </div>
+            </div>
+
+            <div class="grid box input-padding gap-large row-s-3 row-e-3 col-s-1 col-e-13">
+                <div class="input row-s-1 row-e-1 col-s-1 col-e-5">
+                    <input type="text" placeholder=" " id="new-slot-value" on>
+                    <span>Type your value here</span>
+                </div>
+                <div class="input row-s-1 row-e-1 col-s-5 col-e-11">
+                    <input type="text" placeholder=" " id="new-slot-synonyms">
+                    <span>Type your synonym(s) (seperate with a comma)</span>
+                </div>
+                <div class="v-center middle blue clickable row-s-1 row-e-1 col-s-11 col-e-13" onclick="post(`/api/slot/{{ slot.id }}/add-data`, {value: document.getElementById(`new-slot-value`).value, synonyms: document.getElementById(`new-slot-synonyms`).value})">
+                    <i style="margin: 0 10px 2px 0">add</i>
+                    <span>Add</span>
+                </div>
+
+                <div class="line row-s-2 row-e-2 col-s-1 col-e-13"></div>
+
+                <div class="grid row-s-3 row-e-3 col-s-1 col-e-13">
+                    {% if slot.data|length == 0: %} 
+                    <div style="margin-bottom: 10px" class="center row-s-1 row-e-1 col-s-1 col-e-13">
+                        No values yet. Start by entering a value and synonyms
+                    </div>
+                    {% else %}
+                    {% for x in slot.data: %}
+                    <div class="box space row-s-{{ loop.index }} row-e-{{ loop.index }} col-s-1 col-e-5">
+                        {{ x.value }}
+                    </div>
+                    <div class="box space row-s-{{ loop.index }} row-e-{{ loop.index }} col-s-5 col-e-13">
+                        {{ x.synonyms|join(", ") }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <!-- <div class="row-s-6 row-e-6 col-s-10 col-e-12">
+                <button type="submit">Continue</button>
+            </div> -->
+        </div>
+        <div id="no-break"></div>
+    </form>
+
+</body>
+
+</html>
