@@ -6,6 +6,7 @@
 import json
 import time
 import random
+from couchdb2 import ViewResult
 import requests
 import traceback
 from functools import wraps
@@ -185,6 +186,30 @@ def api_set_slot_key(slot_id: str, key: str):
             key: value
         })
     return json.dumps({"success": False, "error": "invalid key. valid: 'name', 'extensible' and 'strictness'"})
+
+
+@app.route("/api/slot/<slot_id>/delete/<slot_value_id>")
+@login_required
+def api_slot_remove(slot_id: str, slot_value_id: str):
+    result = Database().table("slots").find({
+        "id": slot_id,
+        # "data": {
+        #     "$elemMatch": {
+        #         "id": slot_value_id
+        #     }
+        # }
+    })
+    if result.found:
+        def updater(old):
+            new_data = []
+            for x in old["data"]:
+                if x["id"] != slot_value_id:
+                    new_data.append(x)
+            old["data"] = new_data
+            return old
+        result.update(updater)
+        return json.dumps({"success": True, "error": "successfully deleted data"})
+    return json.dumps({"success": False, "error": "couldn't find any data"})
 
 
 @app.route("/api/db-stats")

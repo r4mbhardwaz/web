@@ -278,6 +278,28 @@ p {
     border-radius: var(--border-color);
 }
 
+.grid .seperator {
+    position: absolute; 
+    right: -10px;
+    top: 15%;
+    height: 70%;
+    width: 2px;
+    background-color: var(--grey);
+    border-radius: var(--border-radius);
+}
+
+.grid.gap-medium .seperator {
+    right: -12px;
+}
+
+.grid.gap-large .seperator {
+    right: -16px;
+}
+
+.grid.gap-larger .seperator {
+    right: -27px;
+}
+
 .grid>div,
 .grid>div>div,
 .grid>div>input:not([type=checkbox], [type=radio], [type=range]),
@@ -492,4 +514,17 @@ p {
 
 .col-e-13 {
     grid-column-end: 13;
+}
+
+
+.flex {
+    display: flex;
+}
+
+.flex.vertical {
+    flex-direction: column;
+}
+
+.flex.horizontal {
+    flex-direction: row;
 }

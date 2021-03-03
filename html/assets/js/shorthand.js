@@ -43,3 +43,7 @@ window.ElementList = class {
 window.id = function(id) {
     return new ElementList(document.getElementById(id));
 }
+
+window.qry = function(qryString) {
+    return new ElementList(document.querySelectorAll(qryString));
+}
