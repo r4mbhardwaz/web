@@ -156,9 +156,7 @@ def api_add_data_to_slot(slot_id: str):
     if "value" in json_data and "synonyms" in json_data:
         slot = Database().table("slots").find({"id": slot_id})
         if not slot.found:
-            Database().table("slots").insert({
-                "id": slot_id
-            })
+            return json.dumps({"success": False, "error": "slot not defined yet."})
         id = Security.id(32)
         def updater(old):
             old["data"].append({

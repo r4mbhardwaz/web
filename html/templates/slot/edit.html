@@ -40,7 +40,7 @@
             </div>
 
             <div class="v-center right row-s-1 row-e-1 col-s-9 col-e-13">
-                <input type="range" name="slot-strictness" id="slot-strictness" min="0" max="1" value="{{ slot.strictness }}" step="0.01">
+                <input type="range" name="slot-strictness" id="slot-strictness" min="0" max="1" value="{{ slot.strictness }}" step="0.01" data-id="{{ slot.id }}">
                 <label class="v-center" for="slot-strictness">Matching Strictness
                     <i style="cursor: pointer; margin: 0 0 0 15px" onmouseover="showInfoBox(this, 'Controls the matching strictness of the slot. <br><br> 0.8 - 1 is recommended')" onmouseout="removeInfoBox()">info</i>
                 </label>
@@ -56,14 +56,14 @@
 
             <div class="grid box input-padding gap-large row-s-3 row-e-3 col-s-1 col-e-13">
                 <div class="input row-s-1 row-e-1 col-s-1 col-e-5">
-                    <input type="text" placeholder=" " id="new-slot-value" on>
+                    <input type="text" placeholder=" " id="new-slot-value" data-id="{{ slot.id }}">
                     <span>Type your value here</span>
                 </div>
                 <div class="input row-s-1 row-e-1 col-s-5 col-e-11">
-                    <input type="text" placeholder=" " id="new-slot-synonyms">
+                    <input type="text" placeholder=" " id="new-slot-synonyms" data-id="{{ slot.id }}">
                     <span>Type your synonym(s) (seperate with a comma)</span>
                 </div>
-                <div class="v-center middle blue clickable row-s-1 row-e-1 col-s-11 col-e-13" onclick="post(`/api/slot/{{ slot.id }}/add-data`, {value: document.getElementById(`new-slot-value`).value, synonyms: document.getElementById(`new-slot-synonyms`).value})">
+                <div class="v-center middle blue clickable row-s-1 row-e-1 col-s-11 col-e-13" id="new-slot-value-button" data-id="{{ slot.id }}">
                     <i style="margin: 0 10px 2px 0">add</i>
                     <span>Add</span>
                 </div>

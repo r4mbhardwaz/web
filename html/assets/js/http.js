@@ -24,6 +24,7 @@ window.get = function(url, args = {}) {
 }
 
 window.post = function(url, jsonData) {
+    console.log("[post]", url, jsonData);
     return new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest();
         xhr.open("POST", url, true);
