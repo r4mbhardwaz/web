@@ -27,6 +27,10 @@ body {
     background-color: var(--background-color);
     user-select: none;
 }
+body {
+    overflow-y: scroll;
+}
+
 
 pre {
     margin: 0;

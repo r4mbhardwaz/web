@@ -33,6 +33,10 @@ window.ElementList = class {
         })
     }
 
+    get(index) {
+        return this.list[index];
+    }
+
     get value() {
         let arr = []
         this.list.forEach(el => { arr.push(el.value) })

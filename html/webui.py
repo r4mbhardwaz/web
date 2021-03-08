@@ -5,10 +5,10 @@
 
 import json
 import time
-import random
-from couchdb2 import ViewResult
-import requests
 import traceback
+from core.Skill import Skill
+from core.Slot import Slot
+from core.User import User
 from functools import wraps
 from jarvis import Database, Security
 from flask import Flask, render_template, session, redirect, request
@@ -71,7 +71,7 @@ def login_post():
 @app.route("/assistant")
 @login_required
 def assistant():
-    return render_template("assistant.html", apps=list(Database().table("skills").all().sort("created-at").reverse()))
+    return render_template("assistant.html", skills=list(Database().table("skills").all().sort("created-at").reverse()))
 
 
 @app.route("/skill/new", methods=['GET'])
@@ -83,71 +83,121 @@ def new_skill_get():
 @app.route("/skill/new", methods=['POST'])
 @login_required
 def new_skill_post():
-    skill = {
-        "created-at": int(time.time()),
-        "name": request.form.get("skill-name", None),
-        "icon": {
-            "icon": request.form.get("skill-icon", None),
-            "color": request.form.get("skill-icon-color", "black")
-        },
-        "social": {
-            "likes": 0,
-            "comments": 0,
-            "downloads": 0,
-            "rating": 3.5
-        },
-        "slots": {},
-        "intents": {},
-        "language": request.form.get("skill-language", None),
-        "description": request.form.get("skill-description", None),
-        "public": True if request.form.get("skill-public", None) == "on" else False,
-        "id": Security.id(64)
-    }
-    while Database().table("skills").find({"id": skill["id"]}).found:
-        skill["id"] = Security.id(64)
-    Database().table("skills").insert(skill)
+    skill = Skill()
+    skill["name"] = request.form.get("skill-name", None)
+    skill["icon"]["icon"] = request.form.get("skill-icon", None)
+    skill["icon"]["color"] = request.form.get("skill-icon-color", "black")
+    skill["language"] = request.form.get("skill-language", None)
+    skill["description"] = request.form.get("skill-description", None)
+    skill["public"] = True if request.form.get("skill-public", None) == "on" else False
+    skill.save()
     return redirect(f"/skill/edit/{skill['id']}", code=302)
 
 
 @app.route("/skill/edit/<id>")
 @login_required
 def edit_skill(id):
-    skill = Database().table("skills").find({"id": id})
+    skill = Skill(id)
     if not skill.found:
         return redirect("/skill/new?message=Skill does not exist yet.<br>You can create a skill here", 302)
-    return render_template("skill/edit.html", skill=skill[0], slots=list(Database().table("slots").all()))
+    return render_template("skill/edit.html", skill=skill)
 
 
 @app.route("/slot/edit/<skill_id>")
 @app.route("/slot/edit/<skill_id>/<slot_id>")
 @login_required
 def add_slot(skill_id: str, slot_id: str = None):
-    skill = Database().table("skills").find({"id": skill_id})
+    skill = Skill(skill_id)
     if skill.found:
         if slot_id is None:
-            id = Security.id(64)
-            Database().table("slots").insert({
-                "created-at": time.time(),
-                "id": id,
-                "name": "New Slot",
-                "extensible": True,
-                "strictness": 1,
-                "use-synonyms": True,
-                "data": []
-            })
-            return redirect(f"/slot/edit/{skill_id}/{id}", 302)
-        slot = Database().table("slots").find({"id": slot_id})
+            already_existing_but_empty_slot = Slot.new_but_unused_slot()
+            if already_existing_but_empty_slot:
+                id = already_existing_but_empty_slot
+                slot = Slot(id)
+            else:
+                slot = Slot()
+                slot.save()
+            return redirect(f"/slot/edit/{skill_id}/{slot['id']}", 302)
+        slot = Slot(slot_id)
         if slot.found:
-            return render_template("slot/edit.html", skill=skill[0], slot=slot[0])
+            return render_template("slot/edit.html", skill=skill, slot=slot)
     return redirect("/assistant?message=Couldn't find slot or skill, check your url", 302)
 
 
-# API requests
-@app.route("/api/skill/delete/<id>")
+
+
+############################
+#####   API REQUESTS   #####
+############################
+@app.route("/api/skill/<id>/delete")
 @login_required
 def api_delete_skill(id):
-    Database().table("skills").find({"id": id}).delete()
+    Skill(id).delete()
     return json.dumps({"success": "maybe"})
+
+
+# @app.route("/api/skill/<skill_id>/intent/<intent_id>/slot/add", methods=["POST"])
+# @login_required
+# def api_skill_add_slot(skill_id, intent_id):
+#     json_data = request.get_json(force=True)
+#     if "slot-id" in json_data and "slot-name" in json_data:
+#         skill = Skill(skill_id)
+#         slot_name = json_data["slot-name"]
+#         slot_id = json_data["slot-id"]
+#         if skill.found:
+#             if slot_name in skill["slots"]:
+#                 return Response(json.dumps({"success": False, "error": "a slot with this name already exists"}), content_type="application/json")
+#         else:
+#             return Response(json.dumps({"success": False, "error": "skill not found by id"}), content_type="application/json")
+#         def updater(old):
+#             old["slots"][slot_name] = slot_id
+#             return old
+#         skills.update(updater)
+#         return Response(json.dumps({"success": True}), content_type="application/json")
+#     return Response(json.dumps({"success": False, "error": "must provide 'slot-id' and 'slot-name' in json post body"}), content_type="application/json")
+
+
+@app.route("/api/skill/<id>/private", methods=["POST"])
+@login_required
+def api_skill_private(id):
+    skill = Skill(id)
+    if skill.found:
+        skill["public"] = False
+        skill.save()
+        return Response(json.dumps({"success": True}), content_type="application/json")
+    else:
+        return Response(json.dumps({"success": False, "error": "couldn't find skill by id"}), content_type="application/json")
+
+
+@app.route("/api/skill/<id>/public", methods=["POST"])
+@login_required
+def api_skill_public(id):
+    skill = Skill(id)
+    if skill.found:
+        skill["public"] = True
+        skill.save()
+        return Response(json.dumps({"success": True}), content_type="application/json")
+    else:
+        return Response(json.dumps({"success": False, "error": "couldn't find skill by id"}), content_type="application/json")
+
+
+@app.route("/api/skill/<id>/slot/remove", methods=["POST"])
+@login_required
+def api_skill_remove_slot(id):
+    json_data = request.get_json(force=True)
+    if "slot-id" in json_data:
+        skill = Skill(id)
+        if skill.found:
+            new_slots = {}
+            for key in skill["slots"]:
+                if skill["slots"][key] != json_data["slot-id"]:
+                    new_slots[key] = skill["slots"][key]
+            skill["slots"] = new_slots
+            skill.save()
+            return Response(json.dumps({"success": True}), content_type="application/json")
+        else:
+            return Response(json.dumps({"success": False, "error": "skill not found by id"}), content_type="application/json")
+    return Response(json.dumps({"success": False, "error": "need to provide 'slot-id' in json post body"}), content_type="application/json")
 
 
 @app.route("/api/slot/<slot_id>/add-data", methods=["POST"])
@@ -155,21 +205,19 @@ def api_delete_skill(id):
 def api_add_data_to_slot(slot_id: str):
     json_data = request.get_json(force=True)
     if "value" in json_data and "synonyms" in json_data:
-        slot = Database().table("slots").find({"id": slot_id})
+        slot = Slot(slot_id)
         if not slot.found:
             return json.dumps({"success": False, "error": "slot not defined yet."})
-        id = Security.id(32)
-        def updater(old):
-            old["data"].append({
-                "id": id,
-                "created-at": int(time.time()),
-                "edited-at": int(time.time()),
-                "value": json_data["value"],
-                "synonyms": list(map(str.strip, json_data["synonyms"].split(",")))
-            })
-            return old
-        Database().table("slots").find({"id": slot_id}).update(updater)
-        return json.dumps({"success": True})
+        id = Security.id(16)
+        slot["data"].append({
+            "id": id,
+            "created-at": int(time.time()),
+            "modified-at": int(time.time()),
+            "value": json_data["value"],
+            "synonyms": list(map(str.strip, json_data["synonyms"].split(","))) if json_data["synonyms"].strip() != "" else []
+        })
+        slot.save()
+        return json.dumps({"success": True, "id": id})
     return json.dumps({"success": False, "error": "you have to provide 'value' and 'synonyms' in json body"})
 
 
@@ -182,36 +230,59 @@ def api_set_slot_key(slot_id: str, key: str):
             value = True if value == "true" else False
         if key == "strictness":
             value = float(value)
-        Database().table("slots").find({"id": slot_id}).update({
-            key: value
-        })
-    return json.dumps({"success": False, "error": "invalid key. valid: 'name', 'extensible' and 'strictness'"})
+        slot = Slot(slot_id)
+        slot[key] = value
+        slot.save()
+    return json.dumps({"success": False, "error": "invalid key. valid: 'name', 'extensible', 'use-synonyms' and 'strictness'"})
 
 
 @app.route("/api/slot/<slot_id>/delete/<slot_value_id>")
 @login_required
 def api_slot_remove(slot_id: str, slot_value_id: str):
-    result = Database().table("slots").find({
-        "id": slot_id,
-        # "data": {
-        #     "$elemMatch": {
-        #         "id": slot_value_id
-        #     }
-        # }
-    })
-    if result.found:
-        def updater(old):
-            new_data = []
-            for x in old["data"]:
-                if x["id"] != slot_value_id:
-                    new_data.append(x)
-            old["data"] = new_data
-            return old
-        result.update(updater)
+    slot = Slot(slot_id)
+    if slot.found:
+        new_data = []
+        for x in slot["data"]:
+            if x["id"] != slot_value_id:
+                new_data.append(x)
+        slot["data"] = new_data
+        slot.save()
         return json.dumps({"success": True, "error": "successfully deleted data"})
     return json.dumps({"success": False, "error": "couldn't find any data"})
 
 
+@app.route("/api/slot/<slot_id>/delete")
+@login_required
+def api_slot_delete(slot_id: str):
+    return json.dumps({"success": False, "error": "not implemented"})
+
+
+@app.route("/api/slot/<slot_id>/<item_id>/change", methods=["POST"])
+@login_required
+def api_slot_item_change(slot_id: str, item_id: str):
+    json_data = request.get_json(force=True)
+    if "value" in json_data:
+        slot = Slot(slot_id)
+        for i in range(len(slot["data"])):   # loop through data
+            element = slot["data"][i]
+            if element["id"] == item_id:    # if we found the id
+                slot["data"][i]["value"] = json_data["value"]    # set the new value
+        slot.save()
+        return json.dumps({"success": True})
+    elif "synonyms" in json_data:
+        slot = Slot(slot_id)
+        for i in range(len(slot["data"])):   # loop through data
+            element = slot["data"][i]
+            if element["id"] == item_id:    # if we found the id
+                slot["data"][i]["synonyms"] = list(map(str.strip, json_data["synonyms"].split(","))) if json_data["synonyms"].strip() != "" else []
+                # set the new synonyms
+        return json.dumps({"success": True})
+    else:
+        return json.dumps({"success": False, "error": "you need to provide 'value' or 'synonyms' in post body"})
+
+######################################
+#####   UNUSUAL API ENDPOINTS   ######
+######################################
 @app.route("/api/db-stats")
 @login_required
 def api_dbstats():

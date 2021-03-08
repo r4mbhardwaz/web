@@ -25,23 +25,35 @@
         <h1><i class="{{ skill.icon.color }}">{{ skill.icon.icon }}</i> {{ skill.name }}</h1>
 
         <div class="grid">
-            <div class="row-s-1 row-e-1 col-s-1 col-e-4">
-                <p class="v-center fat large">{{ slots|length }} Slots
-                    <i style="cursor: pointer; margin: 0 0 3px 15px" onmouseover="showInfoBox(this, `Slots are used to extract the <span class=\'green\'>parameters</span> that may be contained in a sentence.<br><br>For example, let’s consider this sentence:<br><span class=\'blue\'>&quot;Turn on the light in the kitchen&quot;</span><br>Let\'s assume we have an intent called <span class=\'green\'>switchLightOn</span>, now there is an additional piece of information which is contained in the word <span class=\'green\'>&quot;kitchen&quot;</span>.<br>This intent contains one slot, which is the room in which the light should be turned on.<br><br>Let’s consider another example:<br><span class=\'blue\'>&quot;Find me a flight from Paris to Tokyo&quot;</span><br>Here we assume we have an intent called <span class=\'green\'>searchFlight</span>, and now there are two slots in the sentence being contained in <span class=\'green\'>&quot;Paris&quot;</span> and <span class=\'green\'>&quot;Tokyo&quot;</span>. These two values are of the same type as they both correspond to a <span class=\'green\'>location</span> however they have different roles, as <span class=\'orange\'>Paris is the departure</span> and <span class=\'orange\'>Tokyo is the arrival</span>.<br><br>In this context, we call location a slot type (or entity) and departure and arrival are slot names.`)"
-                        onmouseout="removeInfoBox()">info</i>
-                </p>
+            <div class="row-s-1 row-e-1 col-s-1 col-e-7 relative v-center">
+                <span class="blue clickable">By You</span> 
+                <div class="v-dot bg-darker-grey"></div>
+                {% set full_stars = skill.social.rating|round(0, 'floor')|int %}
+                {% set empty_stars = 5 - skill.social.rating|round(0, 'ceil')|int %}
+                {% set half_stars = 5 - empty_stars - full_stars %}
+                <span class="{{ 'green' if skill.social.rating > 3 else 'orange' }}"> {{ ("<i>star</i>" * full_stars + "<i>star_half</i>" * half_stars + "<i>star_border</i>" * empty_stars)|safe }}</span>
+                <span class="margin-left-big {{ 'green' if skill.social.rating > 3 else 'orange' }}"> {{ skill.social.comments|length }} ratings </span>
+                <div class="v-dot bg-darker-grey"></div>
+                <span class="{{ 'red' if skill.quality < 0.25 else 'orange' if skill.quality < 0.5 else 'green' }}">
+                    {{ 'Poor Quality' if skill.quality < 0.25 else 'Medium Quality' if skill.quality < 0.5 else 'Excellent Quality' }}
+                </span>
             </div>
-            <div class="h-fill row-s-2 row-e-2 col-s-1 col-e-4">
-                <div>
-                    <button class="v-center h-center" onclick="swup.loadPage({url:'/slot/edit/{{ skill.id }}'})"> <i>add</i> Add a slot </button>
-                </div>
-                {% for slot in slots: %}
-                <div>
-
-                </div>
-                {% endfor %}
+            <div class="row-s-2 row-e-2 col-s-1 col-e-7 relative v-center">
+                <span>{{ skill.social.downloads|length }} Downloads</span>
+                <div class="v-dot bg-darker-grey"></div>
+                <span class="v-center">
+                    <i class="blue size-20">thumb_up</i>
+                    <span class="blue margin-left-big margin-top-mini">{{ skill.social.likes|length }}</span>
+                </span>
+                <div class="v-dot bg-darker-grey"></div>
+                <span class="v-center">
+                    <i class="blue size-20">comment</i>
+                    <span class="blue margin-left-big margin-top-mini">{{ skill.social.comments|length }}</span>
+                </span>
             </div>
-            <div class="row-s-1 row-e-1 col-s-4 col-e-12"></div>
+            <div class="row-s-1 row-e-3 col-s-7 col-e-13 border-left border-medium border-darker-grey height-full padding-left-big">
+                {{ skill.description }}
+            </div>
         </div>
 
         <div id="no-break"></div>

@@ -60,7 +60,11 @@ div.box.centered>.icon>i {
     color: #fff;
 }
 
-div.box>.settings>i {
+.settings {
+    position: relative;
+}
+
+.settings>i {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -70,11 +74,11 @@ div.box>.settings>i {
     font-size: 20px;
 }
 
-div.box>.settings:hover>i {
+.settings:hover>i {
     background-color: var(--light-grey);
 }
 
-div.box>.settings>.options {
+.settings>.options {
     position: absolute;
     top: 40px;
     right: 20px;
@@ -87,27 +91,41 @@ div.box>.settings>.options {
     box-shadow: var(--box-shadow-level-2);
 }
 
-div.box>.settings>.options.visible {
+.settings>.options>.line {
+    width: 100%;
+    background-color: var(--light-grey) !important;
+    border-radius: var(--border-radius);
+    height: 2px;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.settings>.options.centered {
+    right: 0;
+    top: 50px;
+}
+
+.settings>.options.visible {
     visibility: visible;
 }
 
-div.box>.settings>.options>* {
+.settings>.options>* {
     justify-content: flex-start;
     padding: 10px 20px;
     transition: .2s;
 }
 
-div.box>.settings>.options>*:hover {
-    background-color: var(--red);
+.settings>.options>*:hover {
+    /* background-color: var(--red); */
     color: #fff;
 }
 
-div.box>.settings>.options>*:last-child {
+.settings>.options>*:last-child {
     justify-content: flex-start;
     margin: 0 0 0 0;
 }
 
-div.box>.settings>.options>*>i {
+.settings>.options>*>i {
     margin-right: 15px;
     font-size: 19px;
 }
@@ -116,7 +134,8 @@ div.box.input-padding {
     padding-top: 30px;
 }
 
-div.box.space {
+div.space {
     border: none;
     padding: 7px 20px;
+    position: relative;
 }

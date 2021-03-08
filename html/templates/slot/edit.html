@@ -70,22 +70,22 @@
 
                 <div class="line row-s-2 row-e-2 col-s-1 col-e-13"></div>
 
-                <div class="flex vertical row-s-3 row-e-3 col-s-1 col-e-13">
+                <div class="flex vertical reverse row-s-3 row-e-3 col-s-1 col-e-13" id="slot-data-values">
                     {% if slot.data|length == 0: %} 
                     <div style="margin-bottom: 10px" class="center">
                         No values yet. Start by entering a value and synonyms
                     </div>
                     {% else %}
                     {% for x in slot.data: %}
-                    <div class="grid gap-large">
-                        <div class="box space row-s-1 row-e-1 col-s-1 col-e-5">
+                    <div class="transition border-radius hover-transition grid gap-large hover-bg-light-grey">
+                        <div class="space row-s-1 row-e-1 col-s-1 col-e-5" data-slotid="{{ slot.id }}" data-itemid="{{ x.id }}" data-editable data-editablecallback="updateSlotValue">
                             {{ x.value }}
                             <div class="seperator"></div>
                         </div>
-                        <div class="box space row-s-1 row-e-1 col-s-5 col-e-11">
+                        <div class="space row-s-1 row-e-1 col-s-5 col-e-11" data-slotid="{{ slot.id }}" data-itemid="{{ x.id }}" data-editable data-editable-allow-empty="true" data-editablecallback="updateSlotSynonyms">
                             {{ x.synonyms|join(", ") }}
                         </div>
-                        <div class="v-center middle red clickable row-s-1 row-e-1 col-s-11 col-e-13 slot-value-delete" data-slotid="{{ slot.id }}" data-slotdataid="{{ x.id }}">
+                        <div class="visible-on-hover v-center middle red clickable row-s-1 row-e-1 col-s-11 col-e-13 slot-value-delete" data-slotid="{{ slot.id }}" data-slotdataid="{{ x.id }}">
                             <i style="margin: 0 10px 2px 0">remove</i>
                             <span>Delete</span>
                         </div>        

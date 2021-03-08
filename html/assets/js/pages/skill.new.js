@@ -1,4 +1,4 @@
-window.currentIconColor = "red";
+window.currentIconColor = "blue";
 
 window.setColor = function(colorClass) {
     document.querySelector(".chooser>.current-icon-color").value = colorClass;

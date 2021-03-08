@@ -28,22 +28,26 @@
                 <div class="icon bg-blue"><i>add</i></div>
                 <span>Add a Skill</span>
             </div>
-            {% if apps is defined: %} {% for app in apps: %} {% set column_start = ((loop.index) % 4) * 4 - ((loop.index) % 4) + 1 %}
-            <div class="box clickable centered col-s-{{ column_start }} col-e-{{ column_start + 3 }} row-s-{{ loop.index // 4 + 1 }} row-e-{{ loop.index // 4 + 1 }}" onclick="swup.loadPage({url:`/skill/edit/{{ app['id'] }}`})">
-                <i class="{{ app['icon']['color'] }}">{{ app["icon"]["icon"] }}</i>
-                <label>{{ app["name"] }}</label>
+            {% if skills is defined: %} {% for skill in skills: %} {% set column_start = ((loop.index) % 4) * 4 - ((loop.index) % 4) + 1 %}
+            <div class="box clickable centered col-s-{{ column_start }} col-e-{{ column_start + 3 }} row-s-{{ loop.index // 4 + 1 }} row-e-{{ loop.index // 4 + 1 }}" onclick="swup.loadPage({url:`/skill/edit/{{ skill.id }}`})">
+                <i class="{{ skill.icon.color }}">{{ skill.icon.icon }}</i>
+                <label>{{ skill.name }}</label>
                 <span class="v-center small dark-grey">
-                    <i>download</i> &nbsp; {{ '{:,}'.format(app["social"]["downloads"]) }} &nbsp; | &nbsp; 
-                    <i>star</i> &nbsp; {{ app["social"]["rating"] }}/5 &nbsp; | &nbsp;
-                    <i style="transform:scaleX(-1)">mode_comment</i> &nbsp; {{ '{:,}'.format(app["social"]["comments"]) }} &nbsp; | &nbsp; 
-                    <i>favorite</i> &nbsp; {{ '{:,}'.format(app["social"]["likes"]) }} 
+                    <i>download</i> &nbsp; {{ '{:,}'.format(skill.social.downloads|length) }} &nbsp; | &nbsp; 
+                    <i>star</i> &nbsp; {{ skill.social.rating }}/5 &nbsp; | &nbsp;
+                    <i style="transform:scaleX(-1)">mode_comment</i> &nbsp; {{ '{:,}'.format(skill.social.comments|length) }} &nbsp; | &nbsp; 
+                    <i>favorite</i> &nbsp; {{ '{:,}'.format(skill.social.likes|length) }} 
                 </span>
-                <span class="{{ 'green' if app['public'] else 'red' }}">{{ "Public" if app["public"] else "Private" }}</span>
-                <div class="settings">
-                    <i>more_vert</i>
+                <span class="{{ 'green' if skill.public else 'red' }} privacy-state id-{{ skill.id }}">{{ "Public" if skill.public else "Private" }}</span>
+                <div class="settings absolute top-0 right-0">
+                    <i class="">more_vert</i>
                     <div class="options hidden">
-                        <div class="h-center hover-bg-red" onclick="get(`/api/skill/delete/{{ app['id'] }}`);swup.cache.remove(window.location.pathname);swup.loadPage({url: window.location.pathname})"><i>delete</i><span class="v-center">Delete skill</span></div>
-                        <div class="h-center hover-bg-green"><i>cloud_upload</i><span class="v-center">Publish Skill</span></div>
+                        <div class="h-center hover-bg-red" onclick="get(`/api/skill/{{ skill.id }}/delete`);swup.cache.remove(window.location.pathname);swup.loadPage({url: window.location.pathname})"><i>delete</i><span class="v-center">Delete skill</span></div>
+                        {% if skill.public: %}
+                        <div class="h-center hover-bg-orange" data-privateskill="{{ skill.id }}"><i>lock</i><span class="v-center">Keep Skill Private</span></div>
+                        {% else: %}
+                        <div class="h-center hover-bg-green" data-publicskill="{{ skill.id }}"><i>cloud_upload</i><span class="v-center">Publish Skill</span></div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

@@ -40,7 +40,7 @@ document.querySelectorAll("label[data-fileinput]").forEach(_el => {
     });
 });
 
-document.querySelectorAll(".box > .settings").forEach(_el => {
+document.querySelectorAll(".settings").forEach(_el => {
     const el = _el;
     el.children[1].classList.add("hidden");
 
@@ -59,6 +59,56 @@ document.querySelectorAll(".box > .settings").forEach(_el => {
         if (!el.contains(ev.target)) {
             el.children[1].classList.remove("visible");
             el.children[1].classList.add("hidden");
+        }
+    });
+});
+
+
+function onInputFinish(newValue, target, newElement, callback, oldValue = "") {
+    if (target.contains(newElement)) {
+        try {
+            target.removeChild(newElement);
+            if (newValue.trim() != "" || target.dataset.editableAllowEmpty) {
+                target.childNodes[0].nodeValue = newValue;
+                try {
+                    if (oldValue != newValue) {
+                        callback(newValue, target, oldValue);
+                    }
+                } catch(er) {
+                    console.error("no or invalid callback defined", er, callback);
+                }
+            }
+        } catch (er) { console.error("harmless exception", er) }
+    }
+}
+qry("[data-editable]").click(ev => {
+    const target = ev.currentTarget;
+    const currentText = target.innerText;
+
+    const callback = window[target.dataset.editablecallback];
+
+    const newElement = document.createElement("input");
+    newElement.classList.add("absolute");
+    newElement.classList.add("left-0");
+    newElement.classList.add("top-0");
+    newElement.classList.add("bg-white");
+    newElement.style.padding = "5px 18px";
+
+    newElement.placeholder = currentText;
+    newElement.value = currentText;
+
+    target.appendChild(newElement);
+    newElement.focus();
+
+    newElement.addEventListener("blur", ev => {
+        ev.stopImmediatePropagation();
+        onInputFinish(newElement.value, target, newElement, callback, currentText);
+    });
+    
+    newElement.addEventListener("keydown", ev => {
+        ev.stopImmediatePropagation();
+        if (ev.key == "Enter" || ev.keyCode == 13) {
+            onInputFinish(newElement.value, target, newElement, currentText);
         }
     });
 });

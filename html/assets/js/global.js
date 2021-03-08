@@ -1,15 +1,15 @@
 import { swup } from "./_swup.js";
 import "./http.js";
 
-function init() {
+async function init() {
     let pagename = window.location.pathname.substring(1).replaceAll("/", ".").replace(/[a-f0-9.]{6,}/, "");
     let impStr = pagename + ".js";
     if (impStr == ".js") {
         impStr = "index.js";
     }
 
-    import ("./shorthand.js?_no_cache=" + Date.now());
-    import ("./microactions.js?_no_cache=" + Date.now());
+    await import ("./shorthand.js?_no_cache=" + Date.now());
+    await import ("./microactions.js?_no_cache=" + Date.now());
 
     try {
         import ("./pages/" + impStr + "?_no_cache=" + Date.now());

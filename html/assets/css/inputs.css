@@ -83,7 +83,8 @@ button.orange:hover,
     color: #fff;
 }
 
-input:focus {
+input:focus,
+textarea:focus {
     border-color: var(--input-border-on-focus);
 }
 
@@ -266,13 +267,16 @@ div.input>span {
     color: var(--darker-grey);
 }
 
-div.input>input {
+div.input>input,
+div.input>textarea {
     padding: 10px;
     width: 100%;
 }
 
 div.input>input:focus+span,
-div.input>input:not(:placeholder-shown)+span {
+div.input>textarea:focus+span,
+div.input>input:not(:placeholder-shown)+span,
+div.input>textarea:not(:placeholder-shown)+span {
     opacity: 1;
     transform: scale(0.75) translateY(-125%) translateX(-15%);
     padding: 0;
@@ -282,10 +286,17 @@ div.input>input:not(:placeholder-shown)+span {
 /* For IE Browsers*/
 
 div.input>input:focus+span,
-div.input>input:not(:-ms-input-placeholder)+span {
+div.input>textarea:focus+span,
+div.input>input:not(:-ms-input-placeholder)+span,
+div.input>textarea:not(:-ms-input-placeholder)+span {
     opacity: 1;
     transform: scale(0.75) translateY(-100%) translateX(-15%);
 }
+
+textarea.no-resize  {  resize: none;                            }
+textarea.resize     {  resize: both;                            }
+textarea.h-resize   {  resize: horizontal;  min-width: 300px;   }
+textarea.v-resize   {  resize: vertical;    min-height: 70px;   }
 
 div.input.file>input[type=file] {
     opacity: 0;
