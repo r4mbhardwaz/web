@@ -9,25 +9,16 @@ from .Intent import Intent
 from .User import User
 
 
-# decorators
-def modify(f):
-    def wrapper(*args):
-        args[0].skill["modified-at"] = int(time.time())
-        res = f(*args)
-        # TODO: insert new data
-        return res
-    return wrapper
-
-# Skill class
 class Skill:
     def __init__(self, id: str = None, new: bool = False) -> None:
+        self._unused_intent = None
         if id is None:
             new = True
         if new:
             self.skill = {
                 "created-at": int(time.time()),
                 "modified-at": int(time.time()),
-                "name": None,
+                "name": "New Skill",
                 "icon": {
                     "icon": None,
                     "color": None
@@ -49,9 +40,9 @@ class Skill:
             result = Database().table("skills").find({"id": id})
             if result.found:
                 self.skill = result[0]
+                self._update_intents()
                 self._update_rating()
                 self._update_quality()
-                self._update_intents()
             else:
                 self.skill = None
         self.new = new
@@ -59,35 +50,50 @@ class Skill:
     def __getitem__(self, key) -> any:
         return self.skill[key]
 
-    @modify
     def __setitem__(self, key, value) -> None:
         self.skill[key] = value
 
-    @modify
     def add_slot(self, slot: Slot) -> None:
         pass
 
-    @modify
     def remove_slot(self, slot: Slot) -> None:
         pass
 
-    @modify
-    def add_intent(self, intent: Intent) -> None:
-        pass
-
-    @modify
-    def remove_intent(self, intent: Intent) -> None:
-        pass
-
-    @modify
     def like(self, user: User) -> None:
         pass
 
-    @modify
     def comment(self, user: User, rating: int, message: str) -> None:
         pass
 
+    def add_intent(self, intent: Intent):
+        self.skill["intents"].append(intent.__dict__())
+
+    def update_intent(self, intent_id: str, new_intent: Intent):
+        successful_insert = False
+        for i in range(len(self.skill["intents"])):
+            intent = self.skill["intents"][i]
+            if intent["id"] == intent_id:
+                self.skill["intents"][i] = dict(new_intent)
+                successful_insert = True
+        return successful_insert
+
+    def get_intent(self, id: str):
+        for intent in self.skill["intents"]:
+            if intent["id"] == id:
+                return Intent(False, intent).__dict__()
+        if self._unused_intent and self._unused_intent["id"] == id:
+            return Intent(False, self._unused_intent)
+        return None
+
+    def remove_intent(self, intent: Intent) -> None:
+        pass
+
     def save(self):
+        self.skill["modified-at"] = time.time()
+        for i in range(len(self.skill["intents"])):
+            intent = self.skill["intents"][i]
+            if isinstance(intent, Intent):
+                self.skill["intents"][i] = intent.__dict__()
         Database().table("skills").insert(self.skill)
 
     def delete(self):
@@ -134,9 +140,16 @@ class Skill:
         self.skill["quality"] = final_quality
 
     def _update_intents(self) -> None:
-        for i in range(len(self.skill["intents"])):
-            self.skill["intents"][i] = Intent(False, self.skill["intents"][i])
+        new_intent_array = []
+        for intent in self.skill["intents"]:
+            if intent["created-at"] == intent["modified-at"]: # not modified yet
+                self._unused_intent = Intent(False, intent)
+            else:
+                new_intent_array.append(Intent(False, intent))
+        self.skill["intents"] = new_intent_array
 
+    def unused_intent(self) -> dict:
+        return self._unused_intent
 
     @property
     def found(self):

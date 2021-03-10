@@ -10,7 +10,7 @@ select,
 .button {
     border: 2px solid var(--border-color);
     border-radius: var(--border-radius);
-    background-color: transparent;
+    background-color: var(--lighter-grey);
     padding: var(--padding);
     font-size: 1rem;
 }
@@ -376,4 +376,64 @@ div.input.file>label {
 
 .chooser>.search>.icons>div>div {
     cursor: pointer;
+}
+
+
+
+/*  ALERTS  */
+#prompt {
+    transition: var(--transition);
+    z-index: 9999999 !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: opacity .2s forwards;
+}
+#prompt-inner {
+    z-index: 99999999 !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 400px;
+    height: fit-content;
+    background-color: var(--lighter-grey);
+    animation: opacity .2s forwards;
+    border-radius: var(--border-radius);
+    padding: 30px 40px 90px 40px;
+}
+
+#prompt.hidden {
+    animation: opacity-reverse .2s forwards;
+}
+
+#prompt-inner .buttons {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+
+#prompt-inner .header {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+#prompt-inner .content {
+    font-size: 1rem;
+    margin-top: 20px;
+    display: block;
+}
+
+@keyframes opacity {
+    0%   {  opacity: 0;  }
+    100% {  opacity: 1;  }
+}
+@keyframes opacity-reverse {
+    0%   {  opacity: 1;  }
+    100% {  opacity: 0;  }
 }

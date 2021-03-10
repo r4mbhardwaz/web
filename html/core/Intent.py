@@ -11,7 +11,7 @@ class Intent:
             new = False
         if new:
             self.intent = {
-                "name": None,
+                "name": "New Intent",
                 "description": None,
                 "slots": {},
                 "quality": 0,
@@ -30,6 +30,9 @@ class Intent:
 
     def __getitem__(self, key) -> any:
         return self.intent[key]
+
+    def __dict__(self) -> dict:
+        return self.intent
 
     def get_slots(self):
         for slot_name in self.intent["slots"]:

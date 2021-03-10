@@ -8,6 +8,7 @@ async function init() {
         impStr = "index.js";
     }
 
+    await import ("./inputs.js?_no_cache=" + Date.now());
     await import ("./shorthand.js?_no_cache=" + Date.now());
     await import ("./microactions.js?_no_cache=" + Date.now());
 

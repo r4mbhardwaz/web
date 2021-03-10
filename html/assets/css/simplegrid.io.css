@@ -153,7 +153,7 @@ p {
     /* 960px */
     .container {
         width: 90%;
-        max-width: 65rem;
+        max-width: 70rem;
     }
 }
 
@@ -202,6 +202,7 @@ p {
     background-color: var(--grey);
     border-radius: var(--border-radius);
 }
+
 .grid .seperator.dot {
     height: 2px;
 }

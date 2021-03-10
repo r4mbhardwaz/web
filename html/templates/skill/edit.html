@@ -26,7 +26,7 @@
 
         <div class="grid">
             <div class="row-s-1 row-e-1 col-s-1 col-e-7 relative v-center">
-                <span class="blue clickable">By You</span> 
+                <span class="blue clickable">By You <i></i></span> 
                 <div class="v-dot bg-darker-grey"></div>
                 {% set full_stars = skill.social.rating|round(0, 'floor')|int %}
                 {% set empty_stars = 5 - skill.social.rating|round(0, 'ceil')|int %}
@@ -38,7 +38,9 @@
                     {{ 'Poor Quality' if skill.quality < 0.25 else 'Medium Quality' if skill.quality < 0.5 else 'Excellent Quality' }}
                 </span>
             </div>
-            <div class="row-s-2 row-e-2 col-s-1 col-e-7 relative v-center">
+            {% set row = 2 %}
+            {% if skill.public: %}
+            <div class="row-s-{{ row }} row-e-{{ row }} col-s-1 col-e-7 relative v-center">
                 <span>{{ skill.social.downloads|length }} Downloads</span>
                 <div class="v-dot bg-darker-grey"></div>
                 <span class="v-center">
@@ -51,8 +53,44 @@
                     <span class="blue margin-left-big margin-top-mini">{{ skill.social.comments|length }}</span>
                 </span>
             </div>
-            <div class="row-s-1 row-e-3 col-s-7 col-e-13 border-left border-medium border-darker-grey height-full padding-left-big">
+            {% set row = row + 1 %}
+            {% endif %}
+            <div class="row-s-{{ row }} row-e-{{ row }} col-s-1 col-e-7 v-center">
+                <span class="darker-grey">Created {{ skill['created-at']|datetime("date") }}</span>
+                <div class="v-dot bg-darker-grey"></div>
+                <span class="darker-grey">Last modified {{ skill['modified-at']|datetime("date") }}</span>
+            </div>
+            <div class="row-s-1 row-e-{{ row + 1 }} col-s-7 col-e-13 border-left border-medium border-darker-grey height-full padding-left-big v-center">
                 {{ skill.description }}
+            </div>
+            
+            <div class="row-s-{{ row + 1 }} row-e-{{ row + 1 }} col-s-1 col-e-13" style="margin-top: 40px">
+                <h3>Intents</h3>
+            </div>
+            <div class="row-s-{{ row + 2 }} row-e-10 col-s-1 col-e-13">
+                {% if skill.intents|length == 0: %}
+                <div class="box center">
+                    <p>No intents yet.</p>
+                    <div class="h-center">
+                        <button class="green v-center transition hover-white" onclick="window.location.href = '/intent/edit/{{ skill.id }}'">
+                            <i class="transition margin-right-large">add</i>
+                            <span class="transition margin-top-mini">New Intent</span>
+                        </button>
+                    </div>
+                </div>
+                {% else: %}
+                {% for intent in skill.intents: %}
+                    <div class="box clickable" onclick="window.location.href = '/intent/edit/{{ skill.id }}/{{ intent.id }}'">
+                        {{ intent.name }}
+                        {{ intent.description }}
+                        {{ intent.slots }}
+                        {{ intent.quality }}
+                        {{ intent['created-at'] }}
+                        {{ intent['modified-at'] }}
+                        {{ intent['utterances'] }}
+                    </div>    
+                {% endfor %}
+                {% endif %}
             </div>
         </div>
 

@@ -6,20 +6,23 @@
 import json
 import time
 import traceback
+from datetime import datetime
 from core.Skill import Skill
 from core.Slot import Slot
+from core.Intent import Intent
 from core.User import User
 from functools import wraps
 from jarvis import Database, Security
 from flask import Flask, render_template, session, redirect, request
 from flask.wrappers import Response
+from flask_babel import Babel, format_datetime
 
 app = Flask(__name__, static_url_path="",
             static_folder="", template_folder="templates")
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 # app.secret_key = Security.id(128)
 app.secret_key = "abc"
-
+babel = Babel(app)
 
 """
 session:
@@ -36,6 +39,19 @@ def login_required(func):
         else:
             return redirect(f"/login?url={request.path}", code=302)
     return wrap
+
+
+@app.template_filter('datetime')
+def filter_datetime(value, format="full"):
+    dt = datetime.utcfromtimestamp(int(value))
+    str = f"Unknown format {format}"
+    if format == "time":
+        str = format_datetime(dt, "HH:mm:ss")
+    elif format == "date":
+        str = format_datetime(dt, "EE, d. MMMM yyyy")
+    elif format == "full":
+        str = format_datetime(dt, "EEEE, d. MMMM yyyy HH:mm:ss")
+    return str
 
 
 @app.route("/")
@@ -123,6 +139,30 @@ def add_slot(skill_id: str, slot_id: str = None):
             return render_template("slot/edit.html", skill=skill, slot=slot)
     return redirect("/assistant?message=Couldn't find slot or skill, check your url", 302)
 
+
+@app.route("/intent/edit/<skill_id>")
+@app.route("/intent/edit/<skill_id>/<intent_id>")
+@login_required
+def create_intent(skill_id: str, intent_id: str = None):
+    if intent_id is None:
+        skill = Skill(skill_id)
+        if skill.found:
+            if skill.unused_intent():
+                intent = Intent(False, skill.unused_intent())
+            else:
+                intent = Intent(True)
+            id = intent.id
+            skill.add_intent(intent)
+            skill.save()
+            return redirect(f"/intent/edit/{skill_id}/{id}", code=302)
+        return Response(json.dumps({"success": False, "error": "couldn't find skill by id"}))
+    else:
+        skill = Skill(skill_id)
+        if skill.found:
+            intent = skill.get_intent(intent_id)
+            return render_template("intent/edit.html", skill=skill, intent=intent)
+        else:
+            return Response(json.dumps({"success": False, "error": "couldn't find skill by id"}))
 
 
 
