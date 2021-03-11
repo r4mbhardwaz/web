@@ -14,6 +14,10 @@
 
 <body>
     <div class="container" id="swup">
+        <script>
+            window.skillId = "{{ skill.id }}";
+        </script>
+        
         <div class="row">
             <nav class="breadcrumb">
                 <a href="/">Jarvis Server</a>
@@ -26,7 +30,7 @@
 
         <div class="grid">
             <div class="row-s-1 row-e-1 col-s-1 col-e-7 relative v-center">
-                <span class="blue clickable">By You <i></i></span> 
+                <span class="blue clickable">By You</span> 
                 <div class="v-dot bg-darker-grey"></div>
                 {% set full_stars = skill.social.rating|round(0, 'floor')|int %}
                 {% set empty_stars = 5 - skill.social.rating|round(0, 'ceil')|int %}
@@ -56,9 +60,9 @@
             {% set row = row + 1 %}
             {% endif %}
             <div class="row-s-{{ row }} row-e-{{ row }} col-s-1 col-e-7 v-center">
-                <span class="darker-grey">Created {{ skill['created-at']|datetime("date") }}</span>
+                <span class="darker-grey">Created {{ skill['created-at'] | datetime("date") }}</span>
                 <div class="v-dot bg-darker-grey"></div>
-                <span class="darker-grey">Last modified {{ skill['modified-at']|datetime("date") }}</span>
+                <span class="darker-grey">Last modified {{ skill['modified-at'] | datetime("date") }}</span>
             </div>
             <div class="row-s-1 row-e-{{ row + 1 }} col-s-7 col-e-13 border-left border-medium border-darker-grey height-full padding-left-big v-center">
                 {{ skill.description }}
@@ -67,28 +71,45 @@
             <div class="row-s-{{ row + 1 }} row-e-{{ row + 1 }} col-s-1 col-e-13" style="margin-top: 40px">
                 <h3>Intents</h3>
             </div>
-            <div class="row-s-{{ row + 2 }} row-e-10 col-s-1 col-e-13">
+            <div class="row-s-{{ row + 2 }} row-e-10 col-s-1 col-e-13 box flex table row padding-top-large">
                 {% if skill.intents|length == 0: %}
-                <div class="box center">
+                <div class="center">
                     <p>No intents yet.</p>
                     <div class="h-center">
-                        <button class="green v-center transition hover-white" onclick="window.location.href = '/intent/edit/{{ skill.id }}'">
+                        <button class="green v-center transition hover-white" data-newintent>
                             <i class="transition margin-right-large">add</i>
-                            <span class="transition margin-top-mini">New Intent</span>
+                            <span class="transition margin-top-mini">Create New Intent</span>
                         </button>
                     </div>
                 </div>
                 {% else: %}
+
+                <div class="head">
+                    <div class="v-center clickable blue absolute top-medium right-large width-auto" data-newintent>
+                        <i class="transition margin-right-large">add</i>
+                        <span class="transition margin-top-mini">Create New Intent</span>
+                    </div>
+                </div>
+
                 {% for intent in skill.intents: %}
-                    <div class="box clickable" onclick="window.location.href = '/intent/edit/{{ skill.id }}/{{ intent.id }}'">
-                        {{ intent.name }}
-                        {{ intent.description }}
-                        {{ intent.slots }}
-                        {{ intent.quality }}
-                        {{ intent['created-at'] }}
-                        {{ intent['modified-at'] }}
-                        {{ intent['utterances'] }}
-                    </div>    
+                {% set color = 'red' if intent.quality < 0.25 else 'orange' if intent.quality < 0.5 else 'green' %}
+                    <div class="clickable grid gap-s" onclick="swup.loadPage({url: '/intent/edit/{{ skill.id }}/{{ intent.id }}'})">
+                        <div class="row-s-1 row-e-3 col-s-1 col-e-2 v-center h-center">
+                            <div class="dot l {{ color }}"></div>
+                        </div>
+                        <div class="row-s-1 row-e-1 col-s-2 col-e-11">
+                            <span>{{ intent.name }}</span>
+                        </div>
+                        <div class="row-s-2 row-e-3 col-s-2 col-e-11">
+                            <span class="{{ color }}">{{ intent.utterances | length }} training examples</span>
+                            <div class="v-dot bg-darker-grey"></div>
+                            <span>{{ intent.slots | length }} slots</span>
+                        </div>
+                        <div class="row-s-1 row-e-3 col-s-11 col-e-13 padding-top-mini visible-on-hover hover-bg-light-grey hover-red border-radius v-center middle clickable dark-grey transition" data-deleteintent="{{ intent.id }}">
+                            <i style="margin: 0 10px 2px 0">clear</i>
+                            <span>Delete</span>
+                        </div>
+                    </div>
                 {% endfor %}
                 {% endif %}
             </div>

@@ -168,9 +168,10 @@ p {
     grid-gap: 10px;
 }
 
-.grid.gap-medium    {  grid-gap: 20px;  }
-.grid.gap-large     {  grid-gap: 30px;  }
-.grid.gap-larger    {  grid-gap: 50px;  }
+.grid.gap-s     {  grid-gap: 5px;   }
+.grid.gap-m     {  grid-gap: 20px;  }
+.grid.gap-l     {  grid-gap: 30px;  }
+.grid.gap-xl    {  grid-gap: 50px;  }
 .grid>.left {
     display: flex;
     justify-content: flex-start;
@@ -207,9 +208,9 @@ p {
     height: 2px;
 }
 
-.grid.gap-medium    .seperator {  right: -12px;  }
-.grid.gap-large     .seperator {  right: -16px;  }
-.grid.gap-larger    .seperator {  right: -27px;  }
+.grid.gap-m    .seperator {  right: -12px;  }
+.grid.gap-l     .seperator {  right: -16px;  }
+.grid.gap-xl    .seperator {  right: -27px;  }
 
 .grid>div,
 .grid>div>div,
@@ -284,3 +285,17 @@ p {
 .flex.horizontal,.flex.row                                                                  {  flex-direction: row;     }
 .flex.vertical-reverse,.flex.column-reverse,.flex.vertical.reverse,.flex.column.reverse     {  flex-direction: column-reverse;  }
 .flex.horizontal-reverse,.flex.row-reverse,.flex.horizontal.reverse,.flex.row.reverse       {  flex-direction: row;     }
+
+.flex.table > div {
+    padding: 20px 0;
+}
+.flex.table > div:not(:last-child) {
+    border: 2px solid var(--grey);
+    border-style: none none solid none;
+}
+.flex.table > div:last-child {
+    padding-bottom: 0px;
+}
+.flex .head {
+    height: 45px;
+}

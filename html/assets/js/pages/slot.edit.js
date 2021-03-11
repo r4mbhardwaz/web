@@ -9,7 +9,7 @@ window.submitNewData = function(ev) {
         synonyms: synonyms
     }).then(JSON.parse).then(d => {
         if (d.success) {
-            id("slot-data-values").get(0).innerHTML += `<div class="grid gap-large">
+            id("slot-data-values").get(0).innerHTML += `<div class="grid gap-l">
                 <div class="box space row-s-1 row-e-1 col-s-1 col-e-5">
                     ${value}
                     <div class="seperator"></div>
@@ -18,7 +18,7 @@ window.submitNewData = function(ev) {
                     ${synonyms.split(",").map(x => x.trim()).join(", ")}
                 </div>
                 <div class="v-center middle red clickable row-s-1 row-e-1 col-s-11 col-e-13 slot-value-delete" onclick="slotValueDelete(event)" data-slotid="${target.dataset.id}" data-slotdataid="${d.id}">
-                    <i style="margin: 0 10px 2px 0">remove</i>
+                    <i style="margin: 0 10px 2px 0">clear</i>
                     <span>Delete</span>
                 </div>        
             </div>`;
@@ -35,12 +35,10 @@ window.slotValueDelete = function(ev) {
     const target = ev.currentTarget;
     const oldInnerHTML = target.children[0].innerHTML;
     target.classList.add("orange");
-    target.children[0].innerHTML = "cached";
-    target.children[0].classList.add("rotating");
+    loading(target.children[0])
     get(`/api/slot/${target.dataset.slotid}/delete/${target.dataset.slotdataid}`).then(JSON.parse).then(d => {
         target.classList.remove("orange");
-        target.children[0].innerHTML = oldInnerHTML;
-        target.children[0].classList.remove("rotating");
+        loadingStop(target.children[0])
         if (d.success) {
             target.parentElement.outerHTML = "";
         } else {

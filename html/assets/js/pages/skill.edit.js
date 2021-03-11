@@ -1,47 +1,58 @@
-qry("[data-addslot]").click(ev => {
-    const target = ev.currentTarget;
-    const skillId = target.dataset.skillid;
-    const slotId = target.dataset.addslot;
-    const slotName = id("add-slot-name").get(0).value;
-    if (slotName.trim() == "") {
-        alert("You need to enter a name for the new slot!");
-        return;
-    }
-    post(`/api/skill/${skillId}/slot/add`, { "slot-id": slotId, "slot-name": slotName }).then(JSON.parse).then(d => {
-        if (d.success) {
-            // TODO
-        } else {
-            throw new Error("Couldn't add slot to skill");
-        }
-    }).catch(er => {
-        alert("Couldn't add slot to skill");
+qry("[data-newintent]").click(ev => {
+    longPrompt("Create new Intent", `Enter a name and description for your intent
+    <br><br>
+    Choose a descriptive name that characterizes what this intent should do.
+    <br><br>
+    Good intent names are <span class='green'>getWeather, getWeatherForecast, turnOff, brighter,</span> etc...
+    <br><br>
+    Requirements:
+    <br>
+    <ul>
+        <li>Minimum length: 2 characters</li>
+        <li>Only uppercase, lowercase and numbers</li>
+        <li>Does not start with a number</li>
+        <li>No special characters including hyphens and underscores</li>
+    </ul>`, "Intent name", "A short intent description", input => {
+        return /^[A-Za-z]{1}[A-Za-z0-9]{1,}$/.test(input)
+    }, textArea => {
+        return true; // also allow empty descriptions
+    }).then(data => {
+        const name = data.input;
+        const description = data.text;
+
+        post(`/api/intent/${window.skillId}/add`, {
+            name: name,
+            description: description
+        }).then(JSON.parse).then(d => {
+            if (d.success) {
+                swup.loadPage({url: `/intent/edit/${window.skillId}/${d.id}`});
+            } else {
+                throw new Error("server side error");
+            }
+        }).catch(er => {
+            console.error(er);
+            alert("Couldn't create intent", "An unknown error occured and we couldn't create your intent.<br><br>Please try again later");
+        });
     });
 });
 
-qry("[data-deleteslot]").click(ev => {
+qry("[data-deleteintent]").click(ev => {
     ev.stopPropagation();
+    
     const target = ev.currentTarget;
-    get(`/api/slot/${target.dataset.deleteslot}/delete`).then(JSON.parse).then(d => {
+    const intentId = target.dataset.deleteintent;
+
+    loading(target.children[0])
+    
+    post(`/api/intent/${window.skillId}/${intentId}/delete`).then(JSON.parse).then(d => {
         if (d.success) {
-            console.log(ev);
-            target.parentElement.outerHTML = "";
+            target.parentNode.remove();
         } else {
-            alert("Failed to delete slot");
+            throw new Error(`server side error ${JSON.stringify(d)}`)
         }
     }).catch(er => {
-        console.error(er);
-        alert("Server side error, failed to delete slot");
+        alert("Couldn't delete intent", "An unknown error occured and we couldn't delete this intent!<br><br>Try refreshing this page and try again");
+    }).finally(_ => {
+        loadingStop(target.children[0])
     });
 });
-
-qry("[data-removeslot]").click(ev => {
-    ev.stopPropagation();
-    const target = ev.currentTarget;
-    post(`/api/skill/${target.dataset.skillid}/slot/remove`, { "slot-id": target.dataset.removeslot }).then(JSON.parse).then(d => {
-        target.remove();
-    }).catch(er => {
-        console.error(er);
-        alert("Server side error, failed to remove slot");
-    })
-});
-

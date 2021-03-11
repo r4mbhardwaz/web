@@ -14,19 +14,26 @@
 
 <body>
     <form class="container" id="swup" method="POST">
+        <script>
+            window.slotId = "{{ slot.id }}";
+            window.skillId = "{{ skill.id }}";
+            window.intentId = "{{ intent.id }}";
+        </script>
+
         <div class="row">
             <nav class="breadcrumb">
                 <a href="/">Jarvis Server</a>
                 <a href="/assistant">Skills</a>
                 <a href="/skill/edit/{{ skill.id }}">{{ skill.name }}</a>
-                <a href="/slot/edit/{{ skill.id }}/{{ slot.id }}">{% if slot.name == "New Slot": %}Create{% else: %}Edit{% endif %} Slot</a>
+                <a href="/intent/edit/{{ skill.id }}/{{ intent.id }}">{{ intent.name }}</a>
+                <a href="/slot/edit/{{ skill.id }}/{{ intent.id }}/{{ slot.id }}">{% if slot.name == "New Slot": %}Create{% else: %}Edit{% endif %} Slot</a>
             </nav>
         </div>
 
         <h1> <i>category</i> {% if slot.name == "New Slot": %}Create a new Slot{% else: %}Edit Slot{% endif %} <i style="cursor: pointer; margin-left: 20px" onmouseover="showInfoBox(this, 'A slot (also called entity) is a parameter in a spoken sentence. <br><br> For example: <br>\'Book me a flight to <span class=\'blue\'>New York</span>\', <br><br><span class=\'blue\'>New York</span> would be the slot value in a slot called \'City\'')"
                 onmouseout="removeInfoBox()">info</i> </h1>
 
-        <div class="grid gap-large">
+        <div class="grid gap-l">
             <div class="input row-s-1 row-e-1 col-s-1 col-e-5">
                 <input type="text" placeholder=" " name="slot-name" id="slot-name" value="{{ "" if slot.name == "New Slot" else slot.name }}" data-id="{{ slot.id }}">
                 <span>Slot name (city, location, etc...)</span>
@@ -49,12 +56,12 @@
             <div class="row-s-2 row-e-2 col-s-1 col-e-13">
                 <h2>Values</h2>
                 <div class="v-center">
-                    <input type="checkbox" name="slot-synonyms" id="slot-synonyms" {{ "checked" if slot.get("use-synonyms") else "" }} data-id="{{ slot.id }}">
+                    <input type="checkbox" name="slot-synonyms" id="slot-synonyms" {{ "checked" if slot["use-synonyms"] else "" }} data-id="{{ slot.id }}">
                     <label for="slot-synonyms">Use synonyms (Multiple synonyms must be seperated with commas)</label>
                 </div>
             </div>
 
-            <div class="grid gap-large box input-padding row-s-3 row-e-3 col-s-1 col-e-13">
+            <div class="grid gap-l box input-padding row-s-3 row-e-3 col-s-1 col-e-13">
                 <div class="input row-s-1 row-e-1 col-s-1 col-e-5">
                     <input type="text" placeholder=" " id="new-slot-value" data-id="{{ slot.id }}">
                     <span>Type your value here</span>
@@ -77,7 +84,7 @@
                     </div>
                     {% else %}
                     {% for x in slot.data: %}
-                    <div class="transition border-radius hover-transition grid gap-large hover-bg-light-grey">
+                    <div class="transition border-radius hover-transition grid gap-l hover-bg-light-grey">
                         <div class="space row-s-1 row-e-1 col-s-1 col-e-5" data-slotid="{{ slot.id }}" data-itemid="{{ x.id }}" data-editable data-editablecallback="updateSlotValue">
                             {{ x.value }}
                             <div class="seperator"></div>
@@ -86,9 +93,9 @@
                             {{ x.synonyms|join(", ") }}
                         </div>
                         <div class="visible-on-hover v-center middle red clickable row-s-1 row-e-1 col-s-11 col-e-13 slot-value-delete" data-slotid="{{ slot.id }}" data-slotdataid="{{ x.id }}">
-                            <i style="margin: 0 10px 2px 0">remove</i>
+                            <i style="margin: 0 10px 2px 0">clear</i>
                             <span>Delete</span>
-                        </div>        
+                        </div>
                     </div>
                     {% endfor %}
                     {% endif %}

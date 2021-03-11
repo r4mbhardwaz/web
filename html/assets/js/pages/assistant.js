@@ -1,9 +1,26 @@
+console.log(qry(".delete-skill"))
+
+qry(".delete-skill").click(ev => {
+    const target = ev.currentTarget;
+    const skillId = target.dataset.skillid;
+
+    loading(target.children[0])
+
+    get(`/api/skill/${skillId}/delete`).then(d => {
+        swup.cache.remove(window.location.pathname);
+        swup.loadPage({url: window.location.pathname})
+    }).catch(er => {
+        alert("Failed to delete skill!", "An internal error occured and we were unable to delete your skill.<br><br>Please try again later");
+    }).finally(_ => {
+        loadingStop(target.children[0])
+    });
+});
+
 function makeSkillPrivate(ev) {
     const target = ev.currentTarget;
     const skillId = target.dataset.privateskill;
 
-    target.children[0].classList.add("rotating");
-    target.children[0].innerHTML = "loop";
+    loading(target.children[0])
 
     post(`/api/skill/${skillId}/private`).then(JSON.parse).then(d => {
         if (d.success) {
@@ -14,8 +31,7 @@ function makeSkillPrivate(ev) {
             qry(`.privacy-state.id-${skillId}`).get(0).classList.add("red");
             
             setInterval(_ => {
-                target.children[0].innerHTML = "cloud_upload";
-                target.children[0].classList.remove("rotating");
+                loadingStop(target.children[0])
                 target.children[1].innerHTML = "Publish Skill";
                 target.classList.add("hover-bg-green");
                 target.classList.remove("hover-bg-orange");
@@ -37,8 +53,7 @@ function makeSkillPublic(ev) {
     const target = ev.currentTarget;
     const skillId = target.dataset.publicskill;
 
-    target.children[0].classList.add("rotating");
-    target.children[0].innerHTML = "loop";
+    loading(target.children[0])
 
     post(`/api/skill/${skillId}/public`).then(JSON.parse).then(d => {
         if (d.success) {
@@ -49,8 +64,7 @@ function makeSkillPublic(ev) {
             qry(`.privacy-state.id-${skillId}`).get(0).classList.add("green");
             
             setTimeout(_ => {
-                target.children[0].innerHTML = "lock";
-                target.children[0].classList.remove("rotating");
+                loadingStop(target.children[0])
                 target.children[1].innerHTML = "Keep Skill Private";
                 target.classList.add("hover-bg-orange");
                 target.classList.remove("hover-bg-green");

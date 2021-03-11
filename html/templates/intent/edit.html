@@ -14,6 +14,14 @@
 
 <body>
     <div class="container" id="swup">
+        <script>
+            {% if intent["created-at"] == intent["modified-at"]: %}
+            window.askForIntentName = true;
+            {% endif%}
+            window.skillId = "{{ skill.id }}";
+            window.intentId = "{{ intent.id }}";
+        </script>
+
         <div class="row">
             <nav class="breadcrumb">
                 <a href="/">Jarvis Server</a>
@@ -30,7 +38,25 @@
             <span> {{ intent.name }} </span>
         </h1>
 
+        {% set color = 'red' if intent.quality < 0.25 else 'orange' if intent.quality < 0.5 else 'green' %}
+        {% set qualityStr = 'Poor Quality' if intent.quality < 0.25 else 'Medium Quality' if intent.quality < 0.5 else 'Excellent Quality' %}
+        {% set publicColor = 'green' if skill.public else 'orange' %}
+        {% set publicString = 'Public' if skill.public else 'Private' %}
 
+        <div class="grid margin-bottom-large">
+            <div class="row-s-1 row-e-2 col-s-1 col-e-13">
+                <span class="blue clickable">By You</span>
+                <div class="v-dot bg-darker-grey"></div>
+                <span class="{{ publicColor }}">{{ publicString }}</span>
+                <div class="v-dot bg-darker-grey"></div>
+                <span class="{{ color }}">{{ qualityStr }}</span>
+            </div>
+            <div class="row-s-2 row-e-3 col-s-1 col-e-13">
+                <span class="darker-grey">Created {{ intent['created-at'] | datetime("date") }}</span>
+                <div class="v-dot bg-darker-grey"></div>
+                <span class="darker-grey">Last modified {{ intent['modified-at'] | datetime("date") }}</span>
+            </div>
+        </div>
 
         <div class="grid">
             <div class="row-s-1 row-e-1 col-s-1 col-e-4">
@@ -42,11 +68,11 @@
             <div class="h-fill row-s-2 row-e-2 col-s-1 col-e-4">
                 <div class="settings">
                     {% if slots|length == 0 %}
-                    <button id="add-slot" class="v-center h-center" onclick="swup.loadPage({url:'/slot/edit/{{ skill.id }}'})"> <i>add</i> Add a slot </button>
+                    <button id="add-slot" class="v-center h-center" onclick="swup.loadPage({url:'/slot/edit/{{ skill.id }}/{{ intent.id }}'})"> <i>add</i> Add a slot </button>
                     {% else: %}
                     <button id="add-slot" class="v-center h-center"> <i>add</i> Add a slot </button>
                     <div class="options centered hidden">
-                        <div class="hover-bg-green hover-white clickable relative" onclick="swup.loadPage({url:'/slot/edit/{{ skill.id }}'})">
+                        <div class="hover-bg-green hover-white clickable relative" onclick="swup.loadPage({url:'/slot/edit/{{ skill.id }}/{{ intent.id }}'})">
                             <p class="v-margin-small">Create new Slot</p>
                         </div>
                         <div class="line"></div>
@@ -60,7 +86,7 @@
                         <div class="hover-black">Slot Type:</div>
                         {% for slot in slots: %}
                         <div class="hover-bg-blue hover-white clickable relative" data-skillid="{{ skill.id }}" data-addslot="{{ slot.id }}">
-                            <i class="clickable absolute top right-small-negative small" onclick="event.stopPropagation();swup.loadPage({url:'/slot/edit/{{ skill.id }}/{{ slot.id }}'})">edit</i>
+                            <i class="clickable absolute top right-small-negative small" onclick="event.stopPropagation();swup.loadPage({url:'/slot/edit/{{ skill.id }}/{{ intent.id }}/{{ slot.id }}'})">edit</i>
                             <i class="clickable absolute top right-medium small" data-deleteslot="{{ slot.id }}">delete</i>
                             <p class="v-margin-small">{{ slot.name }}</p>
                             {% if slot.data|length == 0: %}
@@ -85,7 +111,7 @@
                 </div>
                 <div class="v-margin-small">
                     {% for slot_name in skill.slots: %} {% set slot = skill.slots[slot_name] %}
-                    <div class="box clickable relative" data-skillid="{{ skill.id }}" onclick="swup.loadPage({url: '/slot/edit/{{ skill.id }}/{{ slot.id }}'})">
+                    <div class="box clickable relative" data-skillid="{{ skill.id }}" onclick="swup.loadPage({url: '/slot/edit/{{ skill.id }}/{{ intent.id }}/{{ slot.id }}'})">
                         <i class="clickable absolute top right-small small" data-skillid="{{ skill.id }}" data-removeslot="{{ slot.id }}">delete</i>
                         <p class="v-margin-small">{{ slot.name }}</p>
                         {% if slot.data|length == 0: %}

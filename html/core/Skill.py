@@ -47,58 +47,81 @@ class Skill:
                 self.skill = None
         self.new = new
 
+
+    # OBJECT FUNCTIONS
     def __getitem__(self, key) -> any:
         return self.skill[key]
 
     def __setitem__(self, key, value) -> None:
         self.skill[key] = value
 
-    def add_slot(self, slot: Slot) -> None:
-        pass
+    def __dict__(self) -> str:
+        self._reverse_intents()
+        return self.skill
 
-    def remove_slot(self, slot: Slot) -> None:
-        pass
 
-    def like(self, user: User) -> None:
-        pass
+    # PROPERTIES
+    @property
+    def found(self):
+        return self.skill is not None
 
-    def comment(self, user: User, rating: int, message: str) -> None:
-        pass
 
+    # INTENT ACTIONS
     def add_intent(self, intent: Intent):
         self.skill["intents"].append(intent.__dict__())
 
-    def update_intent(self, intent_id: str, new_intent: Intent):
+    def update_intent(self, intent_id: str, new_intent: Intent) -> bool:
         successful_insert = False
         for i in range(len(self.skill["intents"])):
             intent = self.skill["intents"][i]
             if intent["id"] == intent_id:
                 self.skill["intents"][i] = dict(new_intent)
                 successful_insert = True
+        if not successful_insert and self._unused_intent:
+            if intent_id == self._unused_intent["id"]:
+                self.add_intent(new_intent)
         return successful_insert
 
-    def get_intent(self, id: str):
+    def get_intent(self, id: str) -> Intent:
         for intent in self.skill["intents"]:
             if intent["id"] == id:
-                return Intent(False, intent).__dict__()
+                return Intent(False, intent)
         if self._unused_intent and self._unused_intent["id"] == id:
             return Intent(False, self._unused_intent)
         return None
 
-    def remove_intent(self, intent: Intent) -> None:
-        pass
+    def remove_intent(self, id_or_intent: any) -> Intent:
+        if isinstance(id_or_intent, Intent):
+            pass
+        elif isinstance(id_or_intent, str):
+            id_or_intent = self.get_intent(id_or_intent)
+            if not id_or_intent:
+                return False
+        else:
+            return False
+        new_intents = []
+        for intent in self.skill["intents"]:
+            if intent["id"] != id_or_intent["id"]:
+                new_intents.append(intent)
+        self.skill["intents"] = new_intents
+        self.save()
+        return True
 
+    def unused_intent(self) -> dict:
+        return self._unused_intent
+
+
+    # DATABASE ACTIONS
     def save(self):
+        self._reverse_intents()
         self.skill["modified-at"] = time.time()
-        for i in range(len(self.skill["intents"])):
-            intent = self.skill["intents"][i]
-            if isinstance(intent, Intent):
-                self.skill["intents"][i] = intent.__dict__()
         Database().table("skills").insert(self.skill)
 
     def delete(self):
         Database().table("skills").find({"id": self.skill["id"]}).delete()
 
+
+    # INTERNAL ACTIONS
     def _update_rating(self) -> None:
         rating = [3.5]
         weights = [1]
@@ -148,12 +171,8 @@ class Skill:
                 new_intent_array.append(Intent(False, intent))
         self.skill["intents"] = new_intent_array
 
-    def unused_intent(self) -> dict:
-        return self._unused_intent
-
-    @property
-    def found(self):
-        return self.skill is not None
-
-    # TODO: implement all the necessary features!
-
+    def _reverse_intents(self) -> None:
+        for i in range(len(self.skill["intents"])):
+            intent = self.skill["intents"][i]
+            if isinstance(intent, Intent):
+                self.skill["intents"][i] = intent.__dict__()

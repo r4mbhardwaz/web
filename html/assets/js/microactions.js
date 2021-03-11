@@ -112,3 +112,16 @@ qry("[data-editable]").click(ev => {
         }
     });
 });
+
+
+window.loading = function(el) {
+    const oldInnerHTML = el.innerHTML;
+    el.setAttribute("data-loading-oldinnerhtml", oldInnerHTML);
+    el.innerHTML = "loop";
+    el.classList.add("rotating");
+}
+window.loadingStop = function(el) {
+    const oldInnerHTML = el.getAttribute("data-loading-oldinnerhtml");
+    el.innerHTML = oldInnerHTML;
+    el.classList.remove("rotating");
+}

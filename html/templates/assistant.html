@@ -20,7 +20,7 @@
                 <a href="/assistant">Assistant</a>
             </nav>
         </div>
-
+        
         <h1>Assistant</h1>
 
         <div class="grid">
@@ -42,7 +42,7 @@
                 <div class="settings absolute top-0 right-0">
                     <i class="">more_vert</i>
                     <div class="options hidden">
-                        <div class="h-center hover-bg-red" onclick="get(`/api/skill/{{ skill.id }}/delete`);swup.cache.remove(window.location.pathname);swup.loadPage({url: window.location.pathname})"><i>delete</i><span class="v-center">Delete skill</span></div>
+                        <div class="h-center hover-bg-red delete-skill" data-skillid="{{ skill.id }}"><i>delete</i><span class="v-center">Delete skill</span></div>
                         {% if skill.public: %}
                         <div class="h-center hover-bg-orange" data-privateskill="{{ skill.id }}"><i>lock</i><span class="v-center">Keep Skill Private</span></div>
                         {% else: %}

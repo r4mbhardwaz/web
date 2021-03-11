@@ -84,7 +84,15 @@ window.alert = function(headerText, descriptionText) {
     });
 }
 
-window.prompt = function(headerText, placeholder, descriptionText = "") {
+window.prompt = function(headerText, descriptionText, placeholder, matcherFunction = undefined) {
+    if (!placeholder) {
+        placeholder = descriptionText;
+        descriptionText = undefined;
+    }
+    if (!matcherFunction) {
+        matcherFunction = () => {};
+    }
+
     return new Promise(function(resolve, reject) {
         if (document.getElementById("prompt")) {
             reject(new Error("another alert is already shown"));
@@ -106,19 +114,146 @@ window.prompt = function(headerText, placeholder, descriptionText = "") {
         header.innerHTML = headerText;
         content.innerHTML = descriptionText;
 
+        input.focus();
+        input.addEventListener("keyup", ev => {
+            if (ev.key == "Enter" || ev.keyCode == 13) {
+                if (input.value.trim() == "" || !matcherFunction(input.value.trim())) {
+                    input.classList.add("transition");
+                    input.classList.add("error");
+                    setTimeout(function() {
+                        input.classList.remove("error");
+                    }, 2000);
+                } else {
+                    resolve(input.value.trim());
+                    _hide_wrapper(wrapper);
+                }
+            } else {
+                if (input.value != "" && !matcherFunction(input.value.trim())) {
+                    input.classList.add("border-red");
+                } else {
+                    input.classList.remove("border-red");
+                }
+            }
+        });
         okButton.addEventListener("click", ev => {
-            resolve(true, input.value);
-            _hide_wrapper(wrapper);
+            if (input.value.trim() == "" || !matcherFunction(input.value.trim())) {
+                input.classList.add("transition");
+                input.classList.add("error");
+                setTimeout(function() {
+                    input.classList.remove("error");
+                }, 2000);
+            } else {
+                resolve(input.value.trim());
+                _hide_wrapper(wrapper);
+            }
         });
         cancelButton.addEventListener("click", ev => {
-            resolve(false, input.value);
+            resolve(false);
             _hide_wrapper(wrapper);
         });
         wrapper.addEventListener("click", ev => {
             if (ev.target == wrapper) {
-                resolve(false, input.value);
+                resolve(false);
                 _hide_wrapper(wrapper);
             }
         });
     });
 }
+
+window.longPrompt = function(headerText, descriptionText, inputPlaceholder, textAreaPlaceholder, inputMatcherFunction = undefined, textAreaMatcherFunction = undefined) {
+    if (!inputMatcherFunction) {
+        inputMatcherFunction = () => {};
+    }
+    if (!textAreaMatcherFunction) {
+        textAreaMatcherFunction = () => {};
+    }
+
+    return new Promise(function(resolve, reject) {
+        if (document.getElementById("prompt")) {
+            reject(new Error("another alert is already shown"));
+            return;
+        }
+
+        const [wrapper, box, customBox, buttonsBox, okButton, cancelButton, header, content] = _get_wrapper();
+        
+        const inputBox = document.createElement("div");
+        inputBox.classList.add("input");
+        const input = document.createElement("input");
+        input.placeholder = " ";
+        const placeholderEl = document.createElement("span");
+        placeholderEl.innerHTML = inputPlaceholder;
+
+        const textAreaBox = document.createElement("div");
+        textAreaBox.classList.add("input");
+        const textArea = document.createElement("textarea");
+        textArea.placeholder = " ";
+        textArea.classList.add("v-resize");
+        const textAreaPlaceholderEl = document.createElement("span");
+        textAreaPlaceholderEl.innerHTML = textAreaPlaceholder;
+
+        inputBox.appendChild(input);
+        inputBox.appendChild(placeholderEl);
+        textAreaBox.appendChild(textArea);
+        textAreaBox.appendChild(textAreaPlaceholderEl);
+
+        customBox.appendChild(inputBox);
+        customBox.appendChild(textAreaBox);
+
+        document.getElementById("no-break").appendChild(wrapper);
+
+        header.innerHTML = headerText;
+        content.innerHTML = descriptionText;
+
+        let tryToSubmit = function() {
+            if (inputMatcherFunction(input.value.trim()) && textAreaMatcherFunction(textArea.value.trim())) {
+                resolve({input: input.value.trim(), text: textArea.value.trim()});
+                _hide_wrapper(wrapper);
+            }
+        }
+
+        input.focus();
+        input.addEventListener("keyup", ev => {
+            if (ev.key == "Enter" || ev.keyCode == 13) {
+                if (input.value.trim() == "" || !inputMatcherFunction(input.value.trim())) {
+                    input.classList.add("transition");
+                    input.classList.add("error");
+                    setTimeout(function() {
+                        input.classList.remove("error");
+                    }, 2000);
+                } else {
+                    textArea.focus();
+                }
+            } else {
+                if (input.value != "" && !inputMatcherFunction(input.value.trim())) {
+                    input.classList.add("border-red");
+                } else {
+                    input.classList.remove("border-red");
+                }
+            }
+        });
+        okButton.addEventListener("click", ev => {
+            if (input.value.trim() == "" || !inputMatcherFunction(input.value.trim())) {
+                input.classList.add("transition");
+                input.classList.add("error");
+                setTimeout(function() {
+                    input.classList.remove("error");
+                }, 2000);
+            } else {
+                tryToSubmit();
+            }
+        });
+        cancelButton.addEventListener("click", ev => {
+            resolve(false);
+            _hide_wrapper(wrapper);
+        });
+        wrapper.addEventListener("click", ev => {
+            if (ev.target == wrapper) {
+                resolve(false);
+                _hide_wrapper(wrapper);
+            }
+        });
+    });
+}
+
+
+window.dispatchEvent(new Event("alertOverride"));

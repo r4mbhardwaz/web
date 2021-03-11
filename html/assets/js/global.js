@@ -7,10 +7,11 @@ async function init() {
     if (impStr == ".js") {
         impStr = "index.js";
     }
+    console.log("[module] trying to load", impStr);
 
-    await import ("./inputs.js?_no_cache=" + Date.now());
-    await import ("./shorthand.js?_no_cache=" + Date.now());
-    await import ("./microactions.js?_no_cache=" + Date.now());
+    await import ("./inputs.js?_no_cache=" + Date.now()).catch(console.error);
+    await import ("./shorthand.js?_no_cache=" + Date.now()).catch(console.error);
+    await import ("./microactions.js?_no_cache=" + Date.now()).catch(console.error);
 
     try {
         import ("./pages/" + impStr + "?_no_cache=" + Date.now());
