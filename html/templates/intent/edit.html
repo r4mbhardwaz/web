@@ -43,7 +43,7 @@
         {% set publicColor = 'green' if skill.public else 'orange' %}
         {% set publicString = 'Public' if skill.public else 'Private' %}
 
-        <div class="grid margin-bottom-large">
+        <div class="grid margin-bottom-xl">
             <div class="row-s-1 row-e-2 col-s-1 col-e-13">
                 <span class="blue clickable">By You</span>
                 <div class="v-dot bg-darker-grey"></div>
@@ -58,6 +58,8 @@
             </div>
         </div>
 
+        <br><br><br>
+
         <div class="grid">
             <div class="row-s-1 row-e-1 col-s-1 col-e-4">
                 <p class="v-center fat large">{{ skill.slots|length }} Slot{{ "" if skill.slots|length == 1 else "s" }}
@@ -68,9 +70,12 @@
             <div class="h-fill row-s-2 row-e-2 col-s-1 col-e-4">
                 <div class="settings">
                     {% if slots|length == 0 %}
-                    <button id="add-slot" class="v-center h-center" onclick="swup.loadPage({url:'/slot/edit/{{ skill.id }}/{{ intent.id }}'})"> <i>add</i> Add a slot </button>
+                    <button id="add-slot" class="v-center h-center green hover-white" onclick="swup.loadPage({url:'/slot/edit/{{ skill.id }}/{{ intent.id }}'})">
+                        <i class="transition">add</i>
+                        Add a slot
+                    </button>
                     {% else: %}
-                    <button id="add-slot" class="v-center h-center"> <i>add</i> Add a slot </button>
+                    <button id="add-slot" class="v-center h-center green"> <i>add</i> Add a slot </button>
                     <div class="options centered hidden">
                         <div class="hover-bg-green hover-white clickable relative" onclick="swup.loadPage({url:'/slot/edit/{{ skill.id }}/{{ intent.id }}'})">
                             <p class="v-margin-small">Create new Slot</p>

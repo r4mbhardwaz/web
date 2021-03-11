@@ -36,7 +36,7 @@
                 {% set empty_stars = 5 - skill.social.rating|round(0, 'ceil')|int %}
                 {% set half_stars = 5 - empty_stars - full_stars %}
                 <span class="{{ 'green' if skill.social.rating > 3 else 'orange' }}"> {{ ("<i>star</i>" * full_stars + "<i>star_half</i>" * half_stars + "<i>star_border</i>" * empty_stars)|safe }}</span>
-                <span class="margin-left-big {{ 'green' if skill.social.rating > 3 else 'orange' }}"> {{ skill.social.comments|length }} ratings </span>
+                <span class="margin-left-m {{ 'green' if skill.social.rating > 3 else 'orange' }}"> {{ skill.social.comments|length }} ratings </span>
                 <div class="v-dot bg-darker-grey"></div>
                 <span class="{{ 'red' if skill.quality < 0.25 else 'orange' if skill.quality < 0.5 else 'green' }}">
                     {{ 'Poor Quality' if skill.quality < 0.25 else 'Medium Quality' if skill.quality < 0.5 else 'Excellent Quality' }}
@@ -49,12 +49,12 @@
                 <div class="v-dot bg-darker-grey"></div>
                 <span class="v-center">
                     <i class="blue size-20">thumb_up</i>
-                    <span class="blue margin-left-big margin-top-mini">{{ skill.social.likes|length }}</span>
+                    <span class="blue margin-left-m margin-top-xs">{{ skill.social.likes|length }}</span>
                 </span>
                 <div class="v-dot bg-darker-grey"></div>
                 <span class="v-center">
                     <i class="blue size-20">comment</i>
-                    <span class="blue margin-left-big margin-top-mini">{{ skill.social.comments|length }}</span>
+                    <span class="blue margin-left-m margin-top-xs">{{ skill.social.comments|length }}</span>
                 </span>
             </div>
             {% set row = row + 1 %}
@@ -64,21 +64,21 @@
                 <div class="v-dot bg-darker-grey"></div>
                 <span class="darker-grey">Last modified {{ skill['modified-at'] | datetime("date") }}</span>
             </div>
-            <div class="row-s-1 row-e-{{ row + 1 }} col-s-7 col-e-13 border-left border-medium border-darker-grey height-full padding-left-big v-center">
+            <div class="row-s-1 row-e-{{ row + 1 }} col-s-7 col-e-13 border-left border-medium border-darker-grey height-full padding-left-m v-center">
                 {{ skill.description }}
             </div>
             
             <div class="row-s-{{ row + 1 }} row-e-{{ row + 1 }} col-s-1 col-e-13" style="margin-top: 40px">
                 <h3>Intents</h3>
             </div>
-            <div class="row-s-{{ row + 2 }} row-e-10 col-s-1 col-e-13 box flex table row padding-top-large">
+            <div class="row-s-{{ row + 2 }} row-e-10 col-s-1 col-e-13 box flex table row padding-top-l">
                 {% if skill.intents|length == 0: %}
-                <div class="center">
+                <div class="center no-padding">
                     <p>No intents yet.</p>
                     <div class="h-center">
                         <button class="green v-center transition hover-white" data-newintent>
-                            <i class="transition margin-right-large">add</i>
-                            <span class="transition margin-top-mini">Create New Intent</span>
+                            <i class="transition margin-right-l">add</i>
+                            <span class="transition margin-top-xs">Create New Intent</span>
                         </button>
                     </div>
                 </div>
@@ -86,8 +86,8 @@
 
                 <div class="head">
                     <div class="v-center clickable blue absolute top-medium right-large width-auto" data-newintent>
-                        <i class="transition margin-right-large">add</i>
-                        <span class="transition margin-top-mini">Create New Intent</span>
+                        <i class="transition margin-right-l">add</i>
+                        <span class="transition margin-top-xs">Create New Intent</span>
                     </div>
                 </div>
 
@@ -105,7 +105,7 @@
                             <div class="v-dot bg-darker-grey"></div>
                             <span>{{ intent.slots | length }} slots</span>
                         </div>
-                        <div class="row-s-1 row-e-3 col-s-11 col-e-13 padding-top-mini visible-on-hover hover-bg-light-grey hover-red border-radius v-center middle clickable dark-grey transition" data-deleteintent="{{ intent.id }}">
+                        <div class="row-s-1 row-e-3 col-s-11 col-e-13 padding-top-xs visible-on-hover hover-bg-light-grey hover-red border-radius v-center middle clickable dark-grey transition" data-deleteintent="{{ intent.id }}">
                             <i style="margin: 0 10px 2px 0">clear</i>
                             <span>Delete</span>
                         </div>

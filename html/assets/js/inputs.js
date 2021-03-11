@@ -19,7 +19,7 @@ window._get_wrapper = function() {
     cancelButton.innerHTML = "Cancel";
     okButton.innerHTML = "OK";
     cancelButton.classList.add("red");
-    cancelButton.classList.add("margin-right-big");
+    cancelButton.classList.add("margin-right-m");
     okButton.classList.add("green");
     buttonsBox.classList.add("buttons");
     
