@@ -14,14 +14,6 @@
 
 <body>
     <div class="container" id="swup">
-        <script>
-            {% if intent["created-at"] == intent["modified-at"]: %}
-            window.askForIntentName = true;
-            {% endif%}
-            window.skillId = "{{ skill.id }}";
-            window.intentId = "{{ intent.id }}";
-        </script>
-
         <div class="row">
             <nav class="breadcrumb">
                 <a href="/">Jarvis Server</a>
@@ -62,23 +54,21 @@
 
         <div class="grid">
             <div class="row-s-1 row-e-1 col-s-1 col-e-4">
-                <p class="v-center fat large">{{ skill.slots|length }} Slot{{ "" if skill.slots|length == 1 else "s" }}
+                <p class="v-center fat large">{{ skill.slots | length }} Slot{{ "" if skill.slots | length == 1 else "s" }}
                     <i style="cursor: pointer; margin: 0 0 3px 15px" onmouseover="showInfoBox(this, `Slots are used to extract the <span class=\'green\'>parameters</span> that may be contained in a sentence.<br><br>For example, let’s consider this sentence:<br><span class=\'blue\'>&quot;Turn on the light in the kitchen&quot;</span><br>Let\'s assume we have an intent called <span class=\'green\'>switchLightOn</span>, now there is an additional piece of information which is contained in the word <span class=\'green\'>&quot;kitchen&quot;</span>.<br>This intent contains one slot, which is the room in which the light should be turned on.<br><br>Let’s consider another example:<br><span class=\'blue\'>&quot;Find me a flight from Paris to Tokyo&quot;</span><br>Here we assume we have an intent called <span class=\'green\'>searchFlight</span>, and now there are two slots in the sentence being contained in <span class=\'green\'>&quot;Paris&quot;</span> and <span class=\'green\'>&quot;Tokyo&quot;</span>. These two values are of the same type as they both correspond to a <span class=\'green\'>location</span> however they have different roles, as <span class=\'orange\'>Paris is the departure</span> and <span class=\'orange\'>Tokyo is the arrival</span>.<br><br>In this context, we call location a slot type (or entity) and departure and arrival are slot names.`)"
                         onmouseout="removeInfoBox()">info</i>
                 </p>
             </div>
             <div class="h-fill row-s-2 row-e-2 col-s-1 col-e-4">
                 <div class="settings">
-                    {% if slots|length == 0 %}
-                    <button id="add-slot" class="v-center h-center green hover-white" onclick="swup.loadPage({url:'/slot/edit/{{ skill.id }}/{{ intent.id }}'})">
+                    <button id="add-slot" class="v-center h-center green hover-white transitions" data-addslot>
                         <i class="transition">add</i>
                         Add a slot
                     </button>
-                    {% else: %}
-                    <button id="add-slot" class="v-center h-center green"> <i>add</i> Add a slot </button>
+                    {#
                     <div class="options centered hidden">
                         <div class="hover-bg-green hover-white clickable relative" onclick="swup.loadPage({url:'/slot/edit/{{ skill.id }}/{{ intent.id }}'})">
-                            <p class="v-margin-small">Create new Slot</p>
+                            <p class="v-margin-s">Create new Slot</p>
                         </div>
                         <div class="line"></div>
                         <div>
@@ -93,32 +83,32 @@
                         <div class="hover-bg-blue hover-white clickable relative" data-skillid="{{ skill.id }}" data-addslot="{{ slot.id }}">
                             <i class="clickable absolute top right-small-negative small" onclick="event.stopPropagation();swup.loadPage({url:'/slot/edit/{{ skill.id }}/{{ intent.id }}/{{ slot.id }}'})">edit</i>
                             <i class="clickable absolute top right-medium small" data-deleteslot="{{ slot.id }}">delete</i>
-                            <p class="v-margin-small">{{ slot.name }}</p>
-                            {% if slot.data|length == 0: %}
+                            <p class="v-margin-s">{{ slot.name }}</p>
+                            {% if slot.data | length == 0: %}
                             <span class="small red transition">Not data yet.</span>
                             {% else: %}
-                                <span class="small">{{ slot.data[0].value }} - {{ slot.data[0].synonyms[:1]|join(", ") }}{{ ", +%s more" % (slot.data[0].synonyms|length - 1) if slot.data[0].synonyms|length > 1 else "" }}</span><br>
-                                {% if slot.data|length > 1: %}
-                                <span class="small">{{ slot.data[1].value }} - {{ slot.data[1].synonyms[:1]|join(", ") }}{{ ", +%s more" % (slot.data[1].synonyms|length - 1) if slot.data[1].synonyms|length > 1 else "" }}</span><br>
+                                <span class="small">{{ slot.data[0].value }} - {{ slot.data[0].synonyms[:1] | join(", ") }}{{ ", +%s more" % (slot.data[0].synonyms | length - 1) if slot.data[0].synonyms | length > 1 else "" }}</span><br>
+                                {% if slot.data | length > 1: %}
+                                <span class="small">{{ slot.data[1].value }} - {{ slot.data[1].synonyms[:1] | join(", ") }}{{ ", +%s more" % (slot.data[1].synonyms | length - 1) if slot.data[1].synonyms | length > 1 else "" }}</span><br>
                                 {% endif %}
-                                <span class="small">{{ slot.data|length }} entr{{ "ies" if slot.data|length > 1 else "y" }}</span>
+                                <span class="small">{{ slot.data | length }} entr{{ "ies" if slot.data | length > 1 else "y" }}</span>
                                 <br>
-                                {% if slot.data|length < 5: %}
-                                <p class="small v-margin-small orange transition">Medium Quality</p>
+                                {% if slot.data | length < 5: %}
+                                <p class="small v-margin-s orange transition">Medium Quality</p>
                                 {% else: %}
-                                <p class="small v-margin-small green transition">Excellent Quality</p>
+                                <p class="small v-margin-s green transition">Excellent Quality</p>
                                 {% endif %}
                             {% endif %}
                         </div>
                         {% endfor %}
+                        #}
                     </div>
-                    {% endif %}
                 </div>
-                <div class="v-margin-small">
+                <div class="v-margin-s">
                     {% for slot_name in skill.slots: %} {% set slot = skill.slots[slot_name] %}
                     <div class="box clickable relative" data-skillid="{{ skill.id }}" onclick="swup.loadPage({url: '/slot/edit/{{ skill.id }}/{{ intent.id }}/{{ slot.id }}'})">
                         <i class="clickable absolute top right-small small" data-skillid="{{ skill.id }}" data-removeslot="{{ slot.id }}">delete</i>
-                        <p class="v-margin-small">{{ slot.name }}</p>
+                        <p class="v-margin-s">{{ slot.name }}</p>
                         {% if slot.data|length == 0: %}
                         <span class="small red transition">Not data yet.</span>
                         {% else: %}
@@ -129,9 +119,9 @@
                             <span class="small">{{ slot.data|length }} entr{{ "ies" if slot.data|length > 1 else "y" }}</span>
                             <br>
                             {% if slot.data|length < 5: %}
-                            <p class="small v-margin-small orange transition">Medium Quality</p>
+                            <p class="small v-margin-s orange transition">Medium Quality</p>
                             {% else: %}
-                            <p class="small v-margin-small green transition">Excellent Quality</p>
+                            <p class="small v-margin-s green transition">Excellent Quality</p>
                             {% endif %}
                         {% endif %}
                     </div>

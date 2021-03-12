@@ -42,6 +42,26 @@ window._get_wrapper = function() {
     return [alertWrapper, alertBox, customBox, buttonsBox, okButton, cancelButton, header, content];
 }
 
+window.rawWrapper = function(headerText, contentText) {
+    const [alertWrapper, alertBox, customBox, buttonsBox, okButton, cancelButton, header, content] = window._get_wrapper();
+    okButton.addEventListener("click", _ => _hide_wrapper(alertWrapper));
+    cancelButton.addEventListener("click", _ => _hide_wrapper(alertWrapper));
+    alertWrapper.addEventListener("click", ev => ev.target == alertWrapper ? _hide_wrapper(alertWrapper) : null);
+
+    header.innerHTML = headerText;
+    content.innerHTML = contentText;
+
+    document.getElementById("no-break").appendChild(alertWrapper);
+
+    return {
+        content: customBox,
+        ok: okButton,
+        cancel: cancelButton,
+        header: header,
+        text: content
+    };
+}
+
 window._hide_wrapper = function(wrapperElement) {
     wrapperElement.classList.add("hidden");
     setTimeout(function() {

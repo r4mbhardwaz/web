@@ -79,3 +79,9 @@ def api_slot_item_change(slot_id: str, item_id: str):
         return json.dumps({"success": True})
     else:
         return json.dumps({"success": False, "error": "you need to provide 'value' or 'synonyms' in post body"})
+
+
+@app.route("/api/slot/all")
+@login_required
+def api_slot_get_all():
+    return json.dumps({"success": True, "slots": Slot.all()})

@@ -54,6 +54,10 @@ class Slot:
 
     # STATIC METHODS
     @staticmethod
+    def all() -> any:
+        return list(Database().table("slots").all())
+
+    @staticmethod
     def new_but_unused_slot() -> any:
         already_existing_but_empty_slots = Database().table("slots").find({"name": { "$eq": "New Slot" }})
         id = None

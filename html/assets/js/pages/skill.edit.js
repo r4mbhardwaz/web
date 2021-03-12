@@ -1,4 +1,6 @@
 qry("[data-newintent]").click(ev => {
+    const skillId = ev.currentTarget.dataset.newintent;
+
     longPrompt("Create new Intent", `Enter a name and description for your intent
     <br><br>
     Choose a descriptive name that characterizes what this intent should do.
@@ -20,12 +22,12 @@ qry("[data-newintent]").click(ev => {
         const name = data.input;
         const description = data.text;
 
-        post(`/api/intent/${window.skillId}/add`, {
+        post(`/api/intent/${skillId}/add`, {
             name: name,
             description: description
         }).then(JSON.parse).then(d => {
             if (d.success) {
-                swup.loadPage({url: `/intent/edit/${window.skillId}/${d.id}`});
+                swup.loadPage({url: `/intent/edit/${skillId}/${d.id}`});
             } else {
                 throw new Error("server side error");
             }
@@ -44,7 +46,7 @@ qry("[data-deleteintent]").click(ev => {
 
     loading(target.children[0])
     
-    post(`/api/intent/${window.skillId}/${intentId}/delete`).then(JSON.parse).then(d => {
+    post(`/api/intent/${target.dataset.skillid}/${intentId}/delete`).then(JSON.parse).then(d => {
         if (d.success) {
             target.parentNode.remove();
         } else {
