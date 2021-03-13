@@ -37,4 +37,3 @@ def api_iconsearch():
         f = [x for x in ICONS if search in x]
     return Response(json.dumps(f), content_type="application/json")
 
-

@@ -58,7 +58,10 @@ window.rawWrapper = function(headerText, contentText) {
         ok: okButton,
         cancel: cancelButton,
         header: header,
-        text: content
+        text: content,
+        _wrapper: alertWrapper,
+        _innerWrapper: alertBox,
+        hide: () => { window._hide_wrapper(alertWrapper) }
     };
 }
 
@@ -110,7 +113,7 @@ window.prompt = function(headerText, descriptionText, placeholder, matcherFuncti
         descriptionText = undefined;
     }
     if (!matcherFunction) {
-        matcherFunction = () => {};
+        matcherFunction = () => true;
     }
 
     return new Promise(function(resolve, reject) {

@@ -1,10 +1,13 @@
 from __main__ import *
 
-@app.route("/slot/edit/<skill_id>/<intent_id>")
 @app.route("/slot/edit/<skill_id>/<intent_id>/<slot_id>")
 @login_required
 def add_slot(skill_id: str, intent_id: str, slot_id: str = None):
     skill = Skill(skill_id)
+    # json_data = request.get_json(force=True)
+    # print(json_data)
+    print(request.data)
+    # TODO: name in post body
     if skill.found:
         intent = skill.get_intent(intent_id)
         if intent:
@@ -23,4 +26,5 @@ def add_slot(skill_id: str, intent_id: str, slot_id: str = None):
         else:
             return redirect("/assistant?message=Couldn't find intent", 302)
     return redirect("/assistant?message=Couldn't find slot or skill, check your url", 302)
+
 

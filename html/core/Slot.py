@@ -15,6 +15,7 @@ class Slot:
                 "created-at": ts,
                 "modified-at": ts,
                 "name": "New Slot",
+                "description": None,
                 "data": [],
                 "extensible": True,
                 "use-synonyms": True,
@@ -27,6 +28,8 @@ class Slot:
                 self.slot = result[0]
             else:
                 self.slot = None
+        if self.slot:
+            self._update_quality()
         self.new = new
 
 
@@ -46,16 +49,32 @@ class Slot:
     def found(self) -> bool:
         return self.slot is not None
 
+    @property
+    def id(self) -> str:
+        return self.slot["id"]
+
 
     # DATABASE OPERATIONS
     def save(self) -> None:
+        self.slot["modified-at"] = int(time.time())
         Database().table("slots").insert(self.slot)
 
 
     # STATIC METHODS
     @staticmethod
     def all() -> any:
-        return list(Database().table("slots").all())
+        slots_all = list(Database().table("slots").all())
+        slots_good = []
+        for slot in slots_all:
+            if slot["created-at"] != slot["modified-at"]:
+                del slot["_id"]
+                del slot["_rev"]
+                tmp_slot = Slot()
+                tmp_slot.slot = slot
+                tmp_slot._update_quality()
+                slot["quality"] = tmp_slot["quality"]
+                slots_good.append(slot)
+        return slots_good
 
     @staticmethod
     def new_but_unused_slot() -> any:
@@ -65,3 +84,35 @@ class Slot:
             id = already_existing_but_empty_slots[0]["id"]
         return id
 
+    
+    # PRIVATE FUNCTIONS
+    def _update_quality(self):
+        quality = 0
+        if len(self.slot["data"]) == 0:
+            quality = 0
+        elif len(self.slot["data"]) < 5:
+            quality = 0.1
+        for i in [5, 10, 15, 20, 25, 30]:
+            if len(self.slot["data"]) > i:
+                quality += 0.1
+        # ^ MAX 0.6
+
+        synonyms_per_data_quote = 0
+        for i in self.slot["data"]:
+            synonyms_per_data_quote += len(i["synonyms"])
+        try:
+            synonyms_per_data_quote /= len(self.slot["data"])
+            if synonyms_per_data_quote <= 3:
+                quality -= 0.15
+            elif synonyms_per_data_quote <= 7:
+                quality -= 0.05
+            for i in [7, 10, 15, 20]:
+                if synonyms_per_data_quote > i:
+                    quality += 0.1
+        except ZeroDivisionError: # no data yet
+            pass
+
+        if quality < 0:
+            quality = 0
+
+        self.slot["quality"] = quality

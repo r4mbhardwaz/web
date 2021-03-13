@@ -4,6 +4,8 @@
 
 import time
 from jarvis import Database, Security
+from .Slot import Slot
+
 
 class Intent:
     def __init__(self, new: bool, existing_data: dict = None) -> None:
@@ -40,7 +42,7 @@ class Intent:
         self.intent[key] = value
 
     def __dict__(self) -> dict:
-        self._reverse_slots(False)
+        self._reverse_slots(True)
         return self.intent
 
 
@@ -57,9 +59,14 @@ class Intent:
                 self.intent["slots"][slot_name] = {}
         return self.intent["slots"]
 
+    def add_slot(self, name: str, slot: Slot, only_keep_reference: bool = True):
+        if name in self.intent["slots"]:
+            return False
+        self.intent["slots"][name] = slot["id"] if only_keep_reference else slot
+        return True
 
     # PRIVATE FUNCTIONS
-    def _reverse_slots(self, only_keep_reference=True) -> None:
+    def _reverse_slots(self, only_keep_reference: bool = True) -> None:
         for slotname in self.intent["slots"]:
             slot = self.intent["slots"][slotname]
             self.intent["slots"][slotname] = slot["id"] if only_keep_reference else slot.__dict__()

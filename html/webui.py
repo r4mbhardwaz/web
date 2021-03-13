@@ -26,6 +26,9 @@ babel = Babel(app)
 
 
 # Decorator functions like @login_required
+from backend.variables import *
+
+# Decorator functions like @login_required
 from backend.decorators import *
 
 # Jinja filters

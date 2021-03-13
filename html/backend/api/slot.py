@@ -1,5 +1,22 @@
 from __main__ import *
 
+
+@app.route("/api/slot/create", methods=["POST"])
+@login_required
+def slot_create_new():
+    json_data = request.get_json(force=True)
+    # TODO: check json_data["name"] format with regex
+    if "name" in json_data and "description" in json_data:
+        slot = Slot()
+        slot["created-at"] = int(time.time()) - 1
+        slot["name"] = json_data["name"]
+        slot["description"] = json_data["description"]
+        slot.save()
+        return Response(json.dumps({"success": True, "id": slot.id}), content_type="application/json")
+    else:
+        return Response(json.dumps({"success": False, "error": "need to provide 'name' and 'description' in json post body"}), content_type="application/json")
+
+
 @app.route("/api/slot/<slot_id>/add-data", methods=["POST"])
 @login_required
 def api_add_data_to_slot(slot_id: str):

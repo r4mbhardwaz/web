@@ -134,7 +134,29 @@ p {
 
 @media only screen and (min-width: 45em) {
     /* 720px */
-    .col-1      {  width: 4.33%;      }
+    .row {
+        --base-w: 8.4%;
+        --iter-w: calc((100% - var(--base-w)) / 12);
+    }
+    .col-1      {  width: calc(var(--base-w)  +  0   * var(--iter-w));  }
+    .col-2      {  width: calc(var(--base-w)  +  1   * var(--iter-w));  }
+    .col-3      {  width: calc(var(--base-w)  +  2   * var(--iter-w));  }
+    .col-4      {  width: calc(var(--base-w)  +  3   * var(--iter-w));  }
+    .col-5      {  width: calc(var(--base-w)  +  4   * var(--iter-w));  }
+    .col-6      {  width: calc(var(--base-w)  +  5   * var(--iter-w));  }
+    .col-7      {  width: calc(var(--base-w)  +  6   * var(--iter-w));  }
+    .col-8      {  width: calc(var(--base-w)  +  7   * var(--iter-w));  }
+    .col-9      {  width: calc(var(--base-w)  +  8   * var(--iter-w));  }
+    .col-10     {  width: calc(var(--base-w)  +  9   * var(--iter-w));  }
+    .col-11     {  width: calc(var(--base-w)  +  10  * var(--iter-w));  }
+    .col-12     {  width: calc(var(--base-w)  +  11  * var(--iter-w));  }
+    .row > [class^='col']:not(:last-child), .row > [class*=' col']:not(:last-child) {
+        margin-right: calc(.2 * var(--base-w));
+    }
+    .row > [class^='col'], .row > [class*=' col'] {
+        margin-bottom: calc(.2 * var(--base-w));
+    }
+    /* .col-1      {  width: 4.33%;      }
     .col-2      {  width: 12.66%;     }
     .col-3      {  width: 21%;        }
     .col-4      {  width: 29.33%;     }
@@ -145,7 +167,7 @@ p {
     .col-9      {  width: 71%;        }
     .col-10     {  width: 79.33%;     }
     .col-11     {  width: 87.66%;     }
-    .col-12     {  width: 96%;        }
+    .col-12     {  width: 96%;        } */
     .hidden-sm  {  display: block;    }
 }
 

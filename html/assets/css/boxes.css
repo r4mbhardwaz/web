@@ -8,7 +8,7 @@ div.box {
     border-radius: var(--border-radius);
     padding: var(--padding-large);
     background-color: var(--background-color-secondary);
-    transition: var(--transition);
+    transition: var(--transition-short);
     position: relative;
 }
 
