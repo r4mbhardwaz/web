@@ -81,7 +81,7 @@ function onInputFinish(newValue, target, newElement, callback, oldValue = "") {
         } catch (er) { console.error("harmless exception", er) }
     }
 }
-qry("[data-editable]").click(ev => {
+window.dataEditable = function(ev) {
     const target = ev.currentTarget;
     const currentText = target.innerText;
 
@@ -111,8 +111,11 @@ qry("[data-editable]").click(ev => {
             onInputFinish(newElement.value, target, newElement, currentText);
         }
     });
-});
-
+}
+window.updateDataEditable = function() {
+    qry("[data-editable]").click(dataEditable);
+}
+updateDataEditable();
 
 window.loading = function(el) {
     const oldInnerHTML = el.innerHTML;

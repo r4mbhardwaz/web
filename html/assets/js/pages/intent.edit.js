@@ -111,6 +111,7 @@ qry("[data-addslot]").click(ev => {
             const slotElement = document.createElement("div");
             slotElement.classList.add("box");
             slotElement.classList.add("clickable");
+            slotElement.classList.add("transition");
             slotElement.classList.add("centered");
             slotElement.classList.add("col-3");
             slotElement.setAttribute("title", slot.description);
@@ -119,7 +120,7 @@ qry("[data-addslot]").click(ev => {
             const edit = document.createElement("i");
             edit.setAttribute("data-slotid", slot.id);
             edit.innerHTML = "edit";
-            "clickable hover-bg-grey size-16 absolute top-small right-small".split(" ").forEach(e => edit.classList.add(e));
+            "visible-on-hover transition clickable hover-bg-grey size-16 absolute top-small right-small".split(" ").forEach(e => edit.classList.add(e));
             edit.addEventListener("click", ev => {
                 box.hide();
                 ev.stopPropagation();
@@ -135,9 +136,9 @@ qry("[data-addslot]").click(ev => {
             slotQuality.classList.add(color);
             slotQuality.innerHTML = colorStr;
 
+            slotElement.appendChild(edit);
             slotElement.appendChild(slotName);
             slotElement.appendChild(slotQuality);
-            slotElement.appendChild(edit);
                                     
             if (i < 3) {
                 firstRow.appendChild(slotElement);

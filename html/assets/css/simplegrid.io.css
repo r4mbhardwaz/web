@@ -96,7 +96,7 @@ p {
 
 .row [class^="col"] {
     float: left;
-    margin: 0.5rem 2%;
+    /* margin: 0.5rem 2%; */
     min-height: 0.125rem;
     display: flex;
     flex-direction: column;
@@ -135,26 +135,17 @@ p {
 @media only screen and (min-width: 45em) {
     /* 720px */
     .row {
-        --base-w: 8.4%;
-        --iter-w: calc((100% - var(--base-w)) / 12);
+        /* w = kx + d */
+        --x: 8.33333%;
+        --d: -3.25%;
+
+        --base-margin: 2%;
     }
-    .col-1      {  width: calc(var(--base-w)  +  0   * var(--iter-w));  }
-    .col-2      {  width: calc(var(--base-w)  +  1   * var(--iter-w));  }
-    .col-3      {  width: calc(var(--base-w)  +  2   * var(--iter-w));  }
-    .col-4      {  width: calc(var(--base-w)  +  3   * var(--iter-w));  }
-    .col-5      {  width: calc(var(--base-w)  +  4   * var(--iter-w));  }
-    .col-6      {  width: calc(var(--base-w)  +  5   * var(--iter-w));  }
-    .col-7      {  width: calc(var(--base-w)  +  6   * var(--iter-w));  }
-    .col-8      {  width: calc(var(--base-w)  +  7   * var(--iter-w));  }
-    .col-9      {  width: calc(var(--base-w)  +  8   * var(--iter-w));  }
-    .col-10     {  width: calc(var(--base-w)  +  9   * var(--iter-w));  }
-    .col-11     {  width: calc(var(--base-w)  +  10  * var(--iter-w));  }
-    .col-12     {  width: calc(var(--base-w)  +  11  * var(--iter-w));  }
     .row > [class^='col']:not(:last-child), .row > [class*=' col']:not(:last-child) {
-        margin-right: calc(.2 * var(--base-w));
+        margin-right: var(--base-margin);
     }
     .row > [class^='col'], .row > [class*=' col'] {
-        margin-bottom: calc(.2 * var(--base-w));
+        margin-bottom: var(--base-margin);
     }
     /* .col-1      {  width: 4.33%;      }
     .col-2      {  width: 12.66%;     }
@@ -167,8 +158,36 @@ p {
     .col-9      {  width: 71%;        }
     .col-10     {  width: 79.33%;     }
     .col-11     {  width: 87.66%;     }
-    .col-12     {  width: 96%;        } */
-    .hidden-sm  {  display: block;    }
+    .col-12     {  width: 96%;        }
+    .hidden-sm  {  display: block;    } */
+
+    /* based on 2% margin */
+    /* .col-1      {  width: 8.16%;    }
+    .col-2      {  width: 16%;      }
+    .col-3      {  width: 23.5%;    }
+    .col-4      {  width: 30.66%;   }
+    .col-5      {  width: 37.5%;    }
+    .col-6      {  width: 44%;      }
+    .col-7      {  width: 52.5%;    }
+    .col-8      {  width: 61.33%;   }
+    .col-9      {  width: 70.5%;    }
+    .col-10     {  width: 80%;      }
+    .col-11     {  width: 89.8%;    }
+    .col-12     {  width: 100%;     }
+    .hidden-sm  {  display: block;  } */
+    .col-1      {  width: calc(1   * var(--x) + var(--d));  }
+    .col-2      {  width: calc(2   * var(--x) + var(--d));  }
+    .col-3      {  width: calc(3   * var(--x) + var(--d));  }
+    .col-4      {  width: calc(4   * var(--x) + var(--d));  }
+    .col-5      {  width: calc(5   * var(--x) + var(--d));  }
+    .col-6      {  width: calc(6   * var(--x) + var(--d));  }
+    .col-7      {  width: calc(7   * var(--x) + var(--d));  }
+    .col-8      {  width: calc(8   * var(--x) + var(--d));  }
+    .col-9      {  width: calc(9   * var(--x) + var(--d));  }
+    .col-10     {  width: calc(10  * var(--x) + var(--d));  }
+    .col-11     {  width: calc(11  * var(--x) + var(--d));  }
+    .col-12     {  width: calc(12  * var(--x) + var(--d));  }
+    .hidden-sm  {  display: block;  }
 }
 
 @media only screen and (min-width: 60em) {
@@ -179,6 +198,9 @@ p {
     }
 }
 
+
+
+/*  GRID LAYOUT  */
 .table {
     display: flex;
     flex-direction: column;
@@ -194,41 +216,7 @@ p {
 .grid.gap-m     {  grid-gap: 20px;  }
 .grid.gap-l     {  grid-gap: 30px;  }
 .grid.gap-xl    {  grid-gap: 50px;  }
-.grid>.left {
-    display: flex;
-    justify-content: flex-start;
-}
 
-.grid>.right {
-    display: flex;
-    justify-content: flex-end;
-}
-
-.grid>.middle {
-    display: flex;
-    justify-content: center;
-}
-
-.grid>.line {
-    width: 100%;
-    height: 2px;
-    background-color: var(--grey);
-    border-radius: var(--border-color);
-}
-
-.grid .seperator {
-    position: absolute; 
-    right: -10px;
-    top: 15%;
-    height: 70%;
-    width: 2px;
-    background-color: var(--grey);
-    border-radius: var(--border-radius);
-}
-
-.grid .seperator.dot {
-    height: 2px;
-}
 
 .grid.gap-m    .seperator {  right: -12px;  }
 .grid.gap-l     .seperator {  right: -16px;  }

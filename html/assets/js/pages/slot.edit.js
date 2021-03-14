@@ -9,67 +9,71 @@ window.submitNewData = function(ev) {
         synonyms: synonyms
     }).then(JSON.parse).then(d => {
         if (d.success) {
-            id("slot-data-values").get(0).innerHTML += `<div class="grid gap-l">
-                <div class="box space row-s-1 row-e-1 col-s-1 col-e-5">
-                    ${value}
+            id("slot-data-values").get(0).innerHTML += `
+            <div class="transition border-radius hover-transition grid gap-l hover-bg-light-grey">
+            <div class="space row-s-1 row-e-1 col-s-1 col-e-5" data-itemid="${d.id}" data-editable data-editablecallback="updateSlotValue">
+                ${value}
                     <div class="seperator"></div>
                 </div>
-                <div class="box space row-s-1 row-e-1 col-s-5 col-e-11">
+                <div class="space row-s-1 row-e-1 col-s-5 col-e-11" data-itemid="${d.id}" data-editable data-editable-allow-empty="true" data-editablecallback="updateSlotSynonyms">
                     ${synonyms.split(",").map(x => x.trim()).join(", ")}
                 </div>
-                <div class="v-center middle red clickable row-s-1 row-e-1 col-s-11 col-e-13 slot-value-delete" onclick="slotValueDelete(event)" data-slotid="${target.dataset.id}" data-slotdataid="${d.id}">
+                <div class="visible-on-hover v-center middle red clickable row-s-1 row-e-1 col-s-11 col-e-13 slot-value-delete" data-slotid="{{ slot.id }}" data-slotdataid="{{ x.id }}">
                     <i style="margin: 0 10px 2px 0">clear</i>
                     <span>Delete</span>
-                </div>        
+                </div>
             </div>`;
             valueElement.value = "";
             synonymsElement.value = "";
             valueElement.focus();
+            updateDataEditable();
         } else {
-            alert("Failed to submit new data!");
+            alert("Failed to submit new data!", "An unknown error occured and the new data couldn't be saved.<br><br>Please try again later");
         }
     });
 }
 
 window.slotValueDelete = function(ev) {
     const target = ev.currentTarget;
-    const oldInnerHTML = target.children[0].innerHTML;
+    const slotId = qry("[data-slotid]").get(0).dataset.slotid;
     target.classList.add("orange");
     loading(target.children[0])
-    get(`/api/slot/${target.dataset.slotid}/delete/${target.dataset.slotdataid}`).then(JSON.parse).then(d => {
-        target.classList.remove("orange");
-        loadingStop(target.children[0])
-        if (d.success) {
-            target.parentElement.outerHTML = "";
-        } else {
-            alert("Failed to delete data!");
-        }
-    });
+    get(`/api/slot/${slotId}/delete/${target.dataset.slotdataid}`)
+        .then(JSON.parse)
+        .then(d => {
+            target.classList.remove("orange");
+            loadingStop(target.children[0])
+            if (d.success) {
+                target.parentElement.outerHTML = "";
+            } else {
+                alert("Failed to delete data!", "An unknown error occured and the data couldn't be deleted.<br><br>Please try again later");
+            }
+        });
 }
 
 window.updateSlotValue = function(newValue, element, oldValue="") {
-    const slotid = element.dataset.slotid;
-    const itemid = element.dataset.itemid;
-    post(`/api/slot/${slotid}/${itemid}/change`, { value: newValue }).then(JSON.parse).then(d => {
+    const slotId = qry("[data-slotid]").get(0).dataset.slotid;
+    const itemId = element.dataset.itemid;
+    post(`/api/slot/${slotId}/${itemId}/change`, { value: newValue }).then(JSON.parse).then(d => {
         if (!d.success) {
             throw new Error("Failed to update slot value");
         }
     }).catch(er => {
         element.childNodes[0].nodeValue = oldValue;
-        alert("Failed to update slot value!");
+        alert("Failed to update slot value!", "An unknown error occured and the new data couldn't be saved.<br><br>Please try again later");
     });
 }
 
 window.updateSlotSynonyms = function(newValue, element, oldValue="") {
-    const slotid = element.dataset.slotid;
-    const itemid = element.dataset.itemid;
-    post(`/api/slot/${slotid}/${itemid}/change`, { synonyms: newValue }).then(JSON.parse).then(d => {
+    const slotId = qry("[data-slotid]").get(0).dataset.slotid;
+    const itemId = element.dataset.itemid;
+    post(`/api/slot/${slotId}/${itemId}/change`, { synonyms: newValue }).then(JSON.parse).then(d => {
         if (!d.success) {
             throw new Error("Failed to update slot synonyms");
         }
     }).catch(er => {
         element.childNodes[0].nodeValue = oldValue;
-        alert("Failed to update slot synonyms!");
+        alert("Failed to update slot synonyms!", "An unknown error occured and the new data couldn't be saved.<br><br>Please try again later");
     });
 }
 
