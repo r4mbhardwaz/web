@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <form class="container" id="swup" method="POST">
+    <div class="container" id="swup">
         <div class="hidden" data-skillid="{{ skill.id }}" data-intentid="{{ intent.id }}" data-slotid="{{ slot.id }}"></div>
 
         <div class="row">
@@ -78,23 +78,23 @@
     
                     <div class="row line"></div>
     
-                    <div class="row">
-                        <div class="flex vertical reverse col-12" id="slot-data-values">
+                    <div class="row padding-top-l">
+                        <div class="col-12 flex vertical reverse margin-0" id="slot-data-values">
                             {% if slot.data|length == 0: %} 
                             <div style="margin-bottom: 10px" class="center">
                                 No values yet. Start by entering a value and synonyms
                             </div>
                             {% else %}
                             {% for x in slot.data: %}
-                            <div class="transition border-radius hover-transition row hover-bg-light-grey">
-                                <div class="space col-5" data-itemid="{{ x.id }}" data-editable data-editablecallback="updateSlotValue">
+                            <div class="transition border-radius hover-transition grid gap-l hover-bg-light-grey v-padding-s">
+                                <div class="space row-s-1 row-e-1 col-s-1 col-e-5" data-slotid="{{ slot.id }}" data-itemid="{{ x.id }}" data-editable data-editablecallback="updateSlotValue">
                                     {{ x.value }}
-                                    <div class="seperator"></div>
+                                    <div class="seperator" style="width: 2px;"></div>
                                 </div>
-                                <div class="space col-5" data-itemid="{{ x.id }}" data-editable data-editable-allow-empty="true" data-editablecallback="updateSlotSynonyms">
+                                <div class="space row-s-1 row-e-1 col-s-5 col-e-11" data-slotid="{{ slot.id }}" data-itemid="{{ x.id }}" data-editable data-editable-allow-empty="true" data-editablecallback="updateSlotSynonyms">
                                     {{ x.synonyms|join(", ") }}
                                 </div>
-                                <div class="visible-on-hover v-center middle red clickable col-2 slot-value-delete" data-slotdataid="{{ x.id }}">
+                                <div class="visible-on-hover v-center middle red clickable row-s-1 row-e-1 col-s-11 col-e-13 slot-value-delete" data-slotdataid="{{ x.id }}">
                                     <i style="margin: 0 10px 2px 0">clear</i>
                                     <span>Delete</span>
                                 </div>
@@ -111,7 +111,7 @@
             </div> -->
         </div>
         <div id="no-break"></div>
-    </form>
+    </div>
 
 </body>
 

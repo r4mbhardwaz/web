@@ -75,7 +75,7 @@ class Skill:
         for i in range(len(self.skill["intents"])):
             intent = self.skill["intents"][i]
             if intent["id"] == intent_id:
-                self.skill["intents"][i] = dict(new_intent)
+                self.skill["intents"][i] = new_intent.__dict__()
                 successful_insert = True
         if not successful_insert and self._unused_intent:
             if intent_id == self._unused_intent["id"]:

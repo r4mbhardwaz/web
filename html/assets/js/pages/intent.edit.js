@@ -1,3 +1,10 @@
+window.INTENT_ERRORS = {
+    "ERR_INTENT_INVALID_ARGS": "You need to provide a name and slot-id!<br><br>Please consider opening an issue here: <a target='_blank' href='https://github.com/open-jarvis/web/issues'>GitHub</a>",
+    "ERR_INTENT_SKILL_NOT_FOUND": "The skill could not be found.<br><br>Most likely the skill got deleted and you'll need to create a new one",
+    "ERR_INTENT_NOT_FOUND": "The intent could not be found.<br><br>Most likely the intent got deleted and you'll need to create a new one",
+    "ERR_INTENT_SLOT_NOT_FOUND": "The slot could not be found.<br><br>Most likely the slot got deleted and you'll need to create a new one"
+}
+
 qry("[data-addslot]").click(ev => {
     const target = ev.currentTarget;
 
@@ -85,6 +92,7 @@ qry("[data-addslot]").click(ev => {
         nameInputBox.classList.add("input");
     
         const nameInput = document.createElement("input");
+        nameInput.id = "slot-add-name";
         nameInput.placeholder = " ";
     
         const namePlaceholder = document.createElement("span");
@@ -109,6 +117,14 @@ qry("[data-addslot]").click(ev => {
         for (let i = 0; i < d.slots.length; i++) {
             const slot = d.slots[i];
             const slotElement = document.createElement("div");
+            slotElement.addEventListener("click", () => { 
+                window.intentAddSlot(slot.id, slotElement)
+                .then(_=>{})
+                .catch(_=>{})
+                .finally(_=>{
+                    box.hide();
+                });
+            });
             slotElement.classList.add("box");
             slotElement.classList.add("clickable");
             slotElement.classList.add("transition");
@@ -166,3 +182,42 @@ qry("[data-addslot]").click(ev => {
         console.error(er);
     });
 });
+
+window.intentAddSlot = function(slotId, element) {
+    return new Promise((rs, rj) => {
+        const input = id("slot-add-name").get(0);
+        element.classList.add("transition");
+        const name = input.value;
+    
+        const skillId = qry("[data-skillid]").get(0).dataset.skillid;
+        const intentId = qry("[data-intentid]").get(0).dataset.intentid;
+    
+        if (name.trim() == "") {
+            input.classList.add("transition");
+            input.classList.add("error");
+            setTimeout(function() {
+                input.classList.remove("error");
+            }, 2000);
+            rj();
+            return;
+        }
+    
+        post(`/api/intent/${skillId}/${intentId}/add-slot`, {
+            name: name,
+            "slot-id": slotId
+        })
+        .then(JSON.parse)
+        .then(d => {
+            if (d.success) {
+                element.classList.add("border-green");
+                swup.loadPage({url: window.location.pathname});
+            } else {
+                throw new Error(window.INTENT_ERRORS[d.code]);
+            }
+            rs();
+        }).catch(er => {
+            alert("Couldn't add slot", er);
+            rj();
+        });
+    })
+}

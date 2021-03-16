@@ -102,11 +102,7 @@ class Slot:
             synonyms_per_data_quote += len(i["synonyms"])
         try:
             synonyms_per_data_quote /= len(self.slot["data"])
-            if synonyms_per_data_quote <= 3:
-                quality -= 0.15
-            elif synonyms_per_data_quote <= 7:
-                quality -= 0.05
-            for i in [7, 10, 15, 20]:
+            for i in [1, 3, 5, 7]:
                 if synonyms_per_data_quote > i:
                     quality += 0.1
         except ZeroDivisionError: # no data yet

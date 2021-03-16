@@ -5,7 +5,7 @@ if (!document.querySelector("#no-break")) {
 }
 
 window._get_wrapper = function() {
-    document.body.classList.add("no-scroll");
+    // document.body.classList.add("no-scroll");
 
     const alertWrapper = document.createElement("div");
     alertWrapper.id = "prompt";
@@ -66,6 +66,7 @@ window.rawWrapper = function(headerText, contentText) {
 }
 
 window._hide_wrapper = function(wrapperElement) {
+    document.body.classList.remove("no-scroll");
     wrapperElement.classList.add("hidden");
     setTimeout(function() {
         wrapperElement.remove();
@@ -90,9 +91,13 @@ window.alert = function(headerText, descriptionText) {
             content.innerHTML = headerText;
         }
 
+        console.log(resolve);
+        
         okButton.addEventListener("click", ev => {
             resolve(true);
+            console.log(wrapper);
             _hide_wrapper(wrapper);
+            console.log("done");
         });
         cancelButton.addEventListener("click", ev => {
             resolve(false);

@@ -139,13 +139,13 @@ p {
         --x: 8.33333%;
         --d: -3.25%;
 
-        --base-margin: 2%;
+        --col-right-margin: 2%;
     }
     .row > [class^='col']:not(:last-child), .row > [class*=' col']:not(:last-child) {
-        margin-right: var(--base-margin);
+        margin-right: var(--col-right-margin);
     }
     .row > [class^='col'], .row > [class*=' col'] {
-        margin-bottom: var(--base-margin);
+        margin-bottom: var(--col-right-margin);
     }
     /* .col-1      {  width: 4.33%;      }
     .col-2      {  width: 12.66%;     }
@@ -218,9 +218,9 @@ p {
 .grid.gap-xl    {  grid-gap: 50px;  }
 
 
-.grid.gap-m    .seperator {  right: -12px;  }
-.grid.gap-l     .seperator {  right: -16px;  }
-.grid.gap-xl    .seperator {  right: -27px;  }
+.grid.gap-m   .seperator  {  right: -12px;  }
+.grid.gap-l   .seperator  {  right: -16px;  }
+.grid.gap-xl  .seperator  {  right: -27px;  }
 
 .grid>div,
 .grid>div>div,

@@ -22,9 +22,11 @@ def slot_create_new():
 def api_add_data_to_slot(slot_id: str):
     json_data = request.get_json(force=True)
     if "value" in json_data and "synonyms" in json_data:
+        if json_data["value"].strip() == "":
+            return Response(json.dumps({"success":False, "code": "ERR_SLOT_VALUE_EMPTY", "error": "value must not be empty"}), content_type="application/json")
         slot = Slot(slot_id)
         if not slot.found:
-            return json.dumps({"success": False, "error": "slot not defined yet."})
+            return json.dumps({"success": False, "code": "ERR_SLOT_NOT_FOUND", "error": "slot not defined yet."})
         id = Security.id(16)
         slot["data"].append({
             "id": id,
@@ -34,8 +36,8 @@ def api_add_data_to_slot(slot_id: str):
             "synonyms": list(map(str.strip, json_data["synonyms"].split(","))) if json_data["synonyms"].strip() != "" else []
         })
         slot.save()
-        return json.dumps({"success": True, "id": id})
-    return json.dumps({"success": False, "error": "you have to provide 'value' and 'synonyms' in json body"})
+        return Response(json.dumps({"success": True, "id": id}), content_type="application/json")
+    return Response(json.dumps({"success": False, "code": "ERR_SLOT_ARGS_MISSING", "error": "you have to provide 'value' and 'synonyms' in json body"}), content_type="application/json")
 
 
 @app.route("/api/slot/<slot_id>/<key>")
@@ -50,7 +52,8 @@ def api_set_slot_key(slot_id: str, key: str):
         slot = Slot(slot_id)
         slot[key] = value
         slot.save()
-    return json.dumps({"success": False, "error": "invalid key. valid: 'name', 'extensible', 'use-synonyms' and 'strictness'"})
+        return json.dumps({"success": True})
+    return json.dumps({"success": False, "code": "ERR_SLOT_INVALID_ARGS", "error": "invalid key. valid: 'name', 'extensible', 'use-synonyms' and 'strictness'"})
 
 
 @app.route("/api/slot/<slot_id>/delete/<slot_value_id>")
@@ -65,7 +68,7 @@ def api_slot_remove(slot_id: str, slot_value_id: str):
         slot["data"] = new_data
         slot.save()
         return json.dumps({"success": True, "error": "successfully deleted data"})
-    return json.dumps({"success": False, "error": "couldn't find any data"})
+    return json.dumps({"success": False, "code": "ERR_SLOT_NOT_FOUND", "error": "couldn't find any data"})
 
 
 @app.route("/api/slot/<slot_id>/delete")

@@ -283,7 +283,7 @@ div.v-dot {
     right: -10px;
     top: 15%;
     height: 70%;
-    width: 2px;
+    width: 2px !important;
     background-color: var(--grey);
     border-radius: var(--border-radius);
 }
@@ -336,7 +336,7 @@ div.v-dot {
 .v-padding-s                {  padding: 5px 0;        }
 .v-padding                  {  padding: 10px 0;       }
 .v-padding-m                {  padding: 15px 0;       }
-.v-padding-l                {  padding: 12px 0;       }
+.v-padding-l                {  padding: 20px 0;       }
 .h-padding-xs               {  padding: 0 2px;        }
 .h-padding-s                {  padding: 0 5px;        }
 .h-padding                  {  padding: 0 10px;       }
@@ -346,22 +346,22 @@ div.v-dot {
 .padding-left-s             {  padding-left: 5px;     }
 .padding-left               {  padding-left: 10px;    }
 .padding-left-m             {  padding-left: 15px;    }
-.padding-left-l             {  padding-left: 12px;    }
+.padding-left-l             {  padding-left: 20px;    }
 .padding-right-xs           {  padding-right: 2px;    }
 .padding-right-s            {  padding-right: 5px;    }
 .padding-right              {  padding-right: 10px;   }
 .padding-right-m            {  padding-right: 15px;   }
-.padding-right-l            {  padding-right: 12px;   }
+.padding-right-l            {  padding-right: 20px;   }
 .padding-top-xs             {  padding-top: 2px;      }
 .padding-top-s              {  padding-top: 5px;      }
 .padding-top                {  padding-top: 10px;     }
 .padding-top-m              {  padding-top: 15px;     }
-.padding-top-l              {  padding-top: 12px;     }
+.padding-top-l              {  padding-top: 20px;     }
 .padding-bottom-xs          {  padding-bottom: 2px;   }
 .padding-bottom-s           {  padding-bottom: 5px;   }
 .padding-bottom             {  padding-bottom: 10px;  }
 .padding-bottom-m           {  padding-bottom: 15px;  }
-.padding-bottom-l           {  padding-bottom: 12px;  }
+.padding-bottom-l           {  padding-bottom: 20px;  }
 
 .size-15  {  font-size: 15px;  }
 .size-16  {  font-size: 16px;  }

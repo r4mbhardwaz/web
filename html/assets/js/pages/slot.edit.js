@@ -1,3 +1,9 @@
+window.SLOT_ERRORS = {
+    "ERR_SLOT_VALUE_EMPTY": "Please enter a slot value!<br>Only the synonyms field is optional!",
+    "ERR_SLOT_NOT_FOUND": "The given slot couldn't be found.<br><br>Refresh this page, the slot might have been deleted.",
+    "ERR_SLOT_ARGS_MISSING": "Please make sure you provide the 'value' and 'synonyms' JSON POST body."
+}
+
 window.submitNewData = function(ev) {
     const valueElement      = id("new-slot-value").get(0);
     const value             = valueElement.value;
@@ -10,7 +16,7 @@ window.submitNewData = function(ev) {
     }).then(JSON.parse).then(d => {
         if (d.success) {
             id("slot-data-values").get(0).innerHTML += `
-            <div class="transition border-radius hover-transition grid gap-l hover-bg-light-grey">
+            <div class="transition border-radius hover-transition grid gap-l hover-bg-light-grey v-padding-s">
             <div class="space row-s-1 row-e-1 col-s-1 col-e-5" data-itemid="${d.id}" data-editable data-editablecallback="updateSlotValue">
                 ${value}
                     <div class="seperator"></div>
@@ -27,8 +33,9 @@ window.submitNewData = function(ev) {
             synonymsElement.value = "";
             valueElement.focus();
             updateDataEditable();
+            updateSlotDeleteHandler();
         } else {
-            alert("Failed to submit new data!", "An unknown error occured and the new data couldn't be saved.<br><br>Please try again later");
+            alert("Failed to submit new data!", window.SLOT_ERRORS[d.code]).then(console.info);
         }
     });
 }
@@ -77,6 +84,9 @@ window.updateSlotSynonyms = function(newValue, element, oldValue="") {
     });
 }
 
+window.updateSlotDeleteHandler = function() {
+    qry(".slot-value-delete").click(slotValueDelete);
+}
 
 
 id("slot-synonyms").change(ev => {
@@ -100,5 +110,4 @@ id("slot-strictness").change(ev => {
 qry("#new-slot-value, #new-slot-synonyms").enter(submitNewData);
 id("new-slot-value-button").click(submitNewData);
 
-qry(".slot-value-delete").click(slotValueDelete);
-
+window.updateSlotDeleteHandler();

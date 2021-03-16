@@ -27,6 +27,7 @@ class Intent:
                 if isinstance(existing_data, Intent):
                     existing_data = existing_data.__dict__()
                 self.intent = existing_data
+                self._update_slots()
             else: 
                 self.intent = None
         self.id = self.intent["id"]
@@ -66,7 +67,16 @@ class Intent:
         return True
 
     # PRIVATE FUNCTIONS
+    def _update_slots(self) -> None:
+        for slotname in self.intent["slots"]:
+            slot = self.intent["slots"][slotname]
+            if not isinstance(slot, Slot) and not isinstance(slot, dict):
+                self.intent["slots"][slotname] = Slot(slot).__dict__()
+                del self.intent["slots"][slotname]["_id"]
+                del self.intent["slots"][slotname]["_rev"]
+
     def _reverse_slots(self, only_keep_reference: bool = True) -> None:
         for slotname in self.intent["slots"]:
             slot = self.intent["slots"][slotname]
-            self.intent["slots"][slotname] = slot["id"] if only_keep_reference else slot.__dict__()
+            if isinstance(slot, Slot) or isinstance(slot, dict):
+                self.intent["slots"][slotname] = slot["id"] if only_keep_reference else slot.__dict__()
