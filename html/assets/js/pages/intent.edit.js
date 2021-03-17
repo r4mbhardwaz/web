@@ -5,6 +5,8 @@ window.INTENT_ERRORS = {
     "ERR_INTENT_SLOT_NOT_FOUND": "The slot could not be found.<br><br>Most likely the slot got deleted and you'll need to create a new one"
 }
 
+window.updateIntentSlotName = console.log;
+
 window.intentAddSlot = function(slotId, element) {
     return new Promise((rs, rj) => {
         const input = id("slot-add-name").get(0);
@@ -82,7 +84,7 @@ window.addSlot = ev => {
     const skillId = qry("[data-skillid]").get(0).dataset.skillid;
     const intentId = qry("[data-intentid]").get(0).dataset.intentid;
 
-    const box = rawWrapper("Add New Slot", "Enter a descriptive slot name and pick a slot type:");
+    const box = rawWrapper("Create New Slot", "Enter a descriptive slot name and pick a slot type:");
     /**
      * .content
      * .ok

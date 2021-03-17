@@ -81,41 +81,55 @@ function onInputFinish(newValue, target, newElement, callback, oldValue = "") {
         } catch (er) { console.error("harmless exception", er) }
     }
 }
+
 window.dataEditable = function(ev) {
-    const target = ev.currentTarget;
-    const currentText = target.innerText;
+    try {
+        const target = ev.currentTarget;
+        const currentText = target.innerText;
 
-    const callback = window[target.dataset.editablecallback];
-
-    const newElement = document.createElement("input");
-    newElement.classList.add("absolute");
-    newElement.classList.add("left-0");
-    newElement.classList.add("top-0");
-    newElement.classList.add("bg-white");
-    newElement.classList.add("width-full");
-    newElement.style.padding = "5px 18px";
-
-    newElement.placeholder = currentText;
-    newElement.value = currentText;
-
-    target.appendChild(newElement);
-    newElement.focus();
-
-    newElement.addEventListener("blur", ev => {
-        ev.stopImmediatePropagation();
-        onInputFinish(newElement.value, target, newElement, callback, currentText);
-    });
-    
-    newElement.addEventListener("keydown", ev => {
-        ev.stopImmediatePropagation();
-        if (ev.key == "Enter" || ev.keyCode == 13) {
-            onInputFinish(newElement.value, target, newElement, currentText);
+        const el = document.getElementById("current-data-editable");
+        if (el) {
+            onInputFinish(el.value, el.parentNode, el, el.value);
+            el.remove();
         }
-    });
+
+        const callback = window[target.dataset.editablecallback];
+        
+        const newElement = document.createElement("input");
+        newElement.classList.add("absolute");
+        newElement.classList.add("left-0");
+        newElement.classList.add("top-0");
+        newElement.classList.add("bg-white");
+        newElement.classList.add("width-full");
+        newElement.style.padding = "5px 18px";
+        newElement.id = "current-data-editable";
+
+        newElement.placeholder = currentText;
+        newElement.value = currentText;
+
+        target.appendChild(newElement);
+        newElement.focus();
+
+        // newElement.addEventListener("blur", ev => {
+        //     ev.stopImmediatePropagation();
+        //     onInputFinish(newElement.value, target, newElement, callback, currentText);
+        // });
+        
+        newElement.addEventListener("keydown", ev => {
+            ev.stopImmediatePropagation();
+            if (ev.key == "Enter" || ev.keyCode == 13) {
+                onInputFinish(newElement.value, target, newElement, currentText);
+            }
+        });
+    } catch (er) {
+        console.error("microactions:data-editable", er);
+    }
 }
+
 window.updateDataEditable = function() {
     qry("[data-editable]").click(dataEditable);
 }
+
 updateDataEditable();
 
 window.loading = function(el) {
