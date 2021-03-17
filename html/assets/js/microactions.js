@@ -92,6 +92,7 @@ window.dataEditable = function(ev) {
     newElement.classList.add("left-0");
     newElement.classList.add("top-0");
     newElement.classList.add("bg-white");
+    newElement.classList.add("width-full");
     newElement.style.padding = "5px 18px";
 
     newElement.placeholder = currentText;

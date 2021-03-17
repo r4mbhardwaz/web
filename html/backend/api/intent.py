@@ -1,6 +1,7 @@
 from core.Skill import Skill
 from __main__ import *
 
+
 @app.route("/api/intent/<skill_id>/<intent_id>/set", methods=["POST"])
 @login_required
 def api_intent_set_value(skill_id: str, intent_id: str):
@@ -25,6 +26,7 @@ def api_intent_set_value(skill_id: str, intent_id: str):
     else:
         return Response(json.dumps({"success": False, "error": "need to provide key and value in json post body"}), content_type="application/json")
 
+
 @app.route("/api/intent/<skill_id>/add", methods=["POST"])
 @login_required
 def api_intent_add(skill_id: str):
@@ -48,6 +50,7 @@ def api_intent_add(skill_id: str):
     else:
         return Response(json.dumps({"success": False, "error": "need to provide 'name' and 'description' in json post body"}), content_type="application/json")
 
+
 @app.route("/api/intent/<skill_id>/<intent_id>/delete", methods=["POST"])
 @login_required
 def api_intent_delete(skill_id: str, intent_id: str):
@@ -59,6 +62,7 @@ def api_intent_delete(skill_id: str, intent_id: str):
             resp = {"success": True} if success else {"success": False, "error": "failed to remove intent"}
             return Response(json.dumps(resp), content_type="application/json")
     return Response(json.dumps({"success": False, "error": "couldn't find skill or intent by id"}), content_type="application/json")
+
 
 @app.route("/api/intent/<skill_id>/<intent_id>/add-slot", methods=["POST"])
 @login_required
@@ -78,6 +82,29 @@ def api_intent_add_slot(skill_id: str, intent_id: str):
     if not slot.found:
         return Response(json.dumps({"success": False, "code": "ERR_INTENT_SLOT_NOT_FOUND", "error": "couldn't find slot by id"}), content_type="application/json")
     intent.add_slot(slot_name, slot, True)
+    skill.update_intent(intent_id, intent)
+    skill.save()
+    return Response(json.dumps({"success": True}), content_type="application/json")
+
+
+@app.route("/api/intent/<skill_id>/<intent_id>/change-slot", methods=["POST"])
+@login_required
+def api_intent_change_slot(skill_id: str, intent_id: str):
+    json_data = request.get_json(force=True)
+    if "name" not in json_data or "slot-id" not in json_data:
+        return Response(json.dumps({"success": False, "code": "ERR_INTENT_INVALID_ARGS", "error": "need to provide 'name' and 'slot-id' in json post body"}), content_type="application/json")
+    slot_name = json_data["name"]
+    slot_id = json_data["slot-id"]
+    skill = Skill(skill_id)
+    if not skill.found:
+        return Response(json.dumps({"success": False, "code": "ERR_INTENT_SKILL_NOT_FOUND", "error": "couldn't find skill by id"}), content_type="application/json")
+    intent = skill.get_intent(intent_id)
+    if not intent:
+        return Response(json.dumps({"success": False, "code": "ERR_INTENT_NOT_FOUND", "error": "couldn't find intent by id"}), content_type="application/json")
+    slot = Slot(slot_id)
+    if not slot.found:
+        return Response(json.dumps({"success": False, "code": "ERR_INTENT_SLOT_NOT_FOUND", "error": "couldn't find slot by id"}), content_type="application/json")
+    intent.change_slot(slot_name, slot, True)
     skill.update_intent(intent_id, intent)
     skill.save()
     return Response(json.dumps({"success": True}), content_type="application/json")

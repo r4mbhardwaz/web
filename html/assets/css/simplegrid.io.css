@@ -147,6 +147,21 @@ p {
     .row > [class^='col'], .row > [class*=' col'] {
         margin-bottom: var(--col-right-margin);
     }
+    .col-1      {  width: calc(1   * var(--x));  }
+    .col-2      {  width: calc(2   * var(--x) + var(--d));  }
+    .col-3      {  width: calc(3   * var(--x) + var(--d));  }
+    .col-4      {  width: calc(4   * var(--x) + var(--d));  }
+    .col-5      {  width: calc(5   * var(--x) + var(--d));  }
+    .col-6      {  width: calc(6   * var(--x) + var(--d));  }
+    .col-7      {  width: calc(7   * var(--x) + var(--d));  }
+    .col-8      {  width: calc(8   * var(--x) + var(--d));  }
+    .col-9      {  width: calc(9   * var(--x) + var(--d));  }
+    .col-10     {  width: calc(10  * var(--x) + var(--d));  }
+    .col-11     {  width: calc(11  * var(--x) + var(--d));  }
+    .col-12     {  width: 100%;     }
+    .hidden-sm  {  display: block;  }
+
+    /* original simple grid */
     /* .col-1      {  width: 4.33%;      }
     .col-2      {  width: 12.66%;     }
     .col-3      {  width: 21%;        }
@@ -175,19 +190,6 @@ p {
     .col-11     {  width: 89.8%;    }
     .col-12     {  width: 100%;     }
     .hidden-sm  {  display: block;  } */
-    .col-1      {  width: calc(1   * var(--x) + var(--d));  }
-    .col-2      {  width: calc(2   * var(--x) + var(--d));  }
-    .col-3      {  width: calc(3   * var(--x) + var(--d));  }
-    .col-4      {  width: calc(4   * var(--x) + var(--d));  }
-    .col-5      {  width: calc(5   * var(--x) + var(--d));  }
-    .col-6      {  width: calc(6   * var(--x) + var(--d));  }
-    .col-7      {  width: calc(7   * var(--x) + var(--d));  }
-    .col-8      {  width: calc(8   * var(--x) + var(--d));  }
-    .col-9      {  width: calc(9   * var(--x) + var(--d));  }
-    .col-10     {  width: calc(10  * var(--x) + var(--d));  }
-    .col-11     {  width: calc(11  * var(--x) + var(--d));  }
-    .col-12     {  width: calc(12  * var(--x) + var(--d));  }
-    .hidden-sm  {  display: block;  }
 }
 
 @media only screen and (min-width: 60em) {

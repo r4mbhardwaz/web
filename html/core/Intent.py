@@ -61,8 +61,14 @@ class Intent:
         return self.intent["slots"]
 
     def add_slot(self, name: str, slot: Slot, only_keep_reference: bool = True):
+        self.intent["modified-at"] = int(time.time())
         if name in self.intent["slots"]:
             return False
+        self.intent["slots"][name] = slot["id"] if only_keep_reference else slot
+        return True
+
+    def change_slot(self, name: str, slot: Slot, only_keep_reference: bool = True):
+        self.intent["modified-at"] = int(time.time())
         self.intent["slots"][name] = slot["id"] if only_keep_reference else slot
         return True
 

@@ -16,15 +16,15 @@ window.submitNewData = function(ev) {
     }).then(JSON.parse).then(d => {
         if (d.success) {
             id("slot-data-values").get(0).innerHTML += `
-            <div class="transition border-radius hover-transition grid gap-l hover-bg-light-grey v-padding-s">
-            <div class="space row-s-1 row-e-1 col-s-1 col-e-5" data-itemid="${d.id}" data-editable data-editablecallback="updateSlotValue">
+            <div class="row transition border-radius hover-transition hover-bg-light-grey v-padding-s">
+            <div class="col-4 space margin-bottom-0" data-itemid="${d.id}" data-editable data-editablecallback="updateSlotValue">
                 ${value}
                     <div class="seperator"></div>
                 </div>
-                <div class="space row-s-1 row-e-1 col-s-5 col-e-11" data-itemid="${d.id}" data-editable data-editable-allow-empty="true" data-editablecallback="updateSlotSynonyms">
+                <div class="col-7 space margin-bottom-0" data-itemid="${d.id}" data-editable data-editable-allow-empty="true" data-editablecallback="updateSlotSynonyms">
                     ${synonyms.split(",").map(x => x.trim()).join(", ")}
                 </div>
-                <div class="visible-on-hover v-center middle red clickable row-s-1 row-e-1 col-s-11 col-e-13 slot-value-delete" data-slotid="{{ slot.id }}" data-slotdataid="{{ x.id }}">
+                <div class="col-1 margin-bottom-0 visible-on-hover v-center middle red clickable slot-value-delete" data-slotdataid="${d.id}">
                     <i style="margin: 0 10px 2px 0">clear</i>
                     <span>Delete</span>
                 </div>

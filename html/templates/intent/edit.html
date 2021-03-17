@@ -10,6 +10,19 @@
     <link rel="stylesheet" href="/assets/css/main.css">
     <script src="/assets/js/chart.js"></script>
     <script type="module" src="/assets/js/global.js"></script>
+
+    <style>
+        .custom-slot-container {
+            --custom-slot-container-padding: 10px; 
+            padding-bottom: 0 !important;
+        }
+        .custom-slot-info-container {
+            position: relative;
+            margin-bottom: calc(5px + var(--custom-slot-container-padding));
+            left: calc(-1 * var(--custom-slot-container-padding));
+            width: calc(100% + 2 * var(--custom-slot-container-padding)) !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -67,44 +80,6 @@
                         <i class="transition">add</i>
                         Add a slot
                     </button>
-                    {#
-                    <div class="options centered hidden">
-                        <div class="hover-bg-green hover-white clickable relative" onclick="swup.loadPage({url:'/slot/edit/{{ skill.id }}/{{ intent.id }}'})">
-                            <p class="v-margin-s">Create new Slot</p>
-                        </div>
-                        <div class="line"></div>
-                        <div>
-                            <div class="input hover-bg-white relative">
-                                <input type="text" placeholder=" " id="add-slot-name">
-                                <span>Slot name</span>
-                            </div>
-                        </div>
-                        <!-- <div class="line"></div> -->
-                        <div class="hover-black">Slot Type:</div>
-                        {% for slot in slots: %}
-                        <div class="hover-bg-blue hover-white clickable relative" data-skillid="{{ skill.id }}" data-addslot="{{ slot.id }}">
-                            <i class="clickable absolute top right-small-negative small" onclick="event.stopPropagation();swup.loadPage({url:'/slot/edit/{{ skill.id }}/{{ intent.id }}/{{ slot.id }}'})">edit</i>
-                            <i class="clickable absolute top right-medium small" data-deleteslot="{{ slot.id }}">delete</i>
-                            <p class="v-margin-s">{{ slot.name }}</p>
-                            {% if slot.data | length == 0: %}
-                            <span class="small red transition">Not data yet.</span>
-                            {% else: %}
-                                <span class="small">{{ slot.data[0].value }} - {{ slot.data[0].synonyms[:1] | join(", ") }}{{ ", +%s more" % (slot.data[0].synonyms | length - 1) if slot.data[0].synonyms | length > 1 else "" }}</span><br>
-                                {% if slot.data | length > 1: %}
-                                <span class="small">{{ slot.data[1].value }} - {{ slot.data[1].synonyms[:1] | join(", ") }}{{ ", +%s more" % (slot.data[1].synonyms | length - 1) if slot.data[1].synonyms | length > 1 else "" }}</span><br>
-                                {% endif %}
-                                <span class="small">{{ slot.data | length }} entr{{ "ies" if slot.data | length > 1 else "y" }}</span>
-                                <br>
-                                {% if slot.data | length < 5: %}
-                                <p class="small v-margin-s orange transition">Medium Quality</p>
-                                {% else: %}
-                                <p class="small v-margin-s green transition">Excellent Quality</p>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                        #}
-                    </div>
                 </div>
                 <div class="row-s-3 row-e-3 col-s-1 col-e-4">
                     <div class="v-margin-s">
@@ -112,21 +87,22 @@
                         {% set slot = intent.slots[slot_name] %}
                         {% set qualityColor = slot.quality %}
                         {% set qualityString = slot.quality %}
-                        <div class="box clickable relative v-margin" data-skillid="{{ skill.id }}" onclick="swup.loadPage({url: '/slot/edit/{{ skill.id }}/{{ intent.id }}/{{ slot.id }}'})">
-                            <i class="clickable size-19 hover-bg-red hover-white transition absolute top right-small small" data-skillid="{{ skill.id }}" data-removeslot="{{ slot.id }}">delete</i>
+                        <div class="box relative v-margin custom-slot-container" data-skillid="{{ skill.id }}">
+                            <i class="clickable size-19 hover-bg-red hover-white transition absolute top right" data-skillid="{{ skill.id }}" data-removeslot="{{ slot.id }}">delete</i>
                             <p class="v-margin-s">{{ slot_name }}</p>
-                            <div class="box" style="padding: 10px 15px 12px">
+                            <div class="box clickable margin-top-l custom-slot-info-container" style="padding: 10px 15px 12px" data-redirectslot="{{ slot.id }}">
+                                <i class="clickable size-19 hover-bg-blue hover-white transition absolute top-small right-small" data-changeslottype="{{ slot_name }}">expand_more</i>
                                 <p class="v-margin-s">{{ slot.name }}</p>
                                 {% if slot.data|length == 0: %}
                                 <span class="small red transition">Not data yet.</span>
                                 {% else: %}
-                                    <span class="small">{{ slot.data[0].value }} - {{ slot.data[0].synonyms[:1]|join(", ") }}{{ ", +%s more" % (slot.data[0].synonyms|length - 1) if slot.data[0].synonyms|length > 1 else "" }}</span><br>
-                                    {% if slot.data|length > 1: %}
-                                    <span class="small">{{ slot.data[1].value }} - {{ slot.data[1].synonyms[:1]|join(", ") }}{{ ", +%s more" % (slot.data[1].synonyms|length - 1) if slot.data[1].synonyms|length > 1 else "" }}</span><br>
-                                    {% endif %}
-                                    <span class="small">{{ slot.data|length }} entr{{ "ies" if slot.data|length > 1 else "y" }}</span>
+                                    <span class="small">{{ slot.data[0].value }} - {{ slot.data[0].synonyms[:1] | join(", ") }}{{ ", +%s more" % (slot.data[0].synonyms | length - 1) if slot.data[0].synonyms | length > 1 else "" }}</span><br>
+                                    {#{% if slot.data|length > 1: %}
+                                    <span class="small">{{ slot.data[1].value }} - {{ slot.data[1].synonyms[:1] | join(", ") }}{{ ", +%s more" % (slot.data[1].synonyms | length - 1) if slot.data[1].synonyms | length > 1 else "" }}</span><br>
+                                    {% endif %}#}
+                                    <span class="small">{{ slot.data | length }} entr{{ "ies" if slot.data | length > 1 else "y" }}</span>
                                     <br>
-                                    {% if slot.data|length < 5: %}
+                                    {% if slot.data | length < 5: %}
                                     <p class="small v-margin-s orange transition">Medium Quality</p>
                                     {% else: %}
                                     <p class="small v-margin-s green transition">Excellent Quality</p>
