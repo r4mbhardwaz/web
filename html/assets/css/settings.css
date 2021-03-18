@@ -27,9 +27,9 @@
     --box-shadow-level-3: 0px 0px 15px 0px #00000020;
     --box-shadow-level-4: 0px 0px 5px 0px #00000020;
     --box-shadow-level-5: "todo";
-    --transition: .2s ease;
-    --transition-short: .1s ease;
-    --transition-long: .4s ease;
+    --transition: .15s ease;
+    --transition-short: .075s ease;
+    --transition-long: .3s ease;
     --white: #fff;
     --lighter-grey: #fafafa;
     --light-grey: #f0f0f0; /* f1f1f1 */
@@ -160,38 +160,42 @@
 .top                            {  top: calc(1   * var(--base-margin))     !important;  }
 .top-0                          {  top: calc(0   * var(--base-margin))     !important;  }
 .top-small-negative             {  top: calc(-1  * var(--base-margin))     !important;  }
-.top.mini,.top-mini             {  top: calc(1/4 * var(--base-margin))     !important;  }
-.top.small,.top-small           {  top: calc(1/2 * var(--base-margin))     !important;  }
-.top.medium,.top-medium         {  top: calc(2   * var(--base-margin))     !important;  }
-.top.big,.top-big               {  top: calc(2.5 * var(--base-margin))     !important;  }
-.top.large,.top-large           {  top: calc(3   * var(--base-margin))     !important;  }
+.top.xxs,.top-xxs               {  top: calc(1/4 * var(--base-margin))     !important;  }
+.top.xs,.top-xs                 {  top: calc(1/2 * var(--base-margin))     !important;  }
+.top.s,.top-s                   {  top: calc(3/2 * var(--base-margin))     !important;  }
+.top.m,.top-m                   {  top: calc(2   * var(--base-margin))     !important;  }
+.top.big,.top-l                 {  top: calc(2.5 * var(--base-margin))     !important;  }
+.top.xl,.top-xl                 {  top: calc(3   * var(--base-margin))     !important;  }
 
 .left                           {  left: calc(1   * var(--base-margin))    !important;  }
 .left-0                         {  left: calc(0   * var(--base-margin))    !important;  }
 .left-small-negative            {  left: calc(-1  * var(--base-margin))    !important;  }
-.left.mini,.left-mini           {  left: calc(1/4 * var(--base-margin))    !important;  }
-.left.small,.left-small         {  left: calc(1/2 * var(--base-margin))    !important;  }
-.left.medium,.left-medium       {  left: calc(2   * var(--base-margin))    !important;  }
-.left.big,.left-big             {  left: calc(2.5 * var(--base-margin))    !important;  }
-.left.large,.left-large         {  left: calc(3   * var(--base-margin))    !important;  }
+.left.xxs,.left-xxs             {  left: calc(1/4 * var(--base-margin))    !important;  }
+.left.xs,.left-xs               {  left: calc(1/2 * var(--base-margin))    !important;  }
+.left.s,.left-s                 {  left: calc(3/2 * var(--base-margin))    !important;  }
+.left.m,.left-m                 {  left: calc(2   * var(--base-margin))    !important;  }
+.left.l,.left-l                 {  left: calc(2.5 * var(--base-margin))    !important;  }
+.left.xl,.left-xl               {  left: calc(3   * var(--base-margin))    !important;  }
 
 .right                          {  right: calc(1   * var(--base-margin))   !important;  }
 .right-0                        {  right: calc(0   * var(--base-margin))   !important;  }
 .right-small-negative           {  right: calc(-1  * var(--base-margin))   !important;  }
-.right.mini,.right-mini         {  right: calc(1/4 * var(--base-margin))   !important;  }
-.right.small,.right-small       {  right: calc(1/2 * var(--base-margin))   !important;  }
-.right.medium,.right-medium     {  right: calc(2   * var(--base-margin))   !important;  }
-.right.big,.right-big           {  right: calc(2.5 * var(--base-margin))   !important;  }
-.right.large,.right-large       {  right: calc(3   * var(--base-margin))   !important;  }
+.right.xxs,.right-xxs           {  right: calc(1/4 * var(--base-margin))   !important;  }
+.right.xs,.right-xs             {  right: calc(1/2 * var(--base-margin))   !important;  }
+.right.s,.right-s               {  right: calc(3/2 * var(--base-margin))   !important;  }
+.right.m,.right-m               {  right: calc(2   * var(--base-margin))   !important;  }
+.right.l,.right-l               {  right: calc(2.5 * var(--base-margin))   !important;  }
+.right.xl,.right-xl             {  right: calc(3   * var(--base-margin))   !important;  }
 
 .bottom                         {  bottom: calc(1   * var(--base-margin))  !important;  }
 .bottom-0                       {  bottom: calc(0   * var(--base-margin))  !important;  }
 .bottom-small-negative          {  bottom: calc(-1  * var(--base-margin))  !important;  }
-.bottom.mini,.bottom-mini       {  bottom: calc(1/4 * var(--base-margin))  !important;  }
-.bottom.small,.bottom-small     {  bottom: calc(1/2 * var(--base-margin))  !important;  }
-.bottom.medium,.bottom-medium   {  bottom: calc(2   * var(--base-margin))  !important;  }
-.bottom.big,.bottom-big         {  bottom: calc(2.5 * var(--base-margin))  !important;  }
-.bottom.large,.bottom-large     {  bottom: calc(3   * var(--base-margin))  !important;  }
+.bottom.xxs,.bottom-xxs         {  bottom: calc(1/4 * var(--base-margin))  !important;  }
+.bottom.xs,.bottom-xs           {  bottom: calc(1/2 * var(--base-margin))  !important;  }
+.bottom.s,.bottom-s             {  bottom: calc(3/2 * var(--base-margin))  !important;  }
+.bottom.m,.bottom-m             {  bottom: calc(2   * var(--base-margin))  !important;  }
+.bottom.l,.bottom-l             {  bottom: calc(2.5 * var(--base-margin))  !important;  }
+.bottom.xl,.bottom-xl           {  bottom: calc(3   * var(--base-margin))  !important;  }
 
 
 /*  ELEMENTS  */
@@ -221,7 +225,7 @@
 /*  ELEMENTS  */
 i.clickable {
     cursor: pointer;
-    padding: 7px;
+    padding: 12px;
     background-color: transparent;
     transition: background-color var(--transition);
     transition: background var(--transition);
@@ -359,37 +363,41 @@ div.v-dot {
 .margin-bottom-m            {  margin-bottom: 15px  !important;  }
 .margin-bottom-l            {  margin-bottom: 12px  !important;  }
 
-.no-padding, .padding-0     {  padding: 0 !important; }
-.v-padding-xs               {  padding: 2px 0;        }
-.v-padding-s                {  padding: 5px 0;        }
-.v-padding                  {  padding: 10px 0;       }
-.v-padding-m                {  padding: 15px 0;       }
-.v-padding-l                {  padding: 20px 0;       }
-.h-padding-xs               {  padding: 0 2px;        }
-.h-padding-s                {  padding: 0 5px;        }
-.h-padding                  {  padding: 0 10px;       }
-.h-padding-m                {  padding: 0 15px;       }
-.h-padding-l                {  padding: 0 20px;       }
-.padding-left-xs            {  padding-left: 2px;     }
-.padding-left-s             {  padding-left: 5px;     }
-.padding-left               {  padding-left: 10px;    }
-.padding-left-m             {  padding-left: 15px;    }
-.padding-left-l             {  padding-left: 20px;    }
-.padding-right-xs           {  padding-right: 2px;    }
-.padding-right-s            {  padding-right: 5px;    }
-.padding-right              {  padding-right: 10px;   }
-.padding-right-m            {  padding-right: 15px;   }
-.padding-right-l            {  padding-right: 20px;   }
-.padding-top-xs             {  padding-top: 2px;      }
-.padding-top-s              {  padding-top: 5px;      }
-.padding-top                {  padding-top: 10px;     }
-.padding-top-m              {  padding-top: 15px;     }
-.padding-top-l              {  padding-top: 20px;     }
-.padding-bottom-xs          {  padding-bottom: 2px;   }
-.padding-bottom-s           {  padding-bottom: 5px;   }
-.padding-bottom             {  padding-bottom: 10px;  }
-.padding-bottom-m           {  padding-bottom: 15px;  }
-.padding-bottom-l           {  padding-bottom: 20px;  }
+.no-padding, .padding-0     {  padding: 0 !important;             }
+.v-padding-xs               {  padding: 2px 0;                    }
+.v-padding-s                {  padding: 5px 0;                    }
+.v-padding                  {  padding: 10px 0;                   }
+.v-padding-m                {  padding: 15px 0;                   }
+.v-padding-l                {  padding: 20px 0;                   }
+.h-padding-xs               {  padding: 0 2px;                    }
+.h-padding-s                {  padding: 0 5px;                    }
+.h-padding                  {  padding: 0 10px;                   }
+.h-padding-m                {  padding: 0 15px;                   }
+.h-padding-l                {  padding: 0 20px;                   }
+.padding-left-0             {  padding-left: 0px     !important;  }
+.padding-left-xs            {  padding-left: 2px     !important;  }
+.padding-left-s             {  padding-left: 5px     !important;  }
+.padding-left               {  padding-left: 10px    !important;  }
+.padding-left-m             {  padding-left: 15px    !important;  }
+.padding-left-l             {  padding-left: 20px    !important;  }
+.padding-right-0            {  padding-right: 0px    !important;  }
+.padding-right-xs           {  padding-right: 2px    !important;  }
+.padding-right-s            {  padding-right: 5px    !important;  }
+.padding-right              {  padding-right: 10px   !important;  }
+.padding-right-m            {  padding-right: 15px   !important;  }
+.padding-right-l            {  padding-right: 20px   !important;  }
+.padding-top-0              {  padding-top: 0px      !important;  }
+.padding-top-xs             {  padding-top: 2px      !important;  }
+.padding-top-s              {  padding-top: 5px      !important;  }
+.padding-top                {  padding-top: 10px     !important;  }
+.padding-top-m              {  padding-top: 15px     !important;  }
+.padding-top-l              {  padding-top: 20px     !important;  }
+.padding-bottom-0           {  padding-bottom: 0px   !important;  }
+.padding-bottom-xs          {  padding-bottom: 2px   !important;  }
+.padding-bottom-s           {  padding-bottom: 5px   !important;  }
+.padding-bottom             {  padding-bottom: 10px  !important;  }
+.padding-bottom-m           {  padding-bottom: 15px  !important;  }
+.padding-bottom-l           {  padding-bottom: 20px  !important;  }
 
 .size-15  {  font-size: 15px;  }
 .size-16  {  font-size: 16px;  }

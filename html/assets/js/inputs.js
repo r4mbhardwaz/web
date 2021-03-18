@@ -90,14 +90,10 @@ window.alert = function(headerText, descriptionText) {
             header.innerHTML = "Alert";
             content.innerHTML = headerText;
         }
-
-        console.log(resolve);
         
         okButton.addEventListener("click", ev => {
             resolve(true);
-            console.log(wrapper);
             _hide_wrapper(wrapper);
-            console.log("done");
         });
         cancelButton.addEventListener("click", ev => {
             resolve(false);
@@ -150,7 +146,7 @@ window.prompt = function(headerText, descriptionText, placeholder, matcherFuncti
                     input.classList.add("error");
                     setTimeout(function() {
                         input.classList.remove("error");
-                    }, 2000);
+                    }, 700);
                 } else {
                     resolve(input.value.trim());
                     _hide_wrapper(wrapper);
@@ -169,7 +165,7 @@ window.prompt = function(headerText, descriptionText, placeholder, matcherFuncti
                 input.classList.add("error");
                 setTimeout(function() {
                     input.classList.remove("error");
-                }, 2000);
+                }, 700);
             } else {
                 resolve(input.value.trim());
                 _hide_wrapper(wrapper);
@@ -247,7 +243,7 @@ window.longPrompt = function(headerText, descriptionText, inputPlaceholder, text
                     input.classList.add("error");
                     setTimeout(function() {
                         input.classList.remove("error");
-                    }, 2000);
+                    }, 700);
                 } else {
                     textArea.focus();
                 }
@@ -265,7 +261,7 @@ window.longPrompt = function(headerText, descriptionText, inputPlaceholder, text
                 input.classList.add("error");
                 setTimeout(function() {
                     input.classList.remove("error");
-                }, 2000);
+                }, 700);
             } else {
                 tryToSubmit();
             }

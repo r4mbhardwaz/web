@@ -20,6 +20,11 @@ def create_intent(skill_id: str, intent_id: str = None):
         skill = Skill(skill_id)
         if skill.found:
             intent = skill.get_intent(intent_id)
+            slots = intent["slots"]
+            sorted_temp = sorted(list(slots.items()))
+            slots.clear()
+            slots.update(sorted_temp)
+            intent["slots"] = slots
             return render_template("intent/edit.html", skill=skill, intent=intent)
         else:
             return Response(json.dumps({"success": False, "error": "couldn't find skill by id"}))

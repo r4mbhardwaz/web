@@ -243,6 +243,12 @@ i[data-visibilityfor] {
     right: -1.5rem;
 }
 
+[data-editable] {
+    padding: 7px 20px !important;
+}
+[data-editable] > input {
+    font-size: inherit !important;
+}
 
 /* For IE Browsers*/
 

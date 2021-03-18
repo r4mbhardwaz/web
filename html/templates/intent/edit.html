@@ -22,6 +22,9 @@
             left: calc(-1 * var(--custom-slot-container-padding));
             width: calc(100% + 2 * var(--custom-slot-container-padding)) !important;
         }
+        .custom-intent-slot-list > div:not(:last-child) {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
@@ -69,42 +72,115 @@
 
         <div class="grid">
             <div class="row-s-1 row-e-1 col-s-1 col-e-4">
-                <p class="v-center fat large">{{ intent.slots | length }} Slot{{ "" if intent.slots | length == 1 else "s" }}
+                <p class="v-center fat large margin-0 margin-bottom">
+                    <span id="intent-slot-count">
+                        {{ intent.slots | length }}</span>&nbsp;Slot{{ "" if intent.slots | length == 1 else "s" }}
                     <i style="cursor: pointer; margin: 0 0 3px 15px" onmouseover="showInfoBox(this, `Slots are used to extract the <span class=\'green\'>parameters</span> that may be contained in a sentence.<br><br>For example, let’s consider this sentence:<br><span class=\'blue\'>&quot;Turn on the light in the kitchen&quot;</span><br>Let\'s assume we have an intent called <span class=\'green\'>switchLightOn</span>, now there is an additional piece of information which is contained in the word <span class=\'green\'>&quot;kitchen&quot;</span>.<br>This intent contains one slot, which is the room in which the light should be turned on.<br><br>Let’s consider another example:<br><span class=\'blue\'>&quot;Find me a flight from Paris to Tokyo&quot;</span><br>Here we assume we have an intent called <span class=\'green\'>searchFlight</span>, and now there are two slots in the sentence being contained in <span class=\'green\'>&quot;Paris&quot;</span> and <span class=\'green\'>&quot;Tokyo&quot;</span>. These two values are of the same type as they both correspond to a <span class=\'green\'>location</span> however they have different roles, as <span class=\'orange\'>Paris is the departure</span> and <span class=\'orange\'>Tokyo is the arrival</span>.<br><br>In this context, we call location a slot type (or entity) and departure and arrival are slot names.`)"
                         onmouseout="removeInfoBox()">info</i>
                 </p>
             </div>
-            <div class="h-fill row-s-2 row-e-2 col-s-1 col-e-4">
-                <div>
-                    <button id="add-slot" class="v-center h-center hover-box-shadow-1 hover-bg-green hover-border-green hover-white transitions" data-addslot>
-                        <i class="transition margin-bottom-xs margin-right-l">add</i>
-                        <span class="transition">Create New Slot</span>
-                    </button>
+            <div class="row-s-2 row-e-2 col-s-1 col-e-4">
+                <button id="add-slot" class="v-center h-center hover-box-shadow-1 hover-bg-green hover-border-green hover-white transitions" data-addslot>
+                    <i class="transition margin-bottom-xs margin-right-l">add</i>
+                    <span class="transition">Create New Slot</span>
+                </button>
+            </div>
+            <div class="h-fill row-s-3 row-e-3 col-s-1 col-e-4">
+                <div class="custom-intent-slot-list">
+                    {% set slot_colors = [ 'green', 'orange', 'blue', 'red' ] %}
+                    
+                    {% for slot_name in intent.slots: %}
+                    {% set slot = intent.slots[slot_name] %}
+                    {% set quality_color = 'red' if slot.quality < 0.25 else 'orange' if slot.quality < 0.5 else 'green' %}
+                    {% set quality_string = 'Poor Quality' if slot.quality < 0.25 else 'Medium Quality' if slot.quality < 0.5 else 'Excellent Quality' %}
+                    {% if loop.index > 3 %}
+                        {% set slot_color = 'dark-grey' %}
+                    {% else %}
+                        {% set slot_color = slot_colors[loop.index - 1] %}
+                    {% endif %}
+                    <div class="box relative custom-slot-container padding-top">
+                        <i class="clickable size-18 hover-bg-red hover-white transition absolute top right-s" data-removeslot="{{ slot_name }}">delete</i>
+                        <div class="v-margin-s size-19 margin-top-xs clickable relative" style="width: 80%; left: -10px" data-editable data-editablecallback="updateIntentSlotName">
+                            {{ slot_name }}
+                            <div class="seperator"></div>
+                            <div class="seperator left-0 right bg-{{ slot_color }}" style="width: 5px !important"></div>
+                        </div>
+                        <div class="box clickable margin-top-l custom-slot-info-container" style="padding: 10px 15px 12px" data-redirectslot="{{ slot.id }}">
+                            <i class="clickable size-19 hover-bg-blue hover-white transition absolute top-xs right-xs" data-changeslottype="{{ slot_name }}">expand_more</i>
+                            <p class="v-margin-s">{{ slot.name }}</p>
+                            {% if slot.data | length == 0: %}
+                            <span class="small red transition">Not data yet.</span>
+                            {% else: %}
+                                <span class="small">{{ slot.data[0].value }} - {{ slot.data[0].synonyms[:1] | join(", ") }}{{ ", +%s more" % (slot.data[0].synonyms | length - 1) if slot.data[0].synonyms | length > 1 else "" }}</span><br>
+                                <span class="small">{{ slot.data | length }} entr{{ "ies" if slot.data | length > 1 else "y" }}</span>
+                                <br>
+                                <p class="small v-margin-s {{ quality_color }} transition">{{ quality_string }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
-                <div class="row-s-3 row-e-3 col-s-1 col-e-4">
-                    <div class="v-margin-s">
-                        {% for slot_name in intent.slots: %}
-                        {% set slot = intent.slots[slot_name] %}
-                        {% set quality_color = 'red' if slot.quality < 0.25 else 'orange' if slot.quality < 0.5 else 'green' %}
-                        {% set quality_string = 'Poor Quality' if slot.quality < 0.25 else 'Medium Quality' if slot.quality < 0.5 else 'Excellent Quality' %}
-                        <div class="box relative v-margin custom-slot-container" data-skillid="{{ skill.id }}">
-                            <i class="clickable size-19 hover-bg-red hover-white transition absolute top right" data-skillid="{{ skill.id }}" data-removeslot="{{ slot.id }}">delete</i>
-                            <p class="v-margin-s size-19 margin-top-0 clickable relative" data-editable data-editablecallback="updateIntentSlotName">{{ slot_name }}</p>
-                            <div class="box clickable margin-top-l custom-slot-info-container" style="padding: 10px 15px 12px" data-redirectslot="{{ slot.id }}">
-                                <i class="clickable size-19 hover-bg-blue hover-white transition absolute top-small right-small" data-changeslottype="{{ slot_name }}">expand_more</i>
-                                <p class="v-margin-s">{{ slot.name }}</p>
-                                {% if slot.data|length == 0: %}
-                                <span class="small red transition">Not data yet.</span>
-                                {% else: %}
-                                    <span class="small">{{ slot.data[0].value }} - {{ slot.data[0].synonyms[:1] | join(", ") }}{{ ", +%s more" % (slot.data[0].synonyms | length - 1) if slot.data[0].synonyms | length > 1 else "" }}</span><br>
-                                    <span class="small">{{ slot.data | length }} entr{{ "ies" if slot.data | length > 1 else "y" }}</span>
-                                    <br>
-                                    <p class="small v-margin-s {{ quality_color }} transition">{{ quality_string }}</p>
-                                {% endif %}
+            </div>
+
+            <div class="row-s-1 row-e-1 col-s-4 col-e-13">
+                <p class="v-center fat large margin-0 margin-bottom">
+                    <span id="intent-slot-count">
+                        {{ intent.utternaces | length }}
+                    </span>&nbsp;Training Example{{ "" if intent.utterances | length == 1 else "s" }}
+                    <i style="cursor: pointer; margin: 0 0 3px 15px" onmouseover="showInfoBox(this, `Slots are used to extract the <span class=\'green\'>parameters</span> that may be contained in a sentence.<br><br>For example, let’s consider this sentence:<br><span class=\'blue\'>&quot;Turn on the light in the kitchen&quot;</span><br>Let\'s assume we have an intent called <span class=\'green\'>switchLightOn</span>, now there is an additional piece of information which is contained in the word <span class=\'green\'>&quot;kitchen&quot;</span>.<br>This intent contains one slot, which is the room in which the light should be turned on.<br><br>Let’s consider another example:<br><span class=\'blue\'>&quot;Find me a flight from Paris to Tokyo&quot;</span><br>Here we assume we have an intent called <span class=\'green\'>searchFlight</span>, and now there are two slots in the sentence being contained in <span class=\'green\'>&quot;Paris&quot;</span> and <span class=\'green\'>&quot;Tokyo&quot;</span>. These two values are of the same type as they both correspond to a <span class=\'green\'>location</span> however they have different roles, as <span class=\'orange\'>Paris is the departure</span> and <span class=\'orange\'>Tokyo is the arrival</span>.<br><br>In this context, we call location a slot type (or entity) and departure and arrival are slot names.`)"
+                        onmouseout="removeInfoBox()">info</i>
+                </p>
+            </div>
+            <div class="row-s-2 row-e-5 col-s-4 col-e-13">
+                <div class="box">
+                    <div class="row">
+                        <div class="row col-12 margin-top">
+                            <div class="col-11">
+                                <div class="input">
+                                    <input type="text" placeholder=" " autofocus>
+                                    <span>Enter a Training Example (a sample sentence)</span>
+                                </div>
+                            </div>
+                            <div class="col-1 v-center middle blue clickable">
+                                <i class="margin-right margin-bottom-xxs">add</i>
+                                <span>Add</span>
                             </div>
                         </div>
-                        {% endfor %}
                     </div>
+                    <div class="row">
+                        <div class="col-12 line"></div>
+                    </div>
+                    {% if intent.utterances | length == 0: %}
+                    <div class="row">
+                        <div class="col-12 center margin-bottom-s">
+                            <span class="margin-top-l">No Training Data yet.</span>
+                        </div>
+                    </div>
+                    {% else: %}
+                    {% for utterance in intent.utterances: %}
+                    <div class="row">
+                        <div class="col-11">
+                            {% for dataset in utterance.data: %}
+                            {# BUILT LIKE THE FOLLOWING:
+                                dataset
+                                    [{
+                                        "text": "this is a "
+                                    }, {
+                                        "text": "test",
+                                        "slot-id": "000abcdef"
+                                    }, {
+                                        "text": " designed for just this "
+                                    }, {
+                                        "text": "test",
+                                        "slot-id": "000abcdef"
+                                    }]
+                                #}
+                                <!-- TODO: implement this stuff -->
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         </div>

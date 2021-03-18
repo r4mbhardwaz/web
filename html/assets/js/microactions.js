@@ -85,6 +85,7 @@ function onInputFinish(newValue, target, newElement, callback, oldValue = "") {
 window.dataEditable = function(ev) {
     try {
         const target = ev.currentTarget;
+        
         const currentText = target.innerText;
 
         const el = document.getElementById("current-data-editable");
@@ -94,7 +95,7 @@ window.dataEditable = function(ev) {
         }
 
         const callback = window[target.dataset.editablecallback];
-        
+
         const newElement = document.createElement("input");
         newElement.classList.add("absolute");
         newElement.classList.add("left-0");
@@ -110,10 +111,10 @@ window.dataEditable = function(ev) {
         target.appendChild(newElement);
         newElement.focus();
 
-        // newElement.addEventListener("blur", ev => {
-        //     ev.stopImmediatePropagation();
-        //     onInputFinish(newElement.value, target, newElement, callback, currentText);
-        // });
+        newElement.addEventListener("blur", ev => {
+            ev.stopImmediatePropagation();
+            onInputFinish(newElement.value, target, newElement, callback, currentText);
+        });
         
         newElement.addEventListener("keydown", ev => {
             ev.stopImmediatePropagation();

@@ -109,3 +109,67 @@ def api_intent_change_slot(skill_id: str, intent_id: str):
     skill.save()
     return Response(json.dumps({"success": True}), content_type="application/json")
 
+
+@app.route("/api/intent/<skill_id>/<intent_id>/<slot_name>/remove", methods=["POST"])
+@login_required
+def api_intent_remove_slot(skill_id: str, intent_id: str, slot_name: str):
+    skill = Skill(skill_id)
+    if not skill.found:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_SKILL_NOT_FOUND", 
+            "error": "skill couldn't be found by id"}), content_type="application/json")
+    intent = skill.get_intent(intent_id)
+    if not intent:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_NOT_FOUND", 
+            "error": "intent couldn't be found by id"}), content_type="application/json")
+    if slot_name in intent["slots"]:
+        del intent["slots"][slot_name]
+        skill.update_intent(intent["id"], intent)
+        skill.save()
+        return Response(json.dumps({"success": True}), content_type="application/json")
+    return Response(json.dumps({
+        "success": False, 
+        "code": "ERR_INTENT_SLOT_NOT_FOUND", 
+        "error": "slot couldn't be found by name"}), content_type="application/json")
+
+
+@app.route("/api/intent/<skill_id>/<intent_id>/<slot_name>/rename", methods=["POST"])
+@login_required
+def api_intent_rename_slot(skill_id: str, intent_id: str, slot_name: str):
+    json_data = request.get_json(force=True)
+    if "new-name" not in json_data:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_INVALID_ARGS", 
+            "error": "need to provide field 'new-name' in json post body"}), content_type="application/json")
+    new_name = json_data["new-name"]
+    skill = Skill(skill_id)
+    if not skill.found:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_SKILL_NOT_FOUND", 
+            "error": "skill couldn't be found by id"}), content_type="application/json")
+    intent = skill.get_intent(intent_id)
+    if not intent:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_NOT_FOUND", 
+            "error": "intent couldn't be found by id"}), content_type="application/json")
+    if new_name in intent["slots"]:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_SLOT_EXISTS", 
+            "error": "a slot with this name already exists"}), content_type="application/json")
+    if slot_name in intent["slots"]:
+        intent["slots"][new_name] = intent["slots"][slot_name]
+        del intent["slots"][slot_name]
+        skill.update_intent(intent["id"], intent)
+        skill.save()
+        return Response(json.dumps({"success": True}), content_type="application/json")
+    return Response(json.dumps({
+        "success": False, 
+        "code": "ERR_INTENT_SLOT_NOT_FOUND", 
+        "error": "slot couldn't be found by name"}), content_type="application/json")
