@@ -118,13 +118,13 @@ def api_intent_remove_slot(skill_id: str, intent_id: str, slot_name: str):
         return Response(json.dumps({
             "success": False, 
             "code": "ERR_INTENT_SKILL_NOT_FOUND", 
-            "error": "skill couldn't be found by id"}), content_type="application/json")
+            "error": "couldn't find skill by id"}), content_type="application/json")
     intent = skill.get_intent(intent_id)
     if not intent:
         return Response(json.dumps({
             "success": False, 
             "code": "ERR_INTENT_NOT_FOUND", 
-            "error": "intent couldn't be found by id"}), content_type="application/json")
+            "error": "couldn't find intent by id"}), content_type="application/json")
     if slot_name in intent["slots"]:
         del intent["slots"][slot_name]
         skill.update_intent(intent["id"], intent)
@@ -151,13 +151,13 @@ def api_intent_rename_slot(skill_id: str, intent_id: str, slot_name: str):
         return Response(json.dumps({
             "success": False, 
             "code": "ERR_INTENT_SKILL_NOT_FOUND", 
-            "error": "skill couldn't be found by id"}), content_type="application/json")
+            "error": "couldn't find skill by id"}), content_type="application/json")
     intent = skill.get_intent(intent_id)
     if not intent:
         return Response(json.dumps({
             "success": False, 
             "code": "ERR_INTENT_NOT_FOUND", 
-            "error": "intent couldn't be found by id"}), content_type="application/json")
+            "error": "couldn't find intent by id"}), content_type="application/json")
     if new_name in intent["slots"]:
         return Response(json.dumps({
             "success": False, 
@@ -173,3 +173,119 @@ def api_intent_rename_slot(skill_id: str, intent_id: str, slot_name: str):
         "success": False, 
         "code": "ERR_INTENT_SLOT_NOT_FOUND", 
         "error": "slot couldn't be found by name"}), content_type="application/json")
+
+
+@app.route("/api/intent/<skill_id>/<intent_id>/add-training-data", methods=["POST"])
+@login_required
+def api_intent_add_training_data(skill_id: str, intent_id: str):
+    json_data = request.get_json(force=True)
+    if "sentence" not in json_data or json_data["sentence"].strip() == "":
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_DATA_ADD_INVALID_ARGS", 
+            "error": "need to provide non-empty field 'sentence' in json post body"}), content_type="application/json")
+    sentence = json_data["sentence"]
+    skill = Skill(skill_id)
+    if not skill.found:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_SKILL_NOT_FOUND", 
+            "error": "couldn't find skill by id"}), content_type="application/json")
+    intent = skill.get_intent(intent_id)
+    if not intent:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_NOT_FOUND", 
+            "error": "couldn't find intent by id"}), content_type="application/json")
+    utteranceid = Security.id(16)
+    intent["utterances"].append({
+        "id": utteranceid,
+        "created-at": int(time.time()),
+        "modified-at": int(time.time()),
+        "data": [{
+            "text": sentence
+        }]
+    })
+    skill.update_intent(intent["id"], intent)
+    skill.save()
+    return Response(json.dumps({"success": True, "id": utteranceid}), content_type="application/json")
+
+
+@app.route("/api/intent/<skill_id>/<intent_id>/delete-training-data", methods=["POST"])
+@login_required
+def api_intent_delete_training_data(skill_id: str, intent_id: str):
+    json_data = request.get_json(force=True)
+    if "training-data-id" not in json_data:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_INVALID_ARGS", 
+            "error": "need to provide field 'training-data-id' in json post body"}), content_type="application/json")
+    utterance_id = json_data["training-data-id"]
+    skill = Skill(skill_id)
+    if not skill.found:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_SKILL_NOT_FOUND", 
+            "error": "couldn't find skill by id"}), content_type="application/json")
+    intent = skill.get_intent(intent_id)
+    if not intent:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_NOT_FOUND", 
+            "error": "couldn't find intent by id"}), content_type="application/json")
+    utt_id = -1
+    for i in range(len(intent["utterances"])):
+        utt = intent["utterances"][i]
+        if utt["id"] == utterance_id:
+            utt_id = i
+            break
+    if utt_id == -1:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_DATA_NOT_FOUND", 
+            "error": "couldn't find intent data by id"}), content_type="application/json")
+    del intent["utterances"][utt_id]
+    skill.update_intent(intent["id"], intent)
+    skill.save()
+    return Response(json.dumps({"success": True}), content_type="application/json")
+
+
+@app.route("/api/intent/<skill_id>/<intent_id>/modify-training-data", methods=["POST"])
+@login_required
+def api_intent_modify_training_data(skill_id: str, intent_id: str):
+    json_data = request.get_json(force=True)
+    if "id" not in json_data or "data" not in json_data:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_DATA_MODIFY_INVALID_ARGS", 
+            "error": "need to provide non-empty field 'id' and 'data' in json post body"}), content_type="application/json")
+    data_id = json_data["id"]
+    new_data = json_data["data"]
+    skill = Skill(skill_id)
+    if not skill.found:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_SKILL_NOT_FOUND", 
+            "error": "couldn't find skill by id"}), content_type="application/json")
+    intent = skill.get_intent(intent_id)
+    if not intent:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_NOT_FOUND", 
+            "error": "couldn't find intent by id"}), content_type="application/json")
+    utt_id = -1
+    for i in range(len(intent["utterances"])):
+        utt = intent["utterances"][i]
+        if utt["id"] == data_id:
+            utt_id = i
+            break
+    if utt_id == -1:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_DATA_NOT_FOUND", 
+            "error": "couldn't find intent data by id"}), content_type="application/json")
+    intent["utterances"][utt_id]["data"] = new_data
+    intent["utterances"][utt_id]["modified-at"] = int(time.time())
+    skill.update_intent(intent["id"], intent)
+    skill.save()
+    return Response(json.dumps({"success": True}), content_type="application/json")

@@ -15,6 +15,10 @@ window.submitNewData = function(ev) {
         synonyms: synonyms
     }).then(JSON.parse).then(d => {
         if (d.success) {
+            const noData = document.getElementById("no-data-yet");
+            if (noData) {
+                noData.remove();
+            }
             id("slot-data-values").get(0).innerHTML += `
             <div class="row transition border-radius hover-transition hover-bg-light-grey v-padding-s">
             <div class="col-4 space margin-bottom-0" data-itemid="${d.id}" data-editable data-editablecallback="updateSlotValue">
@@ -38,7 +42,7 @@ window.submitNewData = function(ev) {
             alert("Failed to submit new data!", window.SLOT_ERRORS[d.code]).then(console.info);
         }
     });
-}
+};
 
 window.slotValueDelete = function(ev) {
     const target = ev.currentTarget;
@@ -51,12 +55,19 @@ window.slotValueDelete = function(ev) {
             target.classList.remove("orange");
             loadingStop(target.children[0])
             if (d.success) {
+                const slotDataContainer = target.parentElement.parentElement;
                 target.parentElement.outerHTML = "";
+                if (slotDataContainer.childElementCount == 0) {
+                    slotDataContainer.innerHTML = 
+                    `<div style="margin-bottom: 10px" class="center" id="no-data-yet">
+                        No values yet. Start by entering a value and synonyms
+                    </div>`;
+                }
             } else {
                 alert("Failed to delete data!", "An unknown error occured and the data couldn't be deleted.<br><br>Please try again later");
             }
         });
-}
+};
 
 window.updateSlotValue = function(newValue, element, oldValue="") {
     const slotId = qry("[data-slotid]").get(0).dataset.slotid;
@@ -69,7 +80,7 @@ window.updateSlotValue = function(newValue, element, oldValue="") {
         element.childNodes[0].nodeValue = oldValue;
         alert("Failed to update slot value!", "An unknown error occured and the new data couldn't be saved.<br><br>Please try again later");
     });
-}
+};
 
 window.updateSlotSynonyms = function(newValue, element, oldValue="") {
     const slotId = qry("[data-slotid]").get(0).dataset.slotid;
@@ -82,11 +93,11 @@ window.updateSlotSynonyms = function(newValue, element, oldValue="") {
         element.childNodes[0].nodeValue = oldValue;
         alert("Failed to update slot synonyms!", "An unknown error occured and the new data couldn't be saved.<br><br>Please try again later");
     });
-}
+};
 
 window.updateSlotDeleteHandler = function() {
     qry(".slot-value-delete").click(slotValueDelete);
-}
+};
 
 
 id("slot-synonyms").change(ev => {
@@ -105,6 +116,10 @@ id("slot-extensible").change(ev => {
 
 id("slot-strictness").change(ev => {
     get(`/api/slot/${ev.currentTarget.dataset.id}/strictness?value=${ev.currentTarget.value}`)
+});
+
+qry("[data-importdata]").click(ev => {
+
 });
 
 qry("#new-slot-value, #new-slot-synonyms").enter(submitNewData);

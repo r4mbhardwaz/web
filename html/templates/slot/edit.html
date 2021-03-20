@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="/assets/css/main.css">
     <script src="/assets/js/chart.js"></script>
+    <script src="/assets/js/papa.js"></script>
     <script type="module" src="/assets/js/global.js"></script>
 </head>
 
@@ -50,11 +51,21 @@
             </div>
 
             <div class="row">
-                <div class="col-12">
+                <div class="col-12 margin-bottom-0">
                     <h2>Values</h2>
+                </div>
+            </div>    
+            <div class="row">
+                <div class="col-10">
                     <div class="v-center">
                         <input type="checkbox" name="slot-synonyms" id="slot-synonyms" {{ "checked" if slot["use-synonyms"] else "" }} data-id="{{ slot.id }}">
-                        <label for="slot-synonyms">Use synonyms (Multiple synonyms must be seperated with commas)</label>
+                        <label for="slot-synonyms">Use synonyms (Seperate multiple synonyms with commas)</label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="v-center padding-right right dark-grey hover-darker-grey clickable" data-importdata>
+                        <i class="transition" style="margin: 0 10px 2px 0">download</i>
+                        <span class="transition">Import</span>
                     </div>
                 </div>
             </div>
@@ -80,8 +91,8 @@
     
                     <div class="row padding-top-l">
                         <div class="col-12 flex vertical reverse margin-0" id="slot-data-values">
-                            {% if slot.data|length == 0: %} 
-                            <div style="margin-bottom: 10px" class="center">
+                            {% if slot.data | length == 0: %} 
+                            <div style="margin-bottom: 10px" class="center" id="no-data-yet">
                                 No values yet. Start by entering a value and synonyms
                             </div>
                             {% else %}

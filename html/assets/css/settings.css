@@ -73,6 +73,8 @@
 .hover-bg-blue:hover                                    {  background-color: var(--blue) !important;	        }
 .hover-bg-green:hover                                   {  background-color: var(--green) !important;	        }
 .hover-bg-orange:hover                                  {  background-color: var(--orange) !important;	        }
+.hover-bg-white:hover                                   {  background-color: var(--white) !important;	        }
+.hover-bg-lighter-grey:hover                            {  background-color: var(--lighter-grey) !important;    }
 .hover-bg-light-grey:hover                              {  background-color: var(--light-grey) !important;	    }
 .hover-bg-light-black:hover                             {  background-color: var(--light-black) !important;     }
 .hover-bg-grey:hover                                    {  background-color: var(--grey) !important;	        }
@@ -141,7 +143,7 @@
 .border-heavy                                     {  border-width: 3px;                                                                                   }
 .border-dashed                                    {  border-style: dashed !important;                                                                     }
 .border-dotted                                    {  border-style: dotted !important;                                                                     }
-
+.border                                           {  border: 2px solid #000;                                                                            }
 
 .box-shadow, .hover-box-shadow:hover              {  box-shadow: var(--box-shadow-level-1);  }
 .box-shadow-1, .hover-box-shadow-1:hover          {  box-shadow: var(--box-shadow-level-1);  }
@@ -362,18 +364,23 @@ div.v-dot {
 .margin-bottom              {  margin-bottom: 10px  !important;  }
 .margin-bottom-m            {  margin-bottom: 15px  !important;  }
 .margin-bottom-l            {  margin-bottom: 12px  !important;  }
+.margin-xs                  {  margin: 2px !important;           }
+.margin-s                   {  margin: 5px !important;           }
+.margin                     {  margin: 10px !important;          }
+.margin-m                   {  margin: 15px !important;          }
+.margin-l                   {  margin: 20px !important;          }
 
 .no-padding, .padding-0     {  padding: 0 !important;             }
-.v-padding-xs               {  padding: 2px 0;                    }
-.v-padding-s                {  padding: 5px 0;                    }
-.v-padding                  {  padding: 10px 0;                   }
-.v-padding-m                {  padding: 15px 0;                   }
-.v-padding-l                {  padding: 20px 0;                   }
-.h-padding-xs               {  padding: 0 2px;                    }
-.h-padding-s                {  padding: 0 5px;                    }
-.h-padding                  {  padding: 0 10px;                   }
-.h-padding-m                {  padding: 0 15px;                   }
-.h-padding-l                {  padding: 0 20px;                   }
+.v-padding-xs               {  padding-top: 2px;    padding-bottom: 2px;   }
+.v-padding-s                {  padding-top: 5px;    padding-bottom: 5px;   }
+.v-padding                  {  padding-top: 10px;   padding-bottom: 10px;  }
+.v-padding-m                {  padding-top: 15px;   padding-bottom: 15px;  }
+.v-padding-l                {  padding-top: 20px;   padding-bottom: 20px;  }
+.h-padding-xs               {  padding-left: 2px;   padding-right: 2px;    }
+.h-padding-s                {  padding-left: 5px;   padding-right: 5px;    }
+.h-padding                  {  padding-left: 10px;  padding-right: 10px;   }
+.h-padding-m                {  padding-left: 15px;  padding-right: 15px;   }
+.h-padding-l                {  padding-left: 20px;  padding-right: 20px;   }
 .padding-left-0             {  padding-left: 0px     !important;  }
 .padding-left-xs            {  padding-left: 2px     !important;  }
 .padding-left-s             {  padding-left: 5px     !important;  }
@@ -398,6 +405,11 @@ div.v-dot {
 .padding-bottom             {  padding-bottom: 10px  !important;  }
 .padding-bottom-m           {  padding-bottom: 15px  !important;  }
 .padding-bottom-l           {  padding-bottom: 20px  !important;  }
+.padding-xs                 {  padding: 2px !important;           }
+.padding-s                  {  padding: 5px !important;           }
+.padding                    {  padding: 10px !important;          }
+.padding-m                  {  padding: 15px !important;          }
+.padding-l                  {  padding: 20px !important;          }
 
 .size-15  {  font-size: 15px;  }
 .size-16  {  font-size: 16px;  }

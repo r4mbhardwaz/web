@@ -1,16 +1,225 @@
 window.INTENT_ERRORS = {
     "ERR_INTENT_INVALID_ARGS": "You need to provide a name and slot-id!<br><br>Please consider opening an issue here: <a target='_blank' href='https://github.com/open-jarvis/web/issues'>GitHub</a>",
+    "ERR_INTENT_DATA_ADD_INVALID_ARGS": "You need to enter a valid sentence! Sentences must not be empty<br><br>Please try again",
+    "ERR_INTENT_DATA_MODIFY_INVALID_ARGS": "You need to provide a Training Example ID and the new data<br><br>Please try again",
+    "ERR_INTENT_DATA_NOT_FOUND": "The Training Example could not be found.<br><br>Most likely the data got deleted and you'll need to refresh the page",
     "ERR_INTENT_SKILL_NOT_FOUND": "The skill could not be found.<br><br>Most likely the skill got deleted and you'll need to create a new one",
     "ERR_INTENT_NOT_FOUND": "The intent could not be found.<br><br>Most likely the intent got deleted and you'll need to create a new one",
     "ERR_INTENT_SLOT_NOT_FOUND": "The slot could not be found.<br><br>Most likely the slot got deleted and you'll need to create a new one",
     "ERR_INTENT_SLOT_EXISTS": "A slot with this name already exists.<br><br>Try again with a different name"
 }
 
+import("./intent.edit.marker.js?" + Date.now());
+
+qry("[data-removeslot]").click(ev => {
+    const target = ev.currentTarget;
+
+    const skillId = qry("[data-skillid]").get(0).dataset.skillid;
+    const intentId = qry("[data-intentid]").get(0).dataset.intentid;
+    const slotName = target.dataset.removeslot;
+
+    loading(target);
+    target.classList.remove("hover-bg-red");
+    target.classList.add("hover-bg-orange");
+    
+    post(`/api/intent/${skillId}/${intentId}/${slotName}/remove`)
+    .then(JSON.parse)
+    .then(d => {
+        if (d.success) {
+            const slotContainer = target.parentElement.parentElement;
+            target.parentElement.remove();
+            window.updateSlotCount(slotContainer.childElementCount);
+        } else {
+            throw new Error(window.INTENT_ERRORS[d.code])
+        }
+    }).catch(er => {
+        alert("Failed to remove Slot!", er);
+    }).finally(_ => {
+        loadingStop(target);
+        target.classList.remove("hover-bg-orange");
+        target.classList.add("hover-bg-red");
+    });
+});
+
+qry("[data-redirectslot]").click(ev => {
+    const skillId = qry("[data-skillid]").get(0).dataset.skillid;
+    const intentId = qry("[data-intentid]").get(0).dataset.intentid;
+    const slotId = ev.currentTarget.dataset.redirectslot;
+
+    swup.loadPage({
+        url: `/slot/edit/${skillId}/${intentId}/${slotId}`
+    });
+});
+
+qry("[data-changeslottype]").click(ev => {
+    ev.stopPropagation();
+    const slotName = ev.currentTarget.dataset.changeslottype;
+    window.addSlot(new Event("hi")).then(box => {
+        box.header.innerHTML = "Change Slot Type";
+        box.text.innerHTML = `Pick a new Slot Type for <span class="blue">${slotName}</span>:<br><br>`;
+        box.content.children[0].children[0].remove();
+
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.id = "slot-add-name";
+        input.value = slotName
+        input.setAttribute("data-update", true);
+        box.content.children[0].appendChild(input);             
+        // add this element because we need to access it in window.intentAddSlot
+    });
+});
+
+qry("[data-addslot]").click(ev => { window.addSlot(ev) });
+
+qry("[data-addutterance]").click(ev => {
+    window.addUtterance();
+});
+
+qry("[data-inputaddutterance]").enter(ev => {
+    window.addUtterance();
+});
+
+window.submitNewIntentSlotData = function(trainingExampleID, data) {
+    /**
+     *  [{
+     *      "text": "this is a test with "
+     *  }, {
+     *      "text": "twenty percent",
+     *      "entity": "test",
+     *      "slot_name": "test"
+     *  }, {
+     *      "text": " success rate"
+     *  }]
+     */
+    const skillId = qry("[data-skillid]").get(0).dataset.skillid;
+    const intentId = qry("[data-intentid]").get(0).dataset.intentid;    
+
+    post(`/api/intent/${skillId}/${intentId}/modify-training-data`, {
+        id: trainingExampleID,
+        data: data
+    })
+    .then(JSON.parse)
+    .then(d => {
+        if (!d.success) {
+            throw new Error(window.INTENT_ERRORS[d.code]);
+        }
+    })
+    .catch(er => {
+        alert("Couldn't update Training Data", er);
+    });
+};
+
+window.updateTrainingExampleCount = function(num) {
+    document.getElementById("intent-utterances-count").innerHTML = num;
+};
+
+window.updateSlotCount = function(num) {
+    document.getElementById("intent-slot-count").innerHTML = num;
+};
+
+window.attachRemoveUtteranceHandler = function() {
+    qry("[data-deleteutterance]").click(ev => {
+        const target = ev.currentTarget;
+        const skillId = qry("[data-skillid]").get(0).dataset.skillid;
+        const intentId = qry("[data-intentid]").get(0).dataset.intentid;    
+        const utteranceId = target.dataset.deleteutterance;
+
+        loading(target.children[0]);
+        
+        post(`/api/intent/${skillId}/${intentId}/delete-training-data`, {
+            "training-data-id": utteranceId
+        })
+        .then(JSON.parse)
+        .then(d => {
+            loadingStop(target.children[0]);
+            if (d.success) {
+                const utteranceContainer = target.parentElement.parentElement;
+                target.parentElement.remove();
+                if (utteranceContainer.childElementCount == 0) {
+                    utteranceContainer.innerHTML = 
+                        `<div class="row" id="no-data-yet">
+                            <div class="col-12 center margin-bottom-s">
+                                <span class="margin-top-l">No Training Data yet.</span>
+                            </div>
+                        </div>`;
+                        window.updateTrainingExampleCount(0);
+                } else {
+                    window.updateTrainingExampleCount(utteranceContainer.childElementCount);
+                }
+            } else {
+                throw new Error(window.INTENT_ERRORS[d.code]);
+            }
+        })
+        .catch(er => {
+            alert("Failed to delete Training Example!", er);
+        });
+    });
+};
+
+window.attachRemoveUtteranceHandler();
+
+window.addUtterance = function(event) {
+    try {
+        const skillId = qry("[data-skillid]").get(0).dataset.skillid;
+        const intentId = qry("[data-intentid]").get(0).dataset.intentid;    
+        const input = document.getElementById("intent-utterance-input")
+        const sentence = input.value.trim();
+
+        if (sentence == "") {
+            input.classList.add("error");
+            setTimeout(function() {
+                input.classList.remove("error");
+            }, 700);
+            return;
+        }
+
+        loading(document.querySelector("[data-addutterance] > i"));
+        
+        post(`/api/intent/${skillId}/${intentId}/add-training-data`, {
+            sentence: sentence
+        })
+        .then(JSON.parse)
+        .then(d => {
+            loadingStop(document.querySelector("[data-addutterance] > i"));
+            if (d.success) {
+                const el = document.getElementById("no-data-yet");
+                if (el) {
+                    el.remove();
+                }
+                input.value = "";
+                document.getElementById("intent-utterances").innerHTML += 
+                `<div class="row transition hover-bg-light-grey border-radius">
+                    <div class="col-11 transition margin-0">
+                        <p class="margin-0 v-padding padding-left-l highlightable" data-trainingexampleid="${d.id}">
+                            <span class="editable" style="user-select: text">${sentence}</span>
+                        </p>
+                    </div>
+                    <div class="col-1 margin-0 visible-on-hover hover-bg-light-grey hover-red border-radius v-center right clickable dark-grey transition" data-deleteutterance="${d.id}">
+                        <i style="margin: 0 10px 2px 0">clear</i>
+                        <span>Delete</span>
+                    </div>
+                </div>`;
+                window.attachRemoveUtteranceHandler();
+                window.updateTrainingExampleCount(document.getElementById("intent-utterances").childElementCount);
+            } else {
+                throw new Error(window.INTENT_ERRORS[d.code]);
+            }
+        })
+        .catch(er => {
+            alert("Failed to add Training Example!", er);
+        });
+    } catch (er) {
+        console.error("intent.edit:addUtterance", er);
+    }
+};
+
 window.updateIntentSlotName = function(newValue, element, oldValue) {
     const skillId = qry("[data-skillid]").get(0).dataset.skillid;
     const intentId = qry("[data-intentid]").get(0).dataset.intentid;
     const slotName = oldValue;
 
+    const container = element.parentElement;
+    
     post(`/api/intent/${skillId}/${intentId}/${slotName}/rename`, {
         "new-name": newValue
     })
@@ -22,6 +231,7 @@ window.updateIntentSlotName = function(newValue, element, oldValue) {
                     el.dataset.removeslot = newValue;
                 }
             });
+            container.dataset.slotname = newValue;
         } else {
             element.childNodes[0].textContent = oldValue;
             throw new Error(window.INTENT_ERRORS[d.code]);
@@ -74,68 +284,7 @@ window.intentAddSlot = function(slotId, element) {
             rj();
         });
     });
-}
-
-qry("[data-removeslot]").click(ev => {
-    const target = ev.currentTarget;
-
-    const skillId = qry("[data-skillid]").get(0).dataset.skillid;
-    const intentId = qry("[data-intentid]").get(0).dataset.intentid;
-    const slotName = target.dataset.removeslot;
-
-    loading(target);
-    target.classList.remove("hover-bg-red");
-    target.classList.add("hover-bg-orange");
-    
-    post(`/api/intent/${skillId}/${intentId}/${slotName}/remove`)
-    .then(JSON.parse)
-    .then(d => {
-        if (d.success) {
-            target.parentNode.remove();
-            const countElement = document.querySelector("#intent-slot-count");
-            const oldSlotCount = parseInt(countElement.innerHTML.trim());
-            countElement.innerHTML = "" + (oldSlotCount - 1);
-        } else {
-            throw new Error(window.INTENT_ERRORS[d.code])
-        }
-    }).catch(er => {
-        alert("Failed to remove Slot!", er);
-    }).finally(_ => {
-        loadingStop(target);
-        target.classList.remove("hover-bg-orange");
-        target.classList.add("hover-bg-red");
-    });
-});
-
-qry("[data-redirectslot]").click(ev => {
-    const skillId = qry("[data-skillid]").get(0).dataset.skillid;
-    const intentId = qry("[data-intentid]").get(0).dataset.intentid;
-    const slotId = ev.currentTarget.dataset.redirectslot;
-
-    swup.loadPage({
-        url: `/slot/edit/${skillId}/${intentId}/${slotId}`
-    });
-});
-
-qry("[data-changeslottype]").click(ev => {
-    ev.stopPropagation();
-    const slotName = ev.currentTarget.dataset.changeslottype;
-    window.addSlot(new Event("hi")).then(box => {
-        box.header.innerHTML = "Change Slot Type";
-        box.text.innerHTML = `Pick a new Slot Type for <span class="blue">${slotName}</span>:<br><br>`;
-        box.content.children[0].children[0].remove();
-
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.id = "slot-add-name";
-        input.value = slotName
-        input.setAttribute("data-update", true);
-        box.content.children[0].appendChild(input);             
-        // add this element because we need to access it in window.intentAddSlot
-    });
-});
-
-qry("[data-addslot]").click(ev => { window.addSlot(ev) });
+};
 
 window.addSlot = ev => {
     const target = ev.currentTarget;
@@ -328,5 +477,5 @@ window.addSlot = ev => {
             console.error(er);
         });    
     });
-}
+};
 

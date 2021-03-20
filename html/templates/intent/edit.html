@@ -25,6 +25,45 @@
         .custom-intent-slot-list > div:not(:last-child) {
             margin-bottom: 10px;
         }
+        .slot-tooltip {
+            position: fixed;
+            width: fit-content;
+            padding: 10px 10px 0px 10px;
+            box-shadow: var(--box-shadow);
+            transform: translate(-50px, 55px);
+            background-color: #fff;
+            border-radius: var(--border-radius);
+            transition: .2s;
+            visibility: hidden;
+            opacity: 0;
+        }
+        .slot-tooltip.visible {
+            visibility: visible;
+            opacity: 1;
+            transform: translate(-50px, 5px);
+        }
+        .slot-tooltip::after {
+            content: "";
+            position: absolute;
+            top: -5px;
+            left: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            margin: auto;
+            transform: rotate(45deg);
+            background-color: #fff;
+            border-radius: 5px 0 0 0;
+            box-shadow: var(--box-shadow);
+            z-index: -1;
+        }
+        .slot-tooltip > div {
+            padding: 7px;
+            cursor: pointer;
+            border-radius: var(--border-radius);
+            color: #fff;
+            margin-bottom: 10px;
+        }        
     </style>
 </head>
 
@@ -88,7 +127,8 @@
             <div class="h-fill row-s-3 row-e-3 col-s-1 col-e-4">
                 <div class="custom-intent-slot-list">
                     {% set slot_colors = [ 'green', 'orange', 'blue', 'red' ] %}
-                    
+                    {% set slot_colors_matched = {} %}
+
                     {% for slot_name in intent.slots: %}
                     {% set slot = intent.slots[slot_name] %}
                     {% set quality_color = 'red' if slot.quality < 0.25 else 'orange' if slot.quality < 0.5 else 'green' %}
@@ -98,7 +138,8 @@
                     {% else %}
                         {% set slot_color = slot_colors[loop.index - 1] %}
                     {% endif %}
-                    <div class="box relative custom-slot-container padding-top">
+                    {% set x = slot_colors_matched.__setitem__(slot.id, slot_color) %}
+                    <div class="box relative custom-slot-container padding-top" data-slotid="{{ slot.id }}" data-slotcolor="{{ slot_color }}" data-slotname="{{ slot_name }}">
                         <i class="clickable size-18 hover-bg-red hover-white transition absolute top right-s" data-removeslot="{{ slot_name }}">delete</i>
                         <div class="v-margin-s size-19 margin-top-xs clickable relative" style="width: 80%; left: -10px" data-editable data-editablecallback="updateIntentSlotName">
                             {{ slot_name }}
@@ -124,8 +165,8 @@
 
             <div class="row-s-1 row-e-1 col-s-4 col-e-13">
                 <p class="v-center fat large margin-0 margin-bottom">
-                    <span id="intent-slot-count">
-                        {{ intent.utternaces | length }}
+                    <span id="intent-utterances-count">
+                        {{ intent.utterances | length }}
                     </span>&nbsp;Training Example{{ "" if intent.utterances | length == 1 else "s" }}
                     <i style="cursor: pointer; margin: 0 0 3px 15px" onmouseover="showInfoBox(this, `Slots are used to extract the <span class=\'green\'>parameters</span> that may be contained in a sentence.<br><br>For example, let’s consider this sentence:<br><span class=\'blue\'>&quot;Turn on the light in the kitchen&quot;</span><br>Let\'s assume we have an intent called <span class=\'green\'>switchLightOn</span>, now there is an additional piece of information which is contained in the word <span class=\'green\'>&quot;kitchen&quot;</span>.<br>This intent contains one slot, which is the room in which the light should be turned on.<br><br>Let’s consider another example:<br><span class=\'blue\'>&quot;Find me a flight from Paris to Tokyo&quot;</span><br>Here we assume we have an intent called <span class=\'green\'>searchFlight</span>, and now there are two slots in the sentence being contained in <span class=\'green\'>&quot;Paris&quot;</span> and <span class=\'green\'>&quot;Tokyo&quot;</span>. These two values are of the same type as they both correspond to a <span class=\'green\'>location</span> however they have different roles, as <span class=\'orange\'>Paris is the departure</span> and <span class=\'orange\'>Tokyo is the arrival</span>.<br><br>In this context, we call location a slot type (or entity) and departure and arrival are slot names.`)"
                         onmouseout="removeInfoBox()">info</i>
@@ -137,11 +178,11 @@
                         <div class="row col-12 margin-top">
                             <div class="col-11">
                                 <div class="input">
-                                    <input type="text" placeholder=" " autofocus>
+                                    <input type="text" placeholder=" " id="intent-utterance-input" autofocus data-inputaddutterance>
                                     <span>Enter a Training Example (a sample sentence)</span>
                                 </div>
                             </div>
-                            <div class="col-1 v-center middle blue clickable">
+                            <div class="col-1 v-center middle blue clickable" data-addutterance>
                                 <i class="margin-right margin-bottom-xxs">add</i>
                                 <span>Add</span>
                             </div>
@@ -150,37 +191,28 @@
                     <div class="row">
                         <div class="col-12 line"></div>
                     </div>
+                    <div class="flex column reverse" id="intent-utterances">
                     {% if intent.utterances | length == 0: %}
-                    <div class="row">
+                    <div class="row" id="no-data-yet">
                         <div class="col-12 center margin-bottom-s">
                             <span class="margin-top-l">No Training Data yet.</span>
                         </div>
                     </div>
                     {% else: %}
-                    {% for utterance in intent.utterances: %}
-                    <div class="row">
-                        <div class="col-11">
-                            {% for dataset in utterance.data: %}
-                            {# BUILT LIKE THE FOLLOWING:
-                                dataset
-                                    [{
-                                        "text": "this is a "
-                                    }, {
-                                        "text": "test",
-                                        "slot-id": "000abcdef"
-                                    }, {
-                                        "text": " designed for just this "
-                                    }, {
-                                        "text": "test",
-                                        "slot-id": "000abcdef"
-                                    }]
-                                #}
-                                <!-- TODO: implement this stuff -->
-                            {% endfor %}
+                        {% for utterance in intent.utterances: %}
+                        <div class="row transition hover-bg-light-grey border-radius">
+                            {# THE P LINE HAS TO BE UNFORMATTED!!! #}
+                            <div class="col-11 transition margin-0">
+                                <p class="margin-0 v-padding padding-left-l highlightable" data-trainingexampleid="{{ utterance.id }}"><span class="editable" style="user-select: text">{% for dataset in utterance.data: %}{% if "slot" in dataset: %}<span class="highlighter v-padding-s h-padding border-radius white bg-{{ slot_colors_matched[dataset.slot] }}" data-slot="{{ dataset.slot }}">{{ dataset.text }}</span>{% else %}{{ dataset.text }}{% endif %}{% endfor %}</span></p>
+                            </div>
+                            <div class="col-1 margin-0 visible-on-hover hover-bg-light-grey hover-red border-radius v-center right clickable dark-grey transition" data-deleteutterance="{{ utterance.id }}">
+                                <i style="margin: 0 10px 2px 0">clear</i>
+                                <span>Delete</span>
+                            </div>
                         </div>
-                    </div>
-                    {% endfor %}
+                        {% endfor %}
                     {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
