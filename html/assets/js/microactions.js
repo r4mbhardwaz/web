@@ -67,7 +67,6 @@ document.querySelectorAll(".settings").forEach(_el => {
     });
 });
 
-
 function onInputFinish(newValue, target, newElement, callback, oldValue = "") {
     if (target.contains(newElement)) {
         try {
@@ -84,7 +83,7 @@ function onInputFinish(newValue, target, newElement, callback, oldValue = "") {
             }
         } catch (er) { console.error("harmless exception", er) }
     }
-}
+};
 
 window.dataEditable = function(ev) {
     try {
@@ -129,11 +128,11 @@ window.dataEditable = function(ev) {
     } catch (er) {
         console.error("microactions:data-editable", er);
     }
-}
+};
 
 window.updateDataEditable = function() {
     qry("[data-editable]").click(dataEditable);
-}
+};
 
 updateDataEditable();
 
@@ -142,9 +141,62 @@ window.loading = function(el) {
     el.setAttribute("data-loading-oldinnerhtml", oldInnerHTML);
     el.innerHTML = "loop";
     el.classList.add("rotating");
-}
+};
+
 window.loadingStop = function(el) {
     const oldInnerHTML = el.getAttribute("data-loading-oldinnerhtml");
     el.innerHTML = oldInnerHTML;
     el.classList.remove("rotating");
-}
+};
+
+window.infiniteScroll = function (onEndPromise, elementToAppend, wrapper = window, reverse = false, pixelDifference = 300) {
+    console.log("infiniteScroll initialized");
+    function scroller(ev) {
+        try {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - pixelDifference) {
+                onEndPromise().then(d => {
+                    if (reverse) {
+                        elementToAppend.innerHTML = d + elementToAppend.innerHTML;
+                    } else {
+                        elementToAppend.innerHTML += d;
+                    }
+                }).catch(er => {
+                    console.error("infiniteScroll:onEndPromise", er);
+                });
+            }
+        } catch (er) {
+            console.error("infiniteScroll scroller", er);
+        }
+    }
+    wrapper.addEventListener("scroll", scroller);
+};
+
+window.bottomNews = function(message, color="green", timeout=1000) {
+    if (document.getElementById("bottom-news")) { return; }
+    const news = document.createElement("div");
+    news.id = "bottom-news";
+    news.classList.value = `fixed bottom-l left-0 right-0 clickable bg-white v-padding h-padding-l border border-radius border-${color} box-shadow-1 slide-into-view`;
+    news.style.margin = "auto";
+    news.style.width = "fit-content";
+
+    const msg = document.createElement("span");
+    msg.innerHTML = message;
+
+    news.appendChild(msg);
+    document.getElementById("no-break").appendChild(news);  
+    news.addEventListener("click", window.hideBottomNews);
+
+    if (timeout > 0) {
+        setInterval(function() {
+            hideBottomNews();
+        }, timeout);
+    }
+};
+
+window.hideBottomNews = function() {
+    document.getElementById("bottom-news").classList.remove("slide-into-view");
+    document.getElementById("bottom-news").classList.add("slide-out-of-view");
+    setTimeout(function() {
+        document.getElementById("bottom-news").remove();
+    }, 300);
+};

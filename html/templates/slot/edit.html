@@ -99,18 +99,19 @@
                                 No values yet. Start by entering a value and synonyms
                             </div>
                             {% else %}
-                            {% for x in slot.data: %}
+                            {% for i in range(50 if slot.data | length > 50 else slot.data | length): %}
+                            {% set x = slot.data[i] %}
                             <div class="row transition border-radius hover-transition hover-bg-light-grey v-padding-s">
-                                <div class="col-4 space margin-bottom-0" data-slotid="{{ slot.id }}" data-itemid="{{ x.id }}" data-editable data-editablecallback="updateSlotValue">
+                                <div class="col-4 space margin-bottom-0" data-itemid="{{ x.id }}" data-editable data-editablecallback="updateSlotValue">
                                     {{ x.value }}
                                     <div class="seperator" style="width: 2px;"></div>
                                 </div>
-                                <div class="col-7 space margin-bottom-0" data-slotid="{{ slot.id }}" data-itemid="{{ x.id }}" data-editable data-editable-allow-empty="true" data-editablecallback="updateSlotSynonyms">
+                                <div class="col-7 space margin-bottom-0" data-itemid="{{ x.id }}" data-editable data-editable-allow-empty="true" data-editablecallback="updateSlotSynonyms">
                                     {{ x.synonyms | join(", ") }}
                                 </div>
-                                <div class="col-1 margin-bottom-0 visible-on-hover v-center middle red clickable slot-value-delete" data-slotdataid="{{ x.id }}">
-                                    <i class="margin-right margin-bottom-xxs">clear</i>
-                                    <span>Delete</span>
+                                <div class="col-1 margin-bottom-0 visible-on-hover v-center middle hover-bg-light-grey hover-red border-radius v-center middle clickable dark-grey transition clickable slot-value-delete" data-slotdataid="{{ x.id }}">
+                                    <i class="transition margin-right margin-bottom-xxs">clear</i>
+                                    <span class="transition">Delete</span>
                                 </div>
                             </div>
                             {% endfor %}

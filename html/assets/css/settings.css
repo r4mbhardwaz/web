@@ -156,8 +156,9 @@
 :root {
     --base-margin: 10px;
 }
-.relative                       {  position: relative !important;  }
-.absolute                       {  position: absolute !important;  }
+.relative                       {  position: relative   !important;  }
+.absolute                       {  position: absolute   !important;  }
+.fixed                          {  position: fixed      !important;  }
 
 .top                            {  top: calc(1   * var(--base-margin))     !important;  }
 .top-0                          {  top: calc(0   * var(--base-margin))     !important;  }

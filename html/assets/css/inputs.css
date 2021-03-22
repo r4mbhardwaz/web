@@ -461,3 +461,20 @@ input.error {
     50% { left: 5px; }
     100% { left: 0px; }
 }
+
+.slide-into-view {
+    animation: slide-into-view .2s ease forwards;
+}
+.slide-out-of-view {
+    animation: slide-out-of-view .2s ease forwards;
+}
+
+@keyframes slide-into-view {
+    0% {  transform: translateY(100px);  }
+    100% {  transform: translateY(0px);  }
+}
+
+@keyframes slide-out-of-view {
+    0% {  transform: translateY(0px);  }
+    100% {  transform: translateY(100px);  }
+}

@@ -101,6 +101,63 @@ def api_slot_item_change(slot_id: str, item_id: str):
         return json.dumps({"success": False, "error": "you need to provide 'value' or 'synonyms' in post body"})
 
 
+@app.route("/api/slot/<slot_id>/import", methods=["POST"])
+@login_required
+def api_slot_import(slot_id):
+    json_data = request.get_json(force=True)
+    if "values" not in json_data:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_SLOT_INVALID_ARGS",
+            "error": "need to provide field 'values' in json post body"
+            }), content_type="application/json")
+    slot = Slot(slot_id)
+    if not slot.found:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_SLOT_NOT_FOUND",
+            "error": "couldn't find slot by id"
+            }), content_type="application/json")
+    values = json_data["values"]
+    for value in values:
+        slot["data"].append({
+            "id": Security.id(16),
+            "created-at": int(time.time()),
+            "modified-at": int(time.time()),
+            "value": value,
+            "synonyms": []
+        })
+    slot.save()
+    return Response(json.dumps({"success":True}), content_type="application/json")
+
+
+@app.route("/api/slot/<slot_id>/load-data", methods=["POST"])
+@login_required
+def api_slot_load_data(slot_id):
+    json_data = request.get_json(force=True)
+    if "start" not in json_data or "count" not in json_data:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_SLOT_INVALID_ARGS",
+            "error": "need to provide field 'start' and 'count' in json post body"
+            }), content_type="application/json")
+    slot = Slot(slot_id)
+    if not slot.found:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_SLOT_NOT_FOUND",
+            "error": "couldn't find slot by id"
+            }), content_type="application/json")
+    start = json_data["start"]
+    count = json_data["count"]
+    return Response(json.dumps({
+        "success": True, 
+        "data": slot["data"][start:start+count]
+        }), content_type="application/json")
+
+
+
+
 @app.route("/api/slot/all")
 @login_required
 def api_slot_get_all():

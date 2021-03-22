@@ -97,7 +97,7 @@
                             <span>{{ intent.name }}</span>
                         </div>
                         <div class="row-s-2 row-e-3 col-s-2 col-e-11">
-                            <span class="{{ color }}">{{ intent.utterances | length }} training examples</span>
+                            <span class="{{ color }}">{{ intent.utterances | length }} training example{{ "" if intent.utterances | length == 1 else "s" }}</span>
                             <div class="v-dot bg-darker-grey"></div>
                             <span>{{ intent.slots | length }} slot{{ "" if intent.slots | length == 1 else "s"}}</span>
                         </div>

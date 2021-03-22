@@ -152,7 +152,7 @@
                             {% if slot.data | length == 0: %}
                             <span class="small red transition">Not data yet.</span>
                             {% else: %}
-                                <span class="small">{{ slot.data[0].value }} - {{ slot.data[0].synonyms[:1] | join(", ") }}{{ ", +%s more" % (slot.data[0].synonyms | length - 1) if slot.data[0].synonyms | length > 1 else "" }}</span><br>
+                                <span class="small">{{ slot.data[0].value }} {{ " - " + slot.data[0].synonyms[:1] | join(", ") if slot.data[0].synonyms | length > 0 else "" }}{{ ", +%s more" % (slot.data[0].synonyms | length - 1) if slot.data[0].synonyms | length > 1 else "" }}</span><br>
                                 <span class="small">{{ slot.data | length }} entr{{ "ies" if slot.data | length > 1 else "y" }}</span>
                                 <br>
                                 <p class="small v-margin-s {{ quality_color }} transition">{{ quality_string }}</p>

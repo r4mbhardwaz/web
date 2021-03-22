@@ -2,7 +2,7 @@ window.SLOT_ERRORS = {
     "ERR_SLOT_VALUE_EMPTY": "Please enter a slot value!<br>Only the synonyms field is optional!",
     "ERR_SLOT_NOT_FOUND": "The given slot couldn't be found.<br><br>Refresh this page, the slot might have been deleted.",
     "ERR_SLOT_ARGS_MISSING": "Please make sure you provide the 'value' and 'synonyms' JSON POST body."
-}
+};
 
 window.submitNewData = function(ev) {
     const valueElement      = id("new-slot-value").get(0);
@@ -99,7 +99,6 @@ window.updateSlotDeleteHandler = function() {
     qry(".slot-value-delete").click(slotValueDelete);
 };
 
-
 id("slot-synonyms").change(ev => {
     get(`/api/slot/${ev.currentTarget.dataset.id}/use-synonyms?value=${ev.currentTarget.checked}`);
 });
@@ -118,6 +117,8 @@ id("slot-strictness").change(ev => {
     get(`/api/slot/${ev.currentTarget.dataset.id}/strictness?value=${ev.currentTarget.value}`)
 });
 
+window._papaData = null;
+window._papaConfig = null;
 qry("[data-importdata]").click(ev => {
     const box = window.rawWrapper("Import Data", "Enter a URL or import from a local CSV file:");
     /**
@@ -157,7 +158,8 @@ qry("[data-importdata]").click(ev => {
         const previewAmount = 100;
 
         if (urlInput.value.trim() != "") {
-            Papa.parse(urlInput.value.trim(), {
+            window._papaData = urlInput.value.trim();
+            window._papaConfig = {
                 header: true,
                 preview: previewAmount,
                 worker: true,
@@ -170,11 +172,10 @@ qry("[data-importdata]").click(ev => {
                     }, 250);
                 },
                 download: true
-            });
-            return;
-        } 
-        if (fileInput.files.length > 0) {
-            Papa.parse(fileInput.files[0], {
+            };
+        } else if (fileInput.files.length > 0) {
+            window._papaData = fileInput.files[0];
+            window._papaConfig = {
                 header: true,
                 preview: previewAmount,
                 worker: true,
@@ -186,14 +187,14 @@ qry("[data-importdata]").click(ev => {
                         alert("Couldn't read file!", "An unknown error occured while reading the file and parsing the values.<br><br>Please check the file is valid and contains CSV data");
                     }, 250);
                 }
-            });
+            };
         }
+        Papa.parse(window._papaData, window._papaConfig);
     });
 });
 
 window._selectedColumn = -1;
-window.showCSVColumnSelector = function(data, headers, _meta) {
-    console.log(_meta);
+window.showCSVColumnSelector = function(data, headers, result) {
     let code = `<table id="csv-picker" class="column-highlight"><thead><tr>`;
     headers.forEach(key => {
         code += `<th>${key}</th>`;
@@ -211,7 +212,7 @@ window.showCSVColumnSelector = function(data, headers, _meta) {
     });
     code += `</tbody></table>`;
 
-    const box = window.rawWrapper("Choose column to import", "Pick a 'value' column and a 'synonyms' column:");
+    const box = window.rawWrapper("Choose column to import", "Click a column to import as <span class='blue'>value</span> field:");
 
     box.content.classList.add("margin-top-l");
     box.content.classList.add("height-500");
@@ -262,6 +263,41 @@ window.showCSVColumnSelector = function(data, headers, _meta) {
             i++;
         }
 
+        const header = result.meta.fields[i - 1];
+        
+        delete window._papaConfig.preview;
+        window._papaConfig.complete = function(myData, x) {
+            const relevantData = [];
+            myData.data.forEach(element => {
+                if (Object.hasOwnProperty.call(element, header)) {
+                    const custElement = element[header];
+                    relevantData.push(custElement);
+                }
+            });
+
+            const slotId = qry("[data-slotid]").get(0).dataset.slotid;
+
+            post(`/api/slot/${slotId}/import`, {
+                values: relevantData
+            })
+            .then(JSON.parse)
+            .then(d => {
+                if (d.success) {
+                    box.hide();
+                    swup.loadPage({url: window.location.pathname});
+                } else {
+                    throw new Error(window.SLOT_ERRORS[d.code]);
+                }
+            })
+            .catch(er => {
+                setTimeout(function() {
+                    alert("Failed to import data!", er);
+                }, 1000);
+                box.hide();
+            });
+        }
+        
+        Papa.parse(window._papaData, window._papaConfig);
         window._selectedColumn = i;
     });
 };
@@ -270,3 +306,63 @@ qry("#new-slot-value, #new-slot-synonyms").enter(submitNewData);
 id("new-slot-value-button").click(submitNewData);
 
 window.updateSlotDeleteHandler();
+
+window._numSlotDataLoaded = 50;
+window._numSlotDataLoadAtOnce = 50;
+window._slotDataCurrentlyLoading = false;
+window._dataFullLoaded = false;
+infiniteScroll(_ => {
+    const slotId = qry("[data-slotid]").get(0).dataset.slotid;
+    return new Promise(function(resolve, reject) {
+        if (window._slotDataCurrentlyLoading || window._dataFullLoaded) {
+            reject();
+            return;
+        }
+        window._slotDataCurrentlyLoading = true;
+        bottomNews("<span class='v-center'><i class='rotating green margin-right'>loop</i> Loading more Slot Data </span>", "green", -1);
+        post(`/api/slot/${slotId}/load-data`, {
+            start: window._numSlotDataLoaded,
+            count: window._numSlotDataLoadAtOnce
+        })
+        .then(JSON.parse)
+        .then(d => {
+            if (d.success) {
+                let code = "";
+                if (d.data.length == 0) {
+                    window._dataFullLoaded = true;
+                }
+                d.data.forEach(dataPoint => {
+                    code += 
+                    `<div class="row transition border-radius hover-transition hover-bg-light-grey v-padding-s">
+                        <div class="col-4 space margin-bottom-0" data-itemid="${dataPoint.id}" data-editable data-editablecallback="updateSlotValue">
+                            ${dataPoint.value}
+                            <div class="seperator" style="width: 2px;"></div>
+                        </div>
+                        <div class="col-7 space margin-bottom-0" data-itemid="${dataPoint.id}" data-editable data-editable-allow-empty="true" data-editablecallback="updateSlotSynonyms">
+                            ${dataPoint.synonyms.join(", ")}
+                        </div>
+                        <div class="col-1 margin-bottom-0 visible-on-hover v-center middle hover-bg-light-grey hover-red border-radius v-center middle clickable dark-grey transition clickable slot-value-delete" data-slotdataid="${dataPoint.id}">
+                            <i class="transition margin-right margin-bottom-xxs">clear</i>
+                            <span class="transition">Delete</span>
+                        </div>
+                    </div>`;
+                });
+                setTimeout(function() {
+                    updateSlotDeleteHandler();
+                    updateDataEditable();
+                }, 500);
+                resolve(code);
+            } else {
+                throw new Error(window.SLOT_ERRORS[d.code]);
+            }
+        })
+        .catch(er => {
+            console.error(er);
+        })
+        .finally(_ => {
+            window._slotDataCurrentlyLoading = false;
+            window._numSlotDataLoaded += window._numSlotDataLoadAtOnce;
+            hideBottomNews();
+        });
+    });
+}, document.getElementById("slot-data-values"), window, true, 1500);

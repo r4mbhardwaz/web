@@ -26,5 +26,3 @@ def add_slot(skill_id: str, intent_id: str, slot_id: str = None):
         else:
             return redirect("/assistant?message=Couldn't find intent", 302)
     return redirect("/assistant?message=Couldn't find slot or skill, check your url", 302)
-
-
