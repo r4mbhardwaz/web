@@ -119,8 +119,152 @@ id("slot-strictness").change(ev => {
 });
 
 qry("[data-importdata]").click(ev => {
+    const box = window.rawWrapper("Import Data", "Enter a URL or import from a local CSV file:");
+    /**
+     * .content
+     * .ok
+     * .cancel
+     * .header
+     * .text
+     * ._wrapper
+     * ._innerWrapper
+     * .hide()
+     */
+    box.ok.innerHTML = "Import Data";
 
+    box.content.innerHTML =
+    `<div class="input file">
+        <input type="file" id="import-data-file">
+        <label for="import-data-file" class="v-padding h-padding-l border border-blue border-radius transition bg-blue hover-bg-lighter-grey white hover-blue" data-fileinput>
+            Import from local CSV file
+        </label>
+    </div>
+    <div class="padding-top-m">
+        <span class="dark-grey">or</span>
+    </div>
+    <div class="input">
+        <input type="text" id="import-data-url" placeholder=" ">
+        <span>Enter URL to CSV file</span>
+    </div>
+    `;
+
+    window.updateLabelFileConnector();
+
+    box.ok.addEventListener("click", ev => {
+        const fileInput = document.getElementById("import-data-file");
+        const urlInput = document.getElementById("import-data-url");
+
+        const previewAmount = 100;
+
+        if (urlInput.value.trim() != "") {
+            Papa.parse(urlInput.value.trim(), {
+                header: true,
+                preview: previewAmount,
+                worker: true,
+                complete: function(result, file) {
+                    window.showCSVColumnSelector(result.data, result.meta.fields, result);
+                },
+                error: function() {
+                    setTimeout(() => {
+                        alert("Couldn't read URL!", "An unknown error occured while downloading the URL and parsing the values.<br><br>Please check the URL is valid and contains CSV data");
+                    }, 250);
+                },
+                download: true
+            });
+            return;
+        } 
+        if (fileInput.files.length > 0) {
+            Papa.parse(fileInput.files[0], {
+                header: true,
+                preview: previewAmount,
+                worker: true,
+                complete: function(result, file) {
+                    window.showCSVColumnSelector(result.data, result.meta.fields, result);
+                },
+                error: function() {
+                    setTimeout(() => {
+                        alert("Couldn't read file!", "An unknown error occured while reading the file and parsing the values.<br><br>Please check the file is valid and contains CSV data");
+                    }, 250);
+                }
+            });
+        }
+    });
 });
+
+window._selectedColumn = -1;
+window.showCSVColumnSelector = function(data, headers, _meta) {
+    console.log(_meta);
+    let code = `<table id="csv-picker" class="column-highlight"><thead><tr>`;
+    headers.forEach(key => {
+        code += `<th>${key}</th>`;
+    });
+    code += `</tr></thead><tbody>`;
+    data.forEach(element => {
+        code += `<tr>`
+        for (const header in element) {
+            if (Object.hasOwnProperty.call(element, header)) {
+                const value = element[header];
+                code += `<td>${value}</td>`;
+            }
+        }
+        code += `</tr>`
+    });
+    code += `</tbody></table>`;
+
+    const box = window.rawWrapper("Choose column to import", "Pick a 'value' column and a 'synonyms' column:");
+
+    box.content.classList.add("margin-top-l");
+    box.content.classList.add("height-500");
+    box.content.innerHTML = code;
+    box._innerWrapper.classList.add("width-1000");
+
+    box.ok.innerHTML = "Import CSV Data";
+
+    qry("#csv-picker th").forEach(el => {
+        el.classList.add("border-radius-top");
+    });
+
+    const allCells = qry("#csv-picker td, #csv-picker th");
+
+    allCells.forEach(el => {
+        el.classList.add("transition");
+        el.classList.add("clickable");
+    });
+
+    allCells.hover(ev => {
+        const target = ev.currentTarget;
+        let child = target;
+
+        var i = 1;
+        while( (child = child.previousSibling) != null ) {
+            i++;
+        }
+
+        qry(`#csv-picker tr > th:nth-child(${i}), #csv-picker tr > td:nth-child(${i})`).forEach(el => {
+            el.classList.add("bg-blue");
+            el.classList.add("white");
+        });
+    });
+
+    allCells.blur(ev => {
+        qry(`#csv-picker tr > th:not(:nth-child(${window._selectedColumn})), #csv-picker tr > td:not(:nth-child(${window._selectedColumn}))`).forEach(el => {
+            el.classList.remove("bg-blue");
+            el.classList.remove("white");
+        });
+    });
+
+    allCells.click(ev => {
+        const target = ev.currentTarget;
+        let child = target;
+
+        var i = 1;
+        while( (child = child.previousSibling) != null ) {
+            i++;
+        }
+
+        window._selectedColumn = i;
+    });
+};
 
 qry("#new-slot-value, #new-slot-synonyms").enter(submitNewData);
 id("new-slot-value-button").click(submitNewData);

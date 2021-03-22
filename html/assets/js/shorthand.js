@@ -11,6 +11,10 @@ window.ElementList = class {
         }
     }
 
+    forEach(callback) {
+        this.list.forEach(callback);
+    }
+
     change(callback) {
         this.list.forEach(el => { el.addEventListener("change", callback); });
     }
@@ -21,6 +25,14 @@ window.ElementList = class {
 
     click(callback) {
         this.list.forEach(el => { el.addEventListener("click", callback); });
+    }
+    
+    hover(callback) {
+        this.list.forEach(el => { el.addEventListener("mouseover", callback); });
+    }
+    
+    blur(callback) {
+        this.list.forEach(el => { el.addEventListener("mouseout", callback); });
     }
 
     enter(callback) {

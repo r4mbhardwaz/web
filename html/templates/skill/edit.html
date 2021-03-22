@@ -99,7 +99,7 @@
                         <div class="row-s-2 row-e-3 col-s-2 col-e-11">
                             <span class="{{ color }}">{{ intent.utterances | length }} training examples</span>
                             <div class="v-dot bg-darker-grey"></div>
-                            <span>{{ intent.slots | length }} slots</span>
+                            <span>{{ intent.slots | length }} slot{{ "" if intent.slots | length == 1 else "s"}}</span>
                         </div>
                         <div class="row-s-1 row-e-3 col-s-11 col-e-13 padding-top-xs visible-on-hover hover-bg-light-grey hover-red border-radius v-center middle clickable dark-grey transition" data-skillid="{{ skill.id }}" data-deleteintent="{{ intent.id }}">
                             <i style="margin: 0 10px 2px 0">clear</i>

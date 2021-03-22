@@ -32,13 +32,17 @@ document.querySelectorAll("[data-visiblewhen]").forEach(_el => {
     });
 });
 
-document.querySelectorAll("label[data-fileinput]").forEach(_el => {
+window._updateLabelFileConnectorHandler = _el => {
     const el = _el;
     let target = document.getElementById(el.getAttribute("for"));
     target.addEventListener("input", ev => {
         el.innerHTML = target.files.length > 0 ? `${target.files.length} file${target.files.length > 1 ? "s" : ""} selected` : `No files selected`;
     });
-});
+};
+
+window.updateLabelFileConnector = function() {
+    document.querySelectorAll("label[data-fileinput]").forEach(window._updateLabelFileConnectorHandler);
+};
 
 document.querySelectorAll(".settings").forEach(_el => {
     const el = _el;

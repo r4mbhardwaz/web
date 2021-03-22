@@ -63,3 +63,49 @@ hr {
     height: 1px;
     margin: 50px 0px;
 }
+
+table, tbody, thead {
+    width: 100%;
+}
+
+th {
+    text-align: left;
+    border: 2px solid var(--grey);
+    border-style: none none solid none;
+}
+th {
+    padding: 15px 20px;
+}
+td {
+    padding: 15px 20px 0;
+}
+
+table {
+    border-collapse: collapse;
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    width: 100%;
+}
+table thead {
+    flex: 0 0 auto;
+    width: calc(100% - 28px);
+}
+table tbody {
+    flex: 1 1 auto;
+    display: block;
+    overflow-y: scroll;
+}
+table tbody tr {
+    width: 100%;
+}
+table thead, table tbody tr {
+    display: table;
+    table-layout: fixed;
+}
+
+table tbody > tr:last-child td {
+    padding-bottom: 15px;
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+}

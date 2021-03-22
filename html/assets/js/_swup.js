@@ -9,5 +9,10 @@ export const swup = new Swup({
         animateScroll: true,
         scrollFriction: 0.3,
         scrollAcceleration: 0.04,
-    }), new SwupFadeTheme()]
+    }), new SwupFadeTheme(), new SwupHeadPlugin({
+        persistAssets: true,
+        persistTags: true,
+        persistTags: 'style, script'
+    })]
 });
+
