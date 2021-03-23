@@ -4,8 +4,22 @@
 
 import time
 from jarvis import Database, Security
+from functools import wraps
+
+
+def benchmark(func):
+    @wraps(func)
+    def wrap(*args, **kwargs):
+        start = time.time()
+        res = func(*args, **kwargs)
+        end = time.time()
+        print(f"Slot::{func.__name__} took {end-start}s")
+        return res
+    return wrap
+
 
 class Slot:
+    @benchmark
     def __init__(self, id: str = None, new: bool = True) -> None:
         if id is not None:
             new = False
@@ -55,6 +69,7 @@ class Slot:
 
 
     # DATABASE OPERATIONS
+    @benchmark
     def save(self) -> None:
         self.slot["modified-at"] = int(time.time())
         Database().table("slots").insert(self.slot)
@@ -62,6 +77,7 @@ class Slot:
 
     # STATIC METHODS
     @staticmethod
+    @benchmark
     def all() -> any:
         slots_all = list(Database().table("slots").all())
         slots_good = []
@@ -77,6 +93,7 @@ class Slot:
         return slots_good
 
     @staticmethod
+    @benchmark
     def new_but_unused_slot() -> any:
         already_existing_but_empty_slots = Database().table("slots").find({"name": { "$eq": "New Slot" }})
         id = None
@@ -86,6 +103,7 @@ class Slot:
 
     
     # PRIVATE FUNCTIONS
+    @benchmark
     def _update_quality(self):
         quality = 0
         if len(self.slot["data"]) == 0:

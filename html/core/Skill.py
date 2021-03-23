@@ -7,9 +7,22 @@ from jarvis import Database, Security
 from .Slot import Slot
 from .Intent import Intent
 from .User import User
+from functools import wraps
+
+
+def benchmark(func):
+    @wraps(func)
+    def wrap(*args, **kwargs):
+        start = time.time()
+        res = func(*args, **kwargs)
+        end = time.time()
+        print(f"Skill::{func.__name__} took {end-start}s")
+        return res
+    return wrap
 
 
 class Skill:
+    @benchmark
     def __init__(self, id: str = None, new: bool = False) -> None:
         self._unused_intent = None
         if id is None:
@@ -67,9 +80,11 @@ class Skill:
 
 
     # INTENT ACTIONS
+    @benchmark
     def add_intent(self, intent: Intent):
         self.skill["intents"].append(intent.__dict__())
 
+    @benchmark
     def update_intent(self, intent_id: str, new_intent: Intent) -> bool:
         successful_insert = False
         for i in range(len(self.skill["intents"])):
@@ -82,6 +97,7 @@ class Skill:
                 self.add_intent(new_intent)
         return successful_insert
 
+    @benchmark
     def get_intent(self, id: str) -> Intent:
         for intent in self.skill["intents"]:
             if intent["id"] == id:
@@ -90,6 +106,7 @@ class Skill:
             return Intent(False, self._unused_intent)
         return None
 
+    @benchmark
     def remove_intent(self, id_or_intent: any) -> Intent:
         if isinstance(id_or_intent, Intent):
             pass
@@ -107,21 +124,25 @@ class Skill:
         self.save()
         return True
 
+    @benchmark
     def unused_intent(self) -> dict:
         return self._unused_intent
 
 
     # DATABASE ACTIONS
+    @benchmark
     def save(self):
         self._reverse_intents()
         self.skill["modified-at"] = time.time()
         Database().table("skills").insert(self.skill)
 
+    @benchmark
     def delete(self):
         Database().table("skills").find({"id": self.skill["id"]}).delete()
 
 
     # INTERNAL ACTIONS
+    @benchmark
     def _update_rating(self) -> None:
         rating = [3.5]
         weights = [1]
@@ -152,6 +173,7 @@ class Skill:
         final_rating = sum(rating[g] * weights[g] for g in range(len(rating))) / sum(weights)
         self.skill["social"]["rating"] = final_rating
 
+    @benchmark
     def _update_quality(self) -> None:
         intent_quality = 0
         for intent in self.skill["intents"]:
@@ -162,6 +184,7 @@ class Skill:
             final_quality = 0
         self.skill["quality"] = final_quality
 
+    @benchmark
     def _update_intents(self) -> None:
         new_intent_array = []
         for intent in self.skill["intents"]:
@@ -171,6 +194,7 @@ class Skill:
                 new_intent_array.append(Intent(False, intent))
         self.skill["intents"] = new_intent_array
 
+    @benchmark
     def _reverse_intents(self) -> None:
         for i in range(len(self.skill["intents"])):
             intent = self.skill["intents"][i]

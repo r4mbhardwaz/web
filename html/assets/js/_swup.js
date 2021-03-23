@@ -11,8 +11,7 @@ export const swup = new Swup({
         scrollAcceleration: 0.04,
     }), new SwupFadeTheme(), new SwupHeadPlugin({
         persistAssets: true,
-        persistTags: true,
-        persistTags: 'style, script'
+        persistTags: 'script[data-keep]',
     })]
 });
 

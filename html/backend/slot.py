@@ -4,10 +4,6 @@ from __main__ import *
 @login_required
 def add_slot(skill_id: str, intent_id: str, slot_id: str = None):
     skill = Skill(skill_id)
-    # json_data = request.get_json(force=True)
-    # print(json_data)
-    print(request.data)
-    # TODO: name in post body
     if skill.found:
         intent = skill.get_intent(intent_id)
         if intent:
