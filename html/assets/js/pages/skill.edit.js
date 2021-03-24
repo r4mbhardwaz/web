@@ -27,7 +27,7 @@ qry("[data-newintent]").click(ev => {
             description: description
         }).then(JSON.parse).then(d => {
             if (d.success) {
-                swup.loadPage({url: `/intent/edit/${skillId}/${d.id}`});
+                redirect(`/intent/edit/${skillId}/${d.id}`);
             } else {
                 throw new Error("server side error");
             }

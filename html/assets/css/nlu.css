@@ -1,0 +1,24 @@
+div.nlu {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-style: none none none solid;
+    border-radius: 0px !important;
+    box-shadow: none !important;
+    width: calc(100% - 70rem - 2 * 9vw);
+    padding: 250px 30px;
+}
+
+div.nlu + .container {
+    margin-left: 9vw !important;
+}
+
+@media screen and (max-width: 1500px) {
+    div.nlu {
+        display: none !important;
+    }
+    .container {
+        margin-left: auto !important;
+    }
+}

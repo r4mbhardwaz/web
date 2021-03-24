@@ -1,4 +1,3 @@
-console.log(qry(".delete-skill"))
 
 qry(".delete-skill").click(ev => {
     const target = ev.currentTarget;
@@ -8,7 +7,7 @@ qry(".delete-skill").click(ev => {
 
     get(`/api/skill/${skillId}/delete`).then(d => {
         swup.cache.remove(window.location.pathname);
-        swup.loadPage({url: window.location.pathname})
+        redirect(window.location.pathname);
     }).catch(er => {
         alert("Failed to delete skill!", "An internal error occured and we were unable to delete your skill.<br><br>Please try again later");
     }).finally(_ => {

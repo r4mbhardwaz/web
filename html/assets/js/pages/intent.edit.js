@@ -46,9 +46,7 @@ qry("[data-redirectslot]").click(ev => {
     const intentId = qry("[data-intentid]").get(0).dataset.intentid;
     const slotId = ev.currentTarget.dataset.redirectslot;
 
-    swup.loadPage({
-        url: `/slot/edit/${skillId}/${intentId}/${slotId}`
-    });
+    redirect(`/slot/edit/${skillId}/${intentId}/${slotId}`);
 });
 
 qry("[data-changeslottype]").click(ev => {
@@ -274,7 +272,7 @@ window.intentAddSlot = function(slotId, element) {
         .then(d => {
             if (d.success) {
                 element.classList.add("border-green");
-                swup.loadPage({url: window.location.pathname});
+                redirect(window.location.pathname);
             } else {
                 throw new Error(window.INTENT_ERRORS[d.code]);
             }
@@ -356,9 +354,7 @@ window.addSlot = ev => {
                                 .then(JSON.parse)
                                 .then(d => {
                                     if (d.success) {
-                                        swup.loadPage({
-                                            url: `/slot/edit/${skillId}/${intentId}/${d.id}`
-                                        });
+                                        redirect(`/slot/edit/${skillId}/${intentId}/${d.id}`);
                                     } else {
                                         throw new Error("server side error");
                                     }
@@ -433,9 +429,7 @@ window.addSlot = ev => {
                 edit.addEventListener("click", ev => {
                     box.hide();
                     ev.stopPropagation();
-                    swup.loadPage({
-                        url: `/slot/edit/${skillId}/${intentId}/${ev.currentTarget.dataset.slotid}`
-                    });
+                    redirect(`/slot/edit/${skillId}/${intentId}/${ev.currentTarget.dataset.slotid}`);
                 });
     
                 const slotName = document.createElement("p");

@@ -156,6 +156,21 @@ def api_slot_load_data(slot_id):
         }), content_type="application/json")
 
 
+@app.route("/api/slot/<slot_id>/empty", methods=["POST"])
+@login_required
+def api_slot_empty(slot_id):
+    slot = Slot(slot_id)
+    if not slot.found:
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_SLOT_NOT_FOUND",
+            "error": "couldn't find slot by id"
+            }), content_type="application/json")
+    slot["data"] = []
+    slot.save()
+    return Response(json.dumps({
+        "success": True
+    }), content_type="application/json")
 
 
 @app.route("/api/slot/all")

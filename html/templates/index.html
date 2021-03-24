@@ -10,34 +10,44 @@
     <link rel="stylesheet" href="/assets/css/main.css">
     <script src="/assets/js/chart.js"></script>
     <script type="module" src="/assets/js/global.js"></script>
+    
+    <style>
+        .nlu.box {
+            display: none !important
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container" id="swup">
-        <div class="row">
-            <nav class="breadcrumb">
-                <a href="/">Server</a>
-            </nav>
-        </div>
+    <div id="swup">
+        {% include "nlu.html" %}
 
-        <h1>Dashboard</h1>
-
-        <div class="row statistics">
-            <div class="col-6 box">
-                <canvas id="db-stats"></canvas>
+        <div class="container">
+            <div class="row">
+                <nav class="breadcrumb">
+                    <a href="/">Server</a>
+                </nav>
             </div>
-            <div class="col-6 box">
-                <canvas id="access-stats"></canvas>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col-6 box clickable" onclick="swup.loadPage({url:'/assistant'})">
-                <i class="blue">record_voice_over</i>
-                <label>Assistant</label>
-                <p>Manage your assistant {% if config_size is defined: %}
-                    <br> Current configuration size: <span class="{{ 'green' if config_size // 1024 < 1024 else ('orange' if config_size // 1024 // 1024 < 100 else 'red') }}">{{ config_size // 1024 }} kB</span> {% endif %}
-                </p>
+            <h1>Dashboard</h1>
+
+            <div class="row statistics">
+                <div class="col-6 box">
+                    <canvas id="db-stats"></canvas>
+                </div>
+                <div class="col-6 box">
+                    <canvas id="access-stats"></canvas>
+                </div>
+            </div>
+    
+            <div class="row">
+                <div class="col-6 box clickable" onclick="redirect('/assistant');">
+                    <i class="blue">record_voice_over</i>
+                    <label>Assistant</label>
+                    <p>Manage your assistant {% if config_size is defined: %}
+                        <br> Current configuration size: <span class="{{ 'green' if config_size // 1024 < 1024 else ('orange' if config_size // 1024 // 1024 < 100 else 'red') }}">{{ config_size // 1024 }} kB</span> {% endif %}
+                    </p>
+                </div>
             </div>
         </div>
     </div>

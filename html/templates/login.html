@@ -24,9 +24,7 @@
 
         {% if success is defined: %} {% if success: %}
         <script>
-            swup.loadPage({
-                "url": "{{ url }}"
-            })
+            redirect("{{ url }}");
         </script>
         {% else: %}
         <div class="notification red">

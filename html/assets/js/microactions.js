@@ -200,3 +200,8 @@ window.hideBottomNews = function() {
         document.getElementById("bottom-news").remove();
     }, 300);
 };
+
+window.redirect = function(url) {
+    // window.location.href = url;
+    swup.loadPage({url: url});
+};

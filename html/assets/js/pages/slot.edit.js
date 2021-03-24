@@ -117,6 +117,23 @@ id("slot-strictness").change(ev => {
     get(`/api/slot/${ev.currentTarget.dataset.id}/strictness?value=${ev.currentTarget.value}`)
 });
 
+qry("[data-emptyslot]").click(ev => {
+    const slotId = qry("[data-slotid]").get(0).dataset.slotid;
+
+    post(`/api/slot/${slotId}/empty`)
+    .then(JSON.parse)
+    .then(d => {
+        if (d.success) {
+            redirect(window.location.pathname);
+        } else {
+            throw new Error(window.SLOT_ERRORS[d.code]);
+        }
+    })
+    .catch(er=> {
+        alert("Failed to delete slot data", er);
+    });
+});
+
 window._papaData = null;
 window._papaConfig = null;
 qry("[data-importdata]").click(ev => {
@@ -284,7 +301,7 @@ window.showCSVColumnSelector = function(data, headers, result) {
             .then(d => {
                 if (d.success) {
                     box.hide();
-                    swup.loadPage({url: window.location.pathname});
+                    redirect(window.location.pathname);
                 } else {
                     throw new Error(window.SLOT_ERRORS[d.code]);
                 }

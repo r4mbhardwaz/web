@@ -26,7 +26,7 @@
     --box-shadow-level-2: 0px 10px 25px -8px #00000050;
     --box-shadow-level-3: 0px 0px 15px 0px #00000020;
     --box-shadow-level-4: 0px 0px 5px 0px #00000020;
-    --box-shadow-level-5: "todo";
+    --box-shadow-level-5: 0px 10px 25px 8px #00000020;
     --transition: .15s ease;
     --transition-short: .075s ease;
     --transition-long: .3s ease;
