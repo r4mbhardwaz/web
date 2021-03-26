@@ -40,15 +40,13 @@ def api_add_data_to_slot(slot_id: str):
     return Response(json.dumps({"success": False, "code": "ERR_SLOT_ARGS_MISSING", "error": "you have to provide 'value' and 'synonyms' in json body"}), content_type="application/json")
 
 
-@app.route("/api/slot/<slot_id>/<key>")
+@app.route("/api/slot/<slot_id>/set", methods=["POST"])
 @login_required
-def api_set_slot_key(slot_id: str, key: str):
-    value = request.args.get("value", None)        
-    if key in ["name", "extensible", "strictness", "use-synonyms"]:
-        if key == "extensible" or key == "use-synonyms":
-            value = True if value == "true" else False
-        if key == "strictness":
-            value = float(value)
+def api_set_slot_key(slot_id: str):
+    json_data = request.get_json(force=True)
+    key = json_data["key"]
+    value = json_data["value"]
+    if key in ["name", "description", "extensible", "strictness", "use-synonyms"]:
         slot = Slot(slot_id)
         slot[key] = value
         slot.save()
@@ -87,6 +85,7 @@ def api_slot_item_change(slot_id: str, item_id: str):
             element = slot["data"][i]
             if element["id"] == item_id:    # if we found the id
                 slot["data"][i]["value"] = json_data["value"]    # set the new value
+                slot["data"][i]["modified-at"] = int(time.time())
         slot.save()
         return json.dumps({"success": True})
     elif "synonyms" in json_data:
@@ -95,6 +94,7 @@ def api_slot_item_change(slot_id: str, item_id: str):
             element = slot["data"][i]
             if element["id"] == item_id:    # if we found the id
                 slot["data"][i]["synonyms"] = list(map(str.strip, json_data["synonyms"].split(","))) if json_data["synonyms"].strip() != "" else []
+                slot["data"][i]["modified-at"] = int(time.time())
         slot.save()
         return json.dumps({"success": True})
     else:

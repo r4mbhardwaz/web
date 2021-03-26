@@ -18,7 +18,7 @@ h2>i {
 
 i,
 .material {
-    font-family: 'Material Icons Round';
+    font-family: 'Material Icons Round' !important;
     font-weight: normal;
     font-style: normal;
     font-size: 22px;

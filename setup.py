@@ -2,8 +2,9 @@
 # Copyright (c) 2020 by Philipp Scheer. All Rights Reserved.
 #
 
-import os, sys, re, socket
-from jarvis import Colors, Config, SetupTools
+import os, re, socket
+from jarvis import Colors, Config, SetupTools, Security
+
 
 # get current file path
 PATH = os.path.dirname(os.path.abspath(__file__))
@@ -21,9 +22,21 @@ def install():
 	WEB_DIR = f"{ROOT_DIR}/web"
 
 	# save web dir in the jarvis config file
-	config = Config(USER)
-	config.create_if_not_exists()
-	config.set_key("web_dir", WEB_DIR)
+	config = Config()
+
+	signed = Security.certificate(	keylen=8192,
+									emailAddress="jarvis@philippscheer.com",
+									commonName="jarvis",
+									countryName="AT",
+									localityName="Vienna",
+									stateOrProvinceName="Vienna",
+									organizationName="Jarvis",
+									organizationUnitName="assistant",
+									serialNumber=0,
+									validityStartInSeconds=0,
+									validityEndInSeconds=10*365*24*60*60)
+	config.set("certificate", signed["certificate"])
+	config.set("private-key", signed["private-key"])
 
 	# create directories
 	if not os.path.isdir(WEB_DIR):

@@ -4,8 +4,9 @@ from __main__ import *
 
 @app.route("/api/intent/<skill_id>/<intent_id>/set", methods=["POST"])
 @login_required
+@retrain
 def api_intent_set_value(skill_id: str, intent_id: str):
-    allowed = ["name"]
+    allowed = ["name", "description"]
     json_data = request.get_json(force=True)
     if "key" in json_data and "value" in json_data:
         if json_data["key"] in allowed:
@@ -18,17 +19,34 @@ def api_intent_set_value(skill_id: str, intent_id: str):
                     skill.save()
                     return Response(json.dumps({"success": True}), content_type="application/json")
                 else:
-                    return Response(json.dumps({"success": False, "error": "couldn't find intent by id"}), content_type="application/json")
+                    return Response(json.dumps({
+                        "success": False, 
+                        "code": "ERR_INTENT_NOT_FOUND",
+                        "error": "couldn't find intent by id"
+                    }), content_type="application/json")
             else:
-                return Response(json.dumps({"success": False, "error": "couldn't find skill by id"}), content_type="application/json")
+                return Response(json.dumps({
+                    "success": False, 
+                    "code": "ERR_INTENT_SKILL_NOT_FOUND",
+                    "error": "couldn't find skill by id"
+                }), content_type="application/json")
         else:
-            return Response(json.dumps({"success": False, "error": "key not allowed to set"}), content_type="application/json")
+            return Response(json.dumps({
+                "success": False, 
+                "code": "ERR_INTENT_NOT_ALLOWED",
+                "error": "key not allowed to set"
+            }), content_type="application/json")
     else:
-        return Response(json.dumps({"success": False, "error": "need to provide key and value in json post body"}), content_type="application/json")
+        return Response(json.dumps({
+            "success": False, 
+            "code": "ERR_INTENT_INVALID_ARGS",
+            "error": "need to provide key and value in json post body"
+        }), content_type="application/json")
 
 
 @app.route("/api/intent/<skill_id>/add", methods=["POST"])
 @login_required
+@retrain
 def api_intent_add(skill_id: str):
     json_data = request.get_json(force=True)
     if "name" in json_data and "description" in json_data:
@@ -53,6 +71,7 @@ def api_intent_add(skill_id: str):
 
 @app.route("/api/intent/<skill_id>/<intent_id>/delete", methods=["POST"])
 @login_required
+@retrain
 def api_intent_delete(skill_id: str, intent_id: str):
     skill = Skill(skill_id)
     if skill.found:
@@ -66,6 +85,7 @@ def api_intent_delete(skill_id: str, intent_id: str):
 
 @app.route("/api/intent/<skill_id>/<intent_id>/add-slot", methods=["POST"])
 @login_required
+@retrain
 def api_intent_add_slot(skill_id: str, intent_id: str):
     json_data = request.get_json(force=True)
     if "name" not in json_data or "slot-id" not in json_data:
@@ -89,6 +109,7 @@ def api_intent_add_slot(skill_id: str, intent_id: str):
 
 @app.route("/api/intent/<skill_id>/<intent_id>/change-slot", methods=["POST"])
 @login_required
+@retrain
 def api_intent_change_slot(skill_id: str, intent_id: str):
     json_data = request.get_json(force=True)
     if "name" not in json_data or "slot-id" not in json_data:
@@ -112,6 +133,7 @@ def api_intent_change_slot(skill_id: str, intent_id: str):
 
 @app.route("/api/intent/<skill_id>/<intent_id>/<slot_name>/remove", methods=["POST"])
 @login_required
+@retrain
 def api_intent_remove_slot(skill_id: str, intent_id: str, slot_name: str):
     skill = Skill(skill_id)
     if not skill.found:
@@ -138,6 +160,7 @@ def api_intent_remove_slot(skill_id: str, intent_id: str, slot_name: str):
 
 @app.route("/api/intent/<skill_id>/<intent_id>/<slot_name>/rename", methods=["POST"])
 @login_required
+@retrain
 def api_intent_rename_slot(skill_id: str, intent_id: str, slot_name: str):
     json_data = request.get_json(force=True)
     if "new-name" not in json_data:
@@ -177,6 +200,7 @@ def api_intent_rename_slot(skill_id: str, intent_id: str, slot_name: str):
 
 @app.route("/api/intent/<skill_id>/<intent_id>/add-training-data", methods=["POST"])
 @login_required
+@retrain
 def api_intent_add_training_data(skill_id: str, intent_id: str):
     json_data = request.get_json(force=True)
     if "sentence" not in json_data or json_data["sentence"].strip() == "":
@@ -213,6 +237,7 @@ def api_intent_add_training_data(skill_id: str, intent_id: str):
 
 @app.route("/api/intent/<skill_id>/<intent_id>/delete-training-data", methods=["POST"])
 @login_required
+@retrain
 def api_intent_delete_training_data(skill_id: str, intent_id: str):
     json_data = request.get_json(force=True)
     if "training-data-id" not in json_data:
@@ -252,6 +277,7 @@ def api_intent_delete_training_data(skill_id: str, intent_id: str):
 
 @app.route("/api/intent/<skill_id>/<intent_id>/modify-training-data", methods=["POST"])
 @login_required
+@retrain
 def api_intent_modify_training_data(skill_id: str, intent_id: str):
     json_data = request.get_json(force=True)
     if "id" not in json_data or "data" not in json_data:

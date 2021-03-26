@@ -18,8 +18,6 @@
         {% include "nlu.html" %}
 
         <div class="container">
-            <div class="hidden" data-skillid="{{ skill.id }}" data-intentid="{{ intent.id }}" data-slotid="{{ slot.id }}"></div>
-
             <div class="row">
                 <nav class="breadcrumb">
                     <a href="/">Jarvis Server</a>
@@ -30,26 +28,33 @@
                 </nav>
             </div>
 
+            <div class="hidden" data-skillid="{{ skill.id }}" data-intentid="{{ intent.id }}" data-slotid="{{ slot.id }}"></div>
+
             <h1> <i>category</i> {% if slot.name == "New Slot": %}Create a new Slot{% else: %}Edit Slot{% endif %} <i style="cursor: pointer; margin-left: 20px" onmouseover="showInfoBox(this, 'A slot (also called entity) is a parameter in a spoken sentence. <br><br> For example: <br>\'Book me a flight to <span class=\'blue\'>New York</span>\', <br><br><span class=\'blue\'>New York</span> would be the slot value in a slot called \'City\'')"
                     onmouseout="removeInfoBox()">info</i> </h1>
 
             <div class="container margin-0 width-full">
                 <div class="row">
                     <div class="input col-4">
-                        <input type="text" placeholder=" " name="slot-name" id="slot-name" value="{{ "" if slot.name == "New Slot" else slot.name }}" data-id="{{ slot.id }}">
+                        <input type="text" placeholder=" " name="slot-name" id="slot-name" value="{{ "" if slot.name == "New Slot" else slot.name }}">
                         <span>Slot name (city, location, etc...)</span>
                     </div>
                     <div class="v-center middle col-4">
-                        <input type="checkbox" name="slot-extensible" id="slot-extensible" {{ "checked" if slot.extensible else "" }} data-id="{{ slot.id }}">
+                        <input type="checkbox" name="slot-extensible" id="slot-extensible" {{ "checked" if slot.extensible else "" }}>
                         <label class="v-center" for="slot-extensible">Automatically extensible
                             <i style="cursor: pointer; margin: 0 0 2px 15px" onmouseover="showInfoBox(this, 'Check this box if you want Jarvis to automatically extend this slot at runtime.<br><br>If you want to use this slot for a light bulb and only want to accept a fixed set of colors (eg. red, green, blue), you shouldn\'t use this feature. \'Invalid\' colors (yellow, white, etc...) will be filtered out when unticked.<br><br>When you want to use this slot for a music player you should use this feature. You simply cannot provide all the artists and songs you want to hear, so Jarvis will automatically classify this information for you')" onmouseout="removeInfoBox()">info</i>
                         </label>
                     </div>
                     <div class="v-center right col-4">
-                        <input type="range" name="slot-strictness" id="slot-strictness" min="0" max="1" value="{{ slot.strictness }}" step="0.01" data-id="{{ slot.id }}">
+                        <input type="range" name="slot-strictness" id="slot-strictness" min="0" max="1" value="{{ slot.strictness }}" step="0.01">
                         <label class="v-center" for="slot-strictness">Matching Strictness
                             <i style="cursor: pointer; margin: 0 0 0 15px" onmouseover="showInfoBox(this, 'Controls the matching strictness of the slot. <br><br> 0.8 - 1 is recommended')" onmouseout="removeInfoBox()">info</i>
                         </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input col-4">
+                        <textarea class="v-resize" id="slot-description">{{ slot.description }}</textarea>
                     </div>
                 </div>
 
@@ -61,7 +66,7 @@
                 <div class="row">
                     <div class="col-{{ '8' if slot.data | length > 1 else '10' }}">
                         <div class="v-center">
-                            <input type="checkbox" name="slot-synonyms" id="slot-synonyms" {{ "checked" if slot["use-synonyms"] else "" }} data-id="{{ slot.id }}">
+                            <input type="checkbox" name="slot-synonyms" id="slot-synonyms" {{ "checked" if slot["use-synonyms"] else "" }}>
                             <label for="slot-synonyms">Use synonyms (Seperate multiple synonyms with commas)</label>
                         </div>
                     </div>
@@ -85,14 +90,14 @@
                     <div class="box input-padding col-12 row">
                         <div class="row">
                             <div class="input col-4">
-                                <input type="text" placeholder=" " id="new-slot-value" data-id="{{ slot.id }}">
+                                <input type="text" placeholder=" " id="new-slot-value">
                                 <span>Type your value here</span>
                             </div>
                             <div class="input col-7">
-                                <input type="text" placeholder=" " id="new-slot-synonyms" data-id="{{ slot.id }}">
+                                <input type="text" placeholder=" " id="new-slot-synonyms">
                                 <span>Type your synonym(s) (seperate with a comma)</span>
                             </div>
-                            <div class="col-1 v-center middle blue clickable" id="new-slot-value-button" data-id="{{ slot.id }}">
+                            <div class="col-1 v-center middle blue clickable" id="new-slot-value-button">
                                 <i style="margin: 0 10px 2px 0">add</i>
                                 <span>Add</span>
                             </div>
@@ -128,10 +133,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- <div class="row-s-6 row-e-6 col-s-10 col-e-12">
-                    <button type="submit">Continue</button>
-                </div> -->
             </div>
             <div id="no-break"></div>
         </div>

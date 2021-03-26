@@ -100,21 +100,56 @@ window.updateSlotDeleteHandler = function() {
 };
 
 id("slot-synonyms").change(ev => {
-    get(`/api/slot/${ev.currentTarget.dataset.id}/use-synonyms?value=${ev.currentTarget.checked}`);
+    const slotId = qry("[data-slotid]").get(0).dataset.slotid;
+    post(`/api/slot/${slotId}/set`, {
+        key: "use-synonyms",
+        value: ev.currentTarget.checked
+    });
 });
 
 id("slot-name").change(ev => {
+    const slotId = qry("[data-slotid]").get(0).dataset.slotid;
     if (ev.currentTarget.value.trim() != "") {
-        get(`/api/slot/${ev.currentTarget.dataset.id}/name?value=${ev.currentTarget.value}`);
+        post(`/api/slot/${slotId}/set`, {
+            key: "name",
+            value: ev.currentTarget.value
+        });
     }
 });
 
 id("slot-extensible").change(ev => {
-    get(`/api/slot/${ev.currentTarget.dataset.id}/extensible?value=${ev.currentTarget.checked}`)
+    const slotId = qry("[data-slotid]").get(0).dataset.slotid;
+    post(`/api/slot/${slotId}/set`, {
+        key: "extensible",
+        value: ev.currentTarget.checked
+    });
 });
 
 id("slot-strictness").change(ev => {
-    get(`/api/slot/${ev.currentTarget.dataset.id}/strictness?value=${ev.currentTarget.value}`)
+    const slotId = qry("[data-slotid]").get(0).dataset.slotid;
+    post(`/api/slot/${slotId}/set`, {
+        key: "strictness",
+        value: ev.currentTarget.value
+    });
+});
+
+id("slot-description").change(ev => {
+    const slotId = qry("[data-slotid]").get(0).dataset.slotid;
+
+    post(`/api/slot/${slotId}/set`, {
+        key: "description",
+        value: id("slot-description").get(0).value
+    })
+    .then(JSON.parse)
+    .then(d => {
+        if (d.success) {
+        } else {
+            throw new Error(window.SLOT_ERRORS[d.code]);
+        }
+    })
+    .catch(er => {
+        alert("Failed to set description", er);
+    });
 });
 
 qry("[data-emptyslot]").click(ev => {

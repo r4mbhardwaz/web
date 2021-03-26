@@ -9,3 +9,10 @@ def login_required(func):
             return redirect(f"/login?url={request.path}", code=302)
     return wrap
 
+def retrain(func):
+    @wraps(func)
+    def wrap(*args, **kwargs):
+        res = func(*args, **kwargs)
+        app.view_functions["api_assistant_train"]()
+        return res
+    return wrap

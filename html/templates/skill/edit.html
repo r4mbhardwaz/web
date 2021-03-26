@@ -21,11 +21,14 @@
                 <nav class="breadcrumb">
                     <a href="/">Jarvis Server</a>
                     <a href="/assistant">Skills</a>
-                    <a href="/skill/edit/{{ skill.id }}">{{ skill.name }}</a>
+                    <a href="/skill/edit/{{ skill.id }}" id="skill-name">{{ skill.name }}</a>
                 </nav>
             </div>
 
-            <h1><i class="{{ skill.icon.color }}">{{ skill.icon.icon }}</i> {{ skill.name }}</h1>
+            <h1>
+                <i class="{{ skill.icon.color }}">{{ skill.icon.icon }}</i> 
+                <span class="clickable relative width-full" data-editable data-editablecallback="updateSkillName">{{ skill.name }}</span>
+            </h1>
 
             <div class="grid">
                 <div class="row-s-1 row-e-1 col-s-1 col-e-7 relative v-center">
@@ -63,9 +66,8 @@
                     <div class="v-dot bg-darker-grey"></div>
                     <span class="darker-grey">Last modified {{ skill['modified-at'] | datetime("date") }}</span>
                 </div>
-                <div class="row-s-1 row-e-{{ row + 1 }} col-s-7 col-e-13 border-left border-medium border-darker-grey height-full padding-left-m v-center">
-                    {{ skill.description }}
-                </div>
+                <div    class="row-s-1 row-e-{{ row + 1 }} col-s-7 col-e-13 border-left border-medium border-darker-grey height-full padding-left-m v-center clickable" 
+                        id="skill-description">{{ skill.description }}</div>
                 
                 <div class="row-s-{{ row + 1 }} row-e-{{ row + 1 }} col-s-1 col-e-13" style="margin-top: 40px">
                     <h3>Intents</h3>

@@ -1,4 +1,5 @@
 from __main__ import *
+import threading
 
 @app.route("/api/db-stats")
 @login_required
@@ -24,6 +25,13 @@ def api_test(id=None):
     return json.dumps(obj)
 
 
+@app.route("/api/endpoints")
+def api_endpoints():
+    print(app.view_functions)
+    return "check console"
+
+
+
 @app.route("/api/search-icon")
 @login_required
 def api_iconsearch():
@@ -37,3 +45,7 @@ def api_iconsearch():
         f = [x for x in ICONS if search in x]
     return Response(json.dumps(f), content_type="application/json")
 
+
+@app.route("/api/threads")
+def api_threads():
+    return Response(json.dumps(threading.active_count()), content_type="application/json")

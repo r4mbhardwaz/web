@@ -151,9 +151,17 @@ window.dbChart = new Chart(dbCtx, {
                 }
             }],
             yAxes: [{
+                type: 'logarithmic',
                 display: true,
                 ticks: {
-                    stepSize: 50,
+                    autoSkip: false,
+                    min: 0,
+                    callback: function(value) {
+                        return parseFloat(value)
+                    },
+                    userCallback: function(item, index) {
+                        if (!(index % 5)) return item;
+                    }
                 }
             }]
         },

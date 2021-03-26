@@ -13,6 +13,8 @@ async function init() {
     await import ("./shorthand.js?_no_cache=" + Date.now()).catch(console.error);
     await import ("./microactions.js?_no_cache=" + Date.now()).catch(console.error);
 
+    await import ("./nlu.js?_no_cache=" + Date.now()).catch(console.error);
+
     try {
         import ("./pages/" + impStr + "?_no_cache=" + Date.now());
     } catch (error) {}
@@ -40,7 +42,7 @@ window.showInfoBox = function(element, htmlText) {
     }, 0);
 
     // console.log(rect.top, rect.right, rect.bottom, rect.left);
-}
+};
 
 window.removeInfoBox = function(all = true) {
     const allBoxes = document.querySelectorAll(".info-box-container");
@@ -52,8 +54,7 @@ window.removeInfoBox = function(all = true) {
             box.outerHTML = "";
         }, 250);
     }
-}
-
+};
 
 window.swup = swup
 

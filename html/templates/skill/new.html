@@ -14,119 +14,93 @@
 
 <body>
     <div>
-        {% include "nlu.html" %}
+        <div id="swup">
+            {% include "nlu.html" %}
 
-        <form class="container" id="swup" method="POST">
-            <div class="row">
-                <nav class="breadcrumb">
-                    <a href="/">Jarvis Server</a>
-                    <a href="/assistant">Assistant</a>
-                    <a href="/skill/new">New Skill</a>
-                </nav>
-            </div>
+            <form class="container" method="POST">
 
-            <h1> <i>bolt</i> Add a new Skill</h1>
 
-            <div class="grid gap-l">
-                <div class="row-s-1 row-e-1 col-s-1 col-e-5">
-                    <div class="input">
-                        <input type="text" name="skill-name" placeholder=" " required  autocomplete="off">
-                        <span>Skill name (eg. Weather, Clock, ...)</span>
+                <div class="row">
+                    <nav class="breadcrumb">
+                        <a href="/">Jarvis Server</a>
+                        <a href="/assistant">Assistant</a>
+                        <a href="/skill/new">New Skill</a>
+                    </nav>
+                </div>
+
+                <h1> <i>bolt</i> Add a new Skill</h1>
+
+                <div class="grid gap-l">
+                    <div class="row-s-1 row-e-1 col-s-1 col-e-5">
+                        <div class="input">
+                            <input type="text" name="skill-name" placeholder=" " required  autocomplete="off">
+                            <span>Skill name (eg. Weather, Clock, ...)</span>
+                        </div>
                     </div>
-                </div>
-                <div class="row-s-2 row-e-2 col-s-1 col-e-8">
-                    <div class="input">
-                        <textarea type="text" class="v-resize" name="skill-description" placeholder=" " required autocomplete="off"></textarea>
-                        <span>Description of your skill</span>
+                    <div class="row-s-2 row-e-2 col-s-1 col-e-8">
+                        <div class="input">
+                            <textarea type="text" class="v-resize" name="skill-description" placeholder=" " required autocomplete="off"></textarea>
+                            <span>Description of your skill</span>
+                        </div>
                     </div>
-                </div>
-                <div class="checkbox-sides row-s-3 row-e-3 col-s-1 col-e-8">
-                    <input type="checkbox" class="switch" id="skill-public" name="skill-public">
-                    <label for="skill-public">Publish to the official Jarvis Skill store<br>
-                        <span class="dark-grey">Other users can install this skill on their Jarvis assistant</span>
-                    </label>
-                    <i style="cursor: pointer; margin-left: 20px" onmouseover="showInfoBox(this, 'Your skill will be published to the offical <span class=\'blue\'>Jarvis Skill store</span> and can be downloaded by everyone with a Jarvis device.<br>Users will be able to like and comment on your skill and rate it from 1-5<br><br>Only the skill name, icon, language and sentences you enter will be uploaded. If you check this box, make sure you <span class=\'red\'>do not enter sensitive data!</span>')"
-                        onmouseout="removeInfoBox()">info</i>
-                </div>
-                <div class="row-s-1 row-e-1 col-s-5 col-e-8">
-                    <select name="skill-language" required>
-                        <option disabled selected>Choose a language</option>
-                        <option value="de">German</option>
-                        <option value="en">English</option>
-                        <option value="es">Spanish</option>
-                        <option value="fr">French</option>
-                        <option value="it">Italian</option>
-                        <option value="ja">Japanese</option>
-                        <option value="ko">Korean</option>
-                    </select>
-                </div>
-                <div class="row-s-1 row-e-5 col-s-8 col-e-12">
-                    <div class="chooser" id="icon-chooser">
-                        <i class="current blue">wb_cloudy</i>
-                        <input type="hidden" class="current-icon" name="skill-icon" value="wb_cloudy" >
-                        <input type="hidden" class="current-icon-color" name="skill-icon-color" value="blue">
-                        <div class="search box">
-                            <div class="input">
-                                <input type="text" placeholder=" " oninput="searchIcon(this.value)">
-                                <span>Search for an icon...</span>
-                            </div>
-                            <div class="icons">
-                                <div class="row">
-                                    {% for icon in first_100_icons: %}
-                                    <div class="col-2" onclick="setIcon('{{ icon }}')">
-                                        <i>{{ icon }}</i>
+                    <div class="checkbox-sides row-s-3 row-e-3 col-s-1 col-e-8">
+                        <input type="checkbox" class="switch" id="skill-public" name="skill-public">
+                        <label for="skill-public">Publish to the official Jarvis Skill store<br>
+                            <span class="dark-grey">Other users can install this skill on their Jarvis assistant</span>
+                        </label>
+                        <i style="cursor: pointer; margin-left: 20px" onmouseover="showInfoBox(this, 'Your skill will be published to the offical <span class=\'blue\'>Jarvis Skill store</span> and can be downloaded by everyone with a Jarvis device.<br>Users will be able to like and comment on your skill and rate it from 1-5<br><br>Only the skill name, icon, language and sentences you enter will be uploaded. If you check this box, make sure you <span class=\'red\'>do not enter sensitive data!</span>')"
+                            onmouseout="removeInfoBox()">info</i>
+                    </div>
+                    <div class="row-s-1 row-e-1 col-s-5 col-e-8">
+                        <select name="skill-language" required>
+                            <option disabled selected>Choose a language</option>
+                            <option value="de">German</option>
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="it">Italian</option>
+                            <option value="ja">Japanese</option>
+                            <option value="ko">Korean</option>
+                        </select>
+                    </div>
+                    <div class="row-s-1 row-e-5 col-s-8 col-e-12">
+                        <div class="chooser" id="icon-chooser">
+                            <i class="current blue">wb_cloudy</i>
+                            <input type="hidden" class="current-icon" name="skill-icon" value="wb_cloudy" >
+                            <input type="hidden" class="current-icon-color" name="skill-icon-color" value="blue">
+                            <div class="search box">
+                                <div class="input">
+                                    <input type="text" placeholder=" " oninput="searchIcon(this.value)">
+                                    <span>Search for an icon...</span>
+                                </div>
+                                <div class="icons">
+                                    <div class="row">
+                                        {% for icon in first_100_icons: %}
+                                        <div class="col-2" onclick="setIcon('{{ icon }}')">
+                                            <i>{{ icon }}</i>
+                                        </div>
+                                        {% if loop.index % 5 == 0 %}
                                     </div>
-                                    {% if loop.index % 5 == 0 %}
-                                </div>
-                                <div class="row">
-                                    {% endif %} {% endfor %}
+                                    <div class="row">
+                                        {% endif %} {% endfor %}
+                                    </div>
                                 </div>
                             </div>
+                            <div class="colors">
+                                {% set colors = {"red": "#ff3f3f", "green": "#1dc558", "blue": "#3f65ff", "orange": "#ff9b3f"} %} {% for color in colors: %}
+                                <div class="box bg-{{ color }}" onclick="setColor('{{ color }}')"></div>
+                                {% endfor %}
+                            </div>
                         </div>
-                        <div class="colors">
-                            {% set colors = {"red": "#ff3f3f", "green": "#1dc558", "blue": "#3f65ff", "orange": "#ff9b3f"} %} {% for color in colors: %}
-                            <div class="box bg-{{ color }}" onclick="setColor('{{ color }}')"></div>
-                            {% endfor %}
-                        </div>
+                    </div>
+
+                    <div class="row-s-6 row-e-6 col-s-10 col-e-12">
+                        <button type="submit">Continue</button>
                     </div>
                 </div>
-
-                <!-- <div class="checkbox-sides row-s-4 row-e-4 col-s-1 col-e-8">
-                    <input type="checkbox" class="switch" id="skill-import" name="skill-public">
-                    <label for="skill-import">Import existing data<br>
-                        <span class="dark-grey">I already have intents and sentences I want to import</span>
-                    </label>
-                    <i style="cursor: pointer; margin-left: 20px" onmouseover="showInfoBox(this, 'If this skill already has some sentences pre-defined you can <span class=\'blue\'>import them here.</span><br>Valid sources are: <span class=\'green\'>GitHub, GitLab repositories or json files</span>')"
-                        onmouseout="removeInfoBox()">info</i>
-                </div>
-
-                <div class="row-s-5 row-e-5 col-s-1 col-e-6 hidden" data-visiblewhen="checked:#skill-import">
-                    <div class="input">
-                        <input type="text" placeholder=" " id="search-repos" oninput="searchRepos(this.value)">
-                        <span>Enter GitHub or GitLab repository url</span>
-                    </div>
-                    <div class="table" id="search-repos-results">
-
-                    </div>
-                </div>
-
-                <div class="row-s-5 row-e-5 col-s-6 col-e-9 hidden v-center h-center" data-visiblewhen="checked:#skill-import">
-                    <span>or import from file:</span>
-                </div>
-
-                <div class="row-s-5 row-e-5 col-s-9 col-e-12 hidden" data-visiblewhen="checked:#skill-import">
-                    <div class="input file">
-                        <input type="file" id="jarvis-import" name="jarvis-import" accept=".json,.jarvis,.intents,.skill" multiple>
-                        <label for="jarvis-import" data-fileinput class="button blue">Upload a file</label>
-                    </div>
-                </div> -->
-
-                <div class="row-s-6 row-e-6 col-s-10 col-e-12">
-                    <button type="submit">Continue</button>
-                </div>
-            </div>
-            <div id="no-break"></div>
-        </form>
+                <div id="no-break"></div>
+            </form>
+        </div>
     </div>
 
 </body>

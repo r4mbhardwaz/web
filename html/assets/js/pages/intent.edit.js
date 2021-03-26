@@ -6,7 +6,8 @@ window.INTENT_ERRORS = {
     "ERR_INTENT_SKILL_NOT_FOUND": "The skill could not be found.<br><br>Most likely the skill got deleted and you'll need to create a new one",
     "ERR_INTENT_NOT_FOUND": "The intent could not be found.<br><br>Most likely the intent got deleted and you'll need to create a new one",
     "ERR_INTENT_SLOT_NOT_FOUND": "The slot could not be found.<br><br>Most likely the slot got deleted and you'll need to create a new one",
-    "ERR_INTENT_SLOT_EXISTS": "A slot with this name already exists.<br><br>Try again with a different name"
+    "ERR_INTENT_SLOT_EXISTS": "A slot with this name already exists.<br><br>Try again with a different name",
+    "ERR_INTENT_NOT_ALLOWED": "You're not allowed to set this key"
 }
 
 import("./intent.edit.marker.js?" + Date.now());
@@ -76,6 +77,9 @@ qry("[data-addutterance]").click(ev => {
 qry("[data-inputaddutterance]").enter(ev => {
     window.addUtterance();
 });
+
+id("intent-description").click(_ => { launchDescriptionChange() });
+
 
 window.submitNewIntentSlotData = function(trainingExampleID, data) {
     /**
@@ -302,7 +306,7 @@ window.addSlot = ev => {
      * .hide()
      */
 
-    box._innerWrapper.classList.add("width-900");
+    box._innerWrapper.classList.add("width-1200");
     box._innerWrapper.style.maxWidth = "85vw";
 
     const loadingBox = document.createElement("div");
@@ -431,7 +435,7 @@ window.addSlot = ev => {
                     ev.stopPropagation();
                     redirect(`/slot/edit/${skillId}/${intentId}/${ev.currentTarget.dataset.slotid}`);
                 });
-    
+
                 const slotName = document.createElement("p");
                 slotName.innerHTML = slot.name
     
@@ -473,3 +477,54 @@ window.addSlot = ev => {
     });
 };
 
+window.updateIntentName = function(newName, element, oldName) {
+    const skillId = qry("[data-skillid]").get(0).dataset.skillid;
+    const intentId = qry("[data-intentid]").get(0).dataset.intentid;
+
+    id("intent-name").text(newName);
+
+    post(`/api/intent/${skillId}/${intentId}/set`, {
+        key: "name",
+        value: newName
+    })
+    .then(JSON.parse)
+    .then(d => {
+        if (d.success) {
+        } else {
+            throw new Error(window.INTENT_ERRORS[d.code]);
+        }
+    })
+    .catch(er => {
+        alert("Couldn't update intent name", er);
+    });
+};
+
+window.launchDescriptionChange = function() {
+    longPrompt("Change Intent Description", "Enter a new description for this intent:", "", "Enter a New Description")
+    .then(d => {
+        if (!d) { return; }
+
+        const skillId = qry("[data-skillid]").get(0).dataset.skillid;
+        const intentId = qry("[data-intentid]").get(0).dataset.intentid;
+
+        id("intent-description").text(d.text);
+
+        post(`/api/intent/${skillId}/${intentId}/set`, {
+            key: "description",
+            value: d.text
+        })
+        .then(JSON.parse)
+        .then(d => {
+            if (d.success) {
+            } else {
+                throw new Error(window.INTENT_ERRORS[d.code]);
+            }
+        })
+        .catch(er => {
+            alert("Failed to change slot description", er);
+        });
+    });
+    qry("#prompt input").get(0).value = "_";
+    qry("#prompt input").get(0).parentElement.style.display = "none";
+    qry("#prompt textarea").get(0).value = id("intent-description").get(0).innerHTML;
+};

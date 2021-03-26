@@ -5,7 +5,7 @@
 import time
 from jarvis import Database, Security
 from .Slot import Slot
-from functools import wraps
+from functools import total_ordering, wraps
 
 
 def benchmark(func):
@@ -41,6 +41,7 @@ class Intent:
                     existing_data = existing_data.__dict__()
                 self.intent = existing_data
                 self._update_slots()
+                self._update_quality()
             else: 
                 self.intent = None
         self.id = self.intent["id"]
@@ -104,3 +105,38 @@ class Intent:
             slot = self.intent["slots"][slotname]
             if isinstance(slot, Slot) or isinstance(slot, dict):
                 self.intent["slots"][slotname] = slot["id"] if only_keep_reference else slot.__dict__()
+
+    @benchmark
+    def _update_quality(self) -> None:
+        quality = 0
+        if len(self.intent["utterances"]) == 0:
+            quality = 0
+        elif len(self.intent["utterances"]) < 5:
+            quality = 0.1
+        for i in [5, 10, 15, 20, 25, 30]:
+            if len(self.intent["utterances"]) > i:
+                quality += 0.1
+        # ^ MAX 0.6
+
+        slot_count = len(self.intent["slots"])
+        for i in [1, 2, 3, 4]:
+            if len(self.intent["utterances"]) >= i:
+                quality += 0.1
+        
+        # ^ MAX 1
+        total_entity_count = 0
+        for utt in self.intent["utterances"]:
+            for ds in utt["data"]:
+                if "slot" in ds:
+                    total_entity_count += 1
+
+        if len(self.intent["slots"]) > 0:
+            entity_quote = total_entity_count / len(self.intent["utterances"])
+            for i in [0.5, 0.75, 0.9, 1, 1.2]:
+                if entity_quote < i:
+                    quality -= 0.04
+
+        if quality < 0:
+            quality = 0
+
+        self.intent["quality"] = quality

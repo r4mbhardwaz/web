@@ -72,22 +72,22 @@
         {% include "nlu.html" %}
 
         <div class="container">
-            <div class="hidden" data-skillid="{{ skill.id }}" data-intentid="{{ intent.id }}"></div>
-
             <div class="row">
                 <nav class="breadcrumb">
                     <a href="/">Jarvis Server</a>
                     <a href="/assistant">Skills</a>
                     <a href="/skill/edit/{{ skill.id }}">{{ skill.name }}</a>
-                    <a href="/intent/edit/{{ skill.id }}/{{ intent.id }}">{{ intent.name }}</a>
+                    <a href="/intent/edit/{{ skill.id }}/{{ intent.id }}" id="intent-name">{{ intent.name }}</a>
                 </nav>
             </div>
+            
+            <div class="hidden" data-skillid="{{ skill.id }}" data-intentid="{{ intent.id }}"></div>
 
             <h1>
                 <i class="{{ skill.icon.color }}">{{ skill.icon.icon }}</i>
                 <span> {{ skill.name }} </span>
                 <i style="margin-left: 25px">arrow_right_alt</i>
-                <span> {{ intent.name }} </span>
+                <span class="clickable relative width-full" data-editable data-editablecallback="updateIntentName"> {{ intent.name }} </span>
             </h1>
 
             {% set color = 'red' if intent.quality < 0.25 else 'orange' if intent.quality < 0.5 else 'green' %}
@@ -96,18 +96,20 @@
             {% set public_string = 'Public' if skill.public else 'Private' %}
 
             <div class="grid margin-bottom-xl">
-                <div class="row-s-1 row-e-2 col-s-1 col-e-13">
+                <div class="row-s-1 row-e-2 col-s-1 col-e-7">
                     <span class="blue clickable">By You</span>
                     <div class="v-dot bg-darker-grey"></div>
                     <span class="{{ public_color }}">{{ public_string }}</span>
                     <div class="v-dot bg-darker-grey"></div>
                     <span class="{{ color }}">{{ quality_str }}</span>
                 </div>
-                <div class="row-s-2 row-e-3 col-s-1 col-e-13">
+                <div class="row-s-2 row-e-3 col-s-1 col-e-7">
                     <span class="darker-grey">Created {{ intent['created-at'] | datetime("date") }}</span>
                     <div class="v-dot bg-darker-grey"></div>
                     <span class="darker-grey">Last modified {{ intent['modified-at'] | datetime("date") }}</span>
                 </div>
+                <div    class="row-s-1 row-e-3 col-s-7 col-e-13 border-left border-medium border-darker-grey height-full padding-left-m v-center clickable"
+                        id="intent-description">{{ intent.description }}</div>
             </div>
 
             <br><br><br>

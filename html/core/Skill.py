@@ -23,9 +23,9 @@ def benchmark(func):
 
 class Skill:
     @benchmark
-    def __init__(self, id: str = None, new: bool = False) -> None:
+    def __init__(self, id: str = None, new: bool = False, existing_data: dict = None) -> None:
         self._unused_intent = None
-        if id is None:
+        if id is None and existing_data is None:
             new = True
         if new:
             self.skill = {
@@ -49,6 +49,8 @@ class Skill:
                 "public": False,
                 "id": Security.id(64)   # TODO: check that this id doesn't exist already!
             }
+        elif existing_data is not None:
+            self.skill = existing_data
         else:
             result = Database().table("skills").find({"id": id})
             if result.found:
@@ -77,6 +79,25 @@ class Skill:
     @property
     def found(self):
         return self.skill is not None
+
+    @staticmethod
+    def all(as_json: bool = False, resolve_slots: bool = False):
+        skills = list(Database().table("skills").all())
+        for i in range(len(skills)):
+            if as_json:
+                del skills[i]["_rev"]
+                del skills[i]["_id"]
+                skills[i] = Skill(existing_data=skills[i]).__dict__()
+            else:
+                skills[i] = Skill(existing_data=skills[i])
+            
+            if resolve_slots:
+                for j in range(len(skills[i]["intents"])):
+                    for slot_name in skills[i]["intents"][j]["slots"]:
+                        skills[i]["intents"][j]["slots"][slot_name] = Slot(skills[i]["intents"][j]["slots"][slot_name]).__dict__()
+                        del skills[i]["intents"][j]["slots"][slot_name]["_rev"]
+                        del skills[i]["intents"][j]["slots"][slot_name]["_id"]
+        return skills
 
 
     # INTENT ACTIONS
@@ -133,7 +154,7 @@ class Skill:
     @benchmark
     def save(self):
         self._reverse_intents()
-        self.skill["modified-at"] = time.time()
+        self.skill["modified-at"] = int(time.time())
         Database().table("skills").insert(self.skill)
 
     @benchmark

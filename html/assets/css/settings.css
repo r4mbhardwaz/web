@@ -10,6 +10,11 @@
     src: url(./icons.woff2) format("woff2");
 }
 
+@font-face {
+    font-family: "jetbrains-mono";
+    src: url(./jetbrains-mono.woff2) format("woff2");
+}
+
 .icon {
     font-family: "icons";
 }
@@ -49,6 +54,8 @@
     --small-font-size: 0.85rem;
 }
 
+
+.code, .code * { font-family: "jetbrains-mono"; }
 
 /*  COLOR CLASSES  */
 .red,           .red *          {  color: var(--red)            }
@@ -156,7 +163,7 @@
 :root {
     --base-margin: 10px;
 }
-.relative                       {  position: relative   !important;  }
+.relative                       {  position: relative   !important;  z-index: 1;  }
 .absolute                       {  position: absolute   !important;  }
 .fixed                          {  position: fixed      !important;  }
 
@@ -169,6 +176,8 @@
 .top.m,.top-m                   {  top: calc(2   * var(--base-margin))     !important;  }
 .top.big,.top-l                 {  top: calc(2.5 * var(--base-margin))     !important;  }
 .top.xl,.top-xl                 {  top: calc(3   * var(--base-margin))     !important;  }
+.top.xxl,.top-xxl               {  top: calc(4   * var(--base-margin))     !important;  }
+.top.xxxl,.top-xxxl             {  top: calc(5   * var(--base-margin))     !important;  }
 
 .left                           {  left: calc(1   * var(--base-margin))    !important;  }
 .left-0                         {  left: calc(0   * var(--base-margin))    !important;  }
@@ -179,6 +188,8 @@
 .left.m,.left-m                 {  left: calc(2   * var(--base-margin))    !important;  }
 .left.l,.left-l                 {  left: calc(2.5 * var(--base-margin))    !important;  }
 .left.xl,.left-xl               {  left: calc(3   * var(--base-margin))    !important;  }
+.left.xxl,.left-xxl             {  left: calc(4   * var(--base-margin))    !important;  }
+.left.xxxl,.left-xxxl           {  left: calc(5   * var(--base-margin))    !important;  }
 
 .right                          {  right: calc(1   * var(--base-margin))   !important;  }
 .right-0                        {  right: calc(0   * var(--base-margin))   !important;  }
@@ -189,6 +200,8 @@
 .right.m,.right-m               {  right: calc(2   * var(--base-margin))   !important;  }
 .right.l,.right-l               {  right: calc(2.5 * var(--base-margin))   !important;  }
 .right.xl,.right-xl             {  right: calc(3   * var(--base-margin))   !important;  }
+.right.xxl,.right-xxl           {  right: calc(4   * var(--base-margin))   !important;  }
+.right.xxxl,.right-xxxl         {  right: calc(5   * var(--base-margin))   !important;  }
 
 .bottom                         {  bottom: calc(1   * var(--base-margin))  !important;  }
 .bottom-0                       {  bottom: calc(0   * var(--base-margin))  !important;  }
@@ -199,6 +212,8 @@
 .bottom.m,.bottom-m             {  bottom: calc(2   * var(--base-margin))  !important;  }
 .bottom.l,.bottom-l             {  bottom: calc(2.5 * var(--base-margin))  !important;  }
 .bottom.xl,.bottom-xl           {  bottom: calc(3   * var(--base-margin))  !important;  }
+.bottom.xxl,.bottom-xxl         {  bottom: calc(4   * var(--base-margin))  !important;  }
+.bottom.xxxl,.bottom-xxxl       {  bottom: calc(5   * var(--base-margin))  !important;  }
 
 
 /*  ELEMENTS  */
@@ -324,6 +339,10 @@ div.v-dot {
 }
 
 
+.pre        {  white-space: pre;       }
+.pre-wrap   {  white-space: pre-wrap;  }
+.pre-line   {  white-space: pre-line;  }
+
 .hover-transition:hover         {  transition: var(--transition-short) !important;  }
 .hover-transition-long:hover    {  transition: var(--transition)       !important;  }
 .transition                     {  transition: var(--transition)       !important;  }
@@ -412,6 +431,11 @@ div.v-dot {
 .padding-m                  {  padding: 15px !important;          }
 .padding-l                  {  padding: 20px !important;          }
 
+.size-10  {  font-size: 10px;  }
+.size-11  {  font-size: 11px;  }
+.size-12  {  font-size: 12px;  }
+.size-13  {  font-size: 13px;  }
+.size-14  {  font-size: 14px;  }
 .size-15  {  font-size: 15px;  }
 .size-16  {  font-size: 16px;  }
 .size-17  {  font-size: 17px;  }
@@ -452,6 +476,8 @@ div.v-dot {
 .height-950    {  height: 950px  !important;  }
 .height-1000   {  height: 1000px !important;  }
 .height-1050   {  height: 1050px !important;  }
+.height-1100   {  height: 1100px !important;  }
+.height-1150   {  height: 1150px !important;  }
 .height-1200   {  height: 1200px !important;  }
  
 .height-p-5    {  height: 5% !important;      }

@@ -105,6 +105,10 @@ window.dataEditable = function(ev) {
         newElement.classList.add("top-0");
         newElement.classList.add("bg-white");
         newElement.classList.add("width-full");
+        newElement.setAttribute('autocomplete', 'off');
+        newElement.setAttribute('autocorrect', 'off');
+        newElement.setAttribute('autocapitalize', 'off');
+        newElement.setAttribute('spellcheck', false);
         newElement.style.padding = "5px 18px";
         newElement.id = "current-data-editable";
 

@@ -1,7 +1,9 @@
 /* HTTP */
-window.get = function(url, args = {}) {
+window.get = function(url, args = {}, log = true) {
     url = (url.includes("?") ? url + "&_no_cache=" + Date.now() : url + "?_no_cache=" + Date.now());
-    console.log("[get]", url);
+    if (log) {
+        console.log("[get]", url);
+    }
     return new Promise(function(accept, reject) {
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function() {

@@ -12,7 +12,7 @@ window._get_wrapper = function() {
 
     const alertBox = document.createElement("div");
     alertBox.id = "prompt-inner";
-    
+
     const buttonsBox = document.createElement("div");
     const cancelButton = document.createElement("button");
     const okButton = document.createElement("button");
@@ -22,7 +22,7 @@ window._get_wrapper = function() {
     cancelButton.classList.add("margin-right-m");
     okButton.classList.add("green");
     buttonsBox.classList.add("buttons");
-    
+
     const header = document.createElement("p");
     header.classList.add("header");
 
@@ -31,7 +31,7 @@ window._get_wrapper = function() {
 
     const customBox = document.createElement("div");
     customBox.classList.add("custom");
-    
+
     alertBox.appendChild(header);
     alertBox.appendChild(content);
     alertBox.appendChild(customBox);
@@ -186,10 +186,10 @@ window.prompt = function(headerText, descriptionText, placeholder, matcherFuncti
 
 window.longPrompt = function(headerText, descriptionText, inputPlaceholder, textAreaPlaceholder, inputMatcherFunction = undefined, textAreaMatcherFunction = undefined) {
     if (!inputMatcherFunction) {
-        inputMatcherFunction = () => {};
+        inputMatcherFunction = () => { return true };
     }
     if (!textAreaMatcherFunction) {
-        textAreaMatcherFunction = () => {};
+        textAreaMatcherFunction = () => { return true };
     }
 
     return new Promise(function(resolve, reject) {
