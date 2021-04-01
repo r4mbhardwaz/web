@@ -20,7 +20,7 @@ from flask import Flask, render_template, session, redirect, request
 from flask.wrappers import Response
 from flask_babel import Babel, format_datetime
 
-context = Security.ssh_context()
+# context = Security.ssh_context()
 
 app = Flask(__name__, static_url_path="",
             static_folder="", template_folder="templates")
@@ -56,4 +56,5 @@ import backend.api.api
 
 
 # Start the application
-app.run(host="0.0.0.0", port=443, ssl_context=context)
+# app.run(host="0.0.0.0", port=443, ssl_context=context)
+app.run(host="0.0.0.0", port=80)
