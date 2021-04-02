@@ -1,0 +1,313 @@
+/**
+*** SIMPLE GRID
+*** (C) ZACH COLE 2016
+**/
+
+
+/* TYPOGRAPHY */
+
+h1 {
+    font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.375rem;
+}
+
+h4 {
+    font-size: 1.125rem;
+    margin: 0 0 0.75rem 0;
+}
+
+h5 {
+    font-size: 1rem;
+}
+
+h6 {
+    font-size: 0.875rem;
+}
+
+p {
+    margin: 10px 10px 20px 0px;
+    font-size: 1rem;
+    font-weight: 200;
+    line-height: 1.5;
+}
+
+.font-light {
+    font-weight: 300;
+}
+
+.font-regular {
+    font-weight: 400;
+}
+
+.font-heavy {
+    font-weight: 700;
+}
+
+
+/* POSITIONING */
+
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}
+
+.center {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.justify {
+    text-align: justify;
+}
+
+
+/* ==== GRID SYSTEM ==== */
+
+.container {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 15vh;
+}
+
+.row {
+    position: relative;
+    width: 100%;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.row [class^="col"] {
+    float: left;
+    /* margin: 0.5rem 2%; */
+    min-height: 0.125rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.col-1,.col-2,.col-3,.col-4,.col-5,.col-6,.col-7,.col-8,.col-9,.col-10,.col-11,
+.col-12     {  width: 96%;      }
+.col-1-sm   {  width: 4.33%;    }
+.col-2-sm   {  width: 12.66%;   }
+.col-3-sm   {  width: 21%;      }
+.col-4-sm   {  width: 29.33%;   }
+.col-5-sm   {  width: 37.66%;   }
+.col-6-sm   {  width: 46%;      }
+.col-7-sm   {  width: 54.33%;   }
+.col-8-sm   {  width: 62.66%;   }
+.col-9-sm   {  width: 71%;      }
+.col-10-sm  {  width: 79.33%;   }
+.col-11-sm  {  width: 87.66%;   }
+.col-12-sm  {  width: 96%;      }
+
+.row::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.hidden-sm {  display: none;  }
+
+@media only screen and (min-width: 33.75em) {
+    /* 540px */
+    .container {
+        width: 85%;
+    }
+}
+
+@media only screen and (min-width: 45em) {
+    /* 720px */
+    .row {
+        /* w = kx + d */
+        --x: 8.33333%;
+        --d: -3.25%;
+
+        --col-right-margin: 2%;
+    }
+    .row > [class^='col']:not(:last-child), .row > [class*=' col']:not(:last-child) {
+        margin-right: var(--col-right-margin);
+    }
+    .row > [class^='col'], .row > [class*=' col'] {
+        margin-bottom: var(--col-right-margin);
+    }
+    .col-1      {  width: calc(1   * var(--x));  }
+    .col-2      {  width: calc(2   * var(--x) + var(--d));  }
+    .col-3      {  width: calc(3   * var(--x) + var(--d));  }
+    .col-4      {  width: calc(4   * var(--x) + var(--d));  }
+    .col-5      {  width: calc(5   * var(--x) + var(--d));  }
+    .col-6      {  width: calc(6   * var(--x) + var(--d));  }
+    .col-7      {  width: calc(7   * var(--x) + var(--d));  }
+    .col-8      {  width: calc(8   * var(--x) + var(--d));  }
+    .col-9      {  width: calc(9   * var(--x) + var(--d));  }
+    .col-10     {  width: calc(10  * var(--x) + var(--d));  }
+    .col-11     {  width: calc(11  * var(--x) + var(--d));  }
+    .col-12     {  width: 100%;     }
+    .hidden-sm  {  display: block;  }
+
+    /* original simple grid */
+    /* .col-1      {  width: 4.33%;      }
+    .col-2      {  width: 12.66%;     }
+    .col-3      {  width: 21%;        }
+    .col-4      {  width: 29.33%;     }
+    .col-5      {  width: 37.66%;     }
+    .col-6      {  width: 46%;        }
+    .col-7      {  width: 54.33%;     }
+    .col-8      {  width: 62.66%;     }
+    .col-9      {  width: 71%;        }
+    .col-10     {  width: 79.33%;     }
+    .col-11     {  width: 87.66%;     }
+    .col-12     {  width: 96%;        }
+    .hidden-sm  {  display: block;    } */
+
+    /* based on 2% margin */
+    /* .col-1      {  width: 8.16%;    }
+    .col-2      {  width: 16%;      }
+    .col-3      {  width: 23.5%;    }
+    .col-4      {  width: 30.66%;   }
+    .col-5      {  width: 37.5%;    }
+    .col-6      {  width: 44%;      }
+    .col-7      {  width: 52.5%;    }
+    .col-8      {  width: 61.33%;   }
+    .col-9      {  width: 70.5%;    }
+    .col-10     {  width: 80%;      }
+    .col-11     {  width: 89.8%;    }
+    .col-12     {  width: 100%;     }
+    .hidden-sm  {  display: block;  } */
+}
+
+@media only screen and (min-width: 60em) {
+    /* 960px */
+    .container {
+        width: 90%;
+        max-width: 70rem;
+    }
+}
+
+
+
+/*  GRID LAYOUT  */
+.table {
+    display: flex;
+    flex-direction: column;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-gap: 10px;
+}
+
+.grid.gap-s     {  grid-gap: 5px;   }
+.grid.gap-m     {  grid-gap: 20px;  }
+.grid.gap-l     {  grid-gap: 30px;  }
+.grid.gap-xl    {  grid-gap: 50px;  }
+
+
+.grid.gap-m   .seperator  {  right: -12px;  }
+.grid.gap-l   .seperator  {  right: -16px;  }
+.grid.gap-xl  .seperator  {  right: -27px;  }
+
+.grid>div,
+.grid>div>div,
+.grid>div>input:not([type=checkbox], [type=radio], [type=range]),
+.grid>div>button,
+.grid>div>textarea,
+.grid>div>select        {  width: 100%;  }
+
+.grid .h-fill input,
+.grid .h-fill button,
+.grid .h-fill div       {  width: 100%;  }
+
+.grid .v-fill input,
+.grid .v-fill button,
+.grid .v-fill div       {  height: 100%;  }
+
+.grid .fill input,
+.grid .fill button,
+.grid .fill div         {  width: 100%;  height: 100%;  }
+
+.grid div.input         {  margin: 0;  }
+
+.row-s-1    {  grid-row-start: 1;         }
+.row-s-2    {  grid-row-start: 2;         }
+.row-s-3    {  grid-row-start: 3;         }
+.row-s-4    {  grid-row-start: 4;         }
+.row-s-5    {  grid-row-start: 5;         }
+.row-s-6    {  grid-row-start: 6;         }
+.row-s-7    {  grid-row-start: 7;         }
+.row-s-8    {  grid-row-start: 8;         }
+.row-s-9    {  grid-row-start: 9;         }
+.row-s-10   {  grid-row-start: 10;        }
+.row-e-1    {  grid-row-end: 1;           }
+.row-e-2    {  grid-row-end: 2;           }
+.row-e-3    {  grid-row-end: 3;           }
+.row-e-4    {  grid-row-end: 4;           }
+.row-e-5    {  grid-row-end: 5;           }
+.row-e-6    {  grid-row-end: 6;           }
+.row-e-7    {  grid-row-end: 7;           }
+.row-e-8    {  grid-row-end: 8;           }
+.row-e-9    {  grid-row-end: 9;           }
+.row-e-10   {  grid-row-end: 10;          }
+.col-s-1    {  grid-column-start: 1;      }
+.col-s-2    {  grid-column-start: 2;      }
+.col-s-3    {  grid-column-start: 3;      }
+.col-s-4    {  grid-column-start: 4;      }
+.col-s-5    {  grid-column-start: 5;      }
+.col-s-6    {  grid-column-start: 6;      }
+.col-s-7    {  grid-column-start: 7;      }
+.col-s-8    {  grid-column-start: 8;      }
+.col-s-9    {  grid-column-start: 9;      }
+.col-s-10   {  grid-column-start: 10;     }
+.col-s-11   {  grid-column-start: 11;     }
+.col-s-12   {  grid-column-start: 12;     }
+.col-s-13   {  grid-column-start: 13;     }
+.col-e-1    {  grid-column-end: 1;        }
+.col-e-2    {  grid-column-end: 2;        }
+.col-e-3    {  grid-column-end: 3;        }
+.col-e-4    {  grid-column-end: 4;        }
+.col-e-5    {  grid-column-end: 5;        }
+.col-e-6    {  grid-column-end: 6;        }
+.col-e-7    {  grid-column-end: 7;        }
+.col-e-8    {  grid-column-end: 8;        }
+.col-e-9    {  grid-column-end: 9;        }
+.col-e-10   {  grid-column-end: 10;       }
+.col-e-11   {  grid-column-end: 11;       }
+.col-e-12   {  grid-column-end: 12;       }
+.col-e-13   {  grid-column-end: 13;       }
+
+.flex                                                                                       {  display: flex;           }
+.flex.vertical,.flex.column                                                                 {  flex-direction: column;  }
+.flex.horizontal,.flex.row                                                                  {  flex-direction: row;     }
+.flex.vertical-reverse,.flex.column-reverse,.flex.vertical.reverse,.flex.column.reverse     {  flex-direction: column-reverse;  }
+.flex.horizontal-reverse,.flex.row-reverse,.flex.horizontal.reverse,.flex.row.reverse       {  flex-direction: row;     }
+
+.flex.table > div {
+    padding: 20px 0;
+}
+.flex.table > div:not(:last-child) {
+    border: 2px solid var(--grey);
+    border-style: none none solid none;
+}
+.flex.table > div:last-child {
+    padding-bottom: 0px;
+}
+.flex .head {
+    height: 45px;
+}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis</title>
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script src="/assets/js/chart.js"></script>
+    <script type="module" src="/assets/js/global.js"></script>
+</head>
+
+<body>
+    <div id="swup">
+        {% include "nlu.html" %}
+
+        <div class="container">
+            <div class="row">
+                <nav class="breadcrumb">
+                    <a href="/">Jarvis Server</a>
+                    <a href="/assistant">Skills</a>
+                    <a href="/skill/edit/{{ skill.id }}" id="skill-name">{{ skill.name }}</a>
+                </nav>
+            </div>
+
+            <h1>
+                <i class="{{ skill.icon.color }}">{{ skill.icon.icon }}</i> 
+                <span class="clickable relative width-full" data-editable data-editablecallback="updateSkillName">{{ skill.name }}</span>
+            </h1>
+
+            <div class="grid">
+                <div class="row-s-1 row-e-1 col-s-1 col-e-7 relative v-center">
+                    <span class="blue clickable">By You</span> 
+                    <div class="v-dot bg-darker-grey"></div>
+                    {% set full_stars = skill.social.rating|round(0, 'floor')|int %}
+                    {% set empty_stars = 5 - skill.social.rating|round(0, 'ceil')|int %}
+                    {% set half_stars = 5 - empty_stars - full_stars %}
+                    <span class="{{ 'green' if skill.social.rating > 3 else 'orange' }}"> {{ ("<i>star</i>" * full_stars + "<i>star_half</i>" * half_stars + "<i>star_border</i>" * empty_stars)|safe }}</span>
+                    <span class="margin-left-m {{ 'green' if skill.social.rating > 3 else 'orange' }}"> {{ skill.social.comments|length }} ratings </span>
+                    <div class="v-dot bg-darker-grey"></div>
+                    <span class="{{ 'red' if skill.quality < 0.25 else 'orange' if skill.quality < 0.5 else 'green' }}" data-quality="{{ skill.quality }}">
+                        {{ 'Poor Quality' if skill.quality < 0.25 else 'Medium Quality' if skill.quality < 0.5 else 'Excellent Quality' }}
+                    </span>
+                </div>
+                {% set row = 2 %}
+                {% if skill.public: %}
+                <div class="row-s-{{ row }} row-e-{{ row }} col-s-1 col-e-7 relative v-center">
+                    <span>{{ skill.social.downloads|length }} Downloads</span>
+                    <div class="v-dot bg-darker-grey"></div>
+                    <span class="v-center">
+                        <i class="blue size-20">thumb_up</i>
+                        <span class="blue margin-left-m margin-top-xs">{{ skill.social.likes|length }}</span>
+                    </span>
+                    <div class="v-dot bg-darker-grey"></div>
+                    <span class="v-center">
+                        <i class="blue size-20">comment</i>
+                        <span class="blue margin-left-m margin-top-xs">{{ skill.social.comments|length }}</span>
+                    </span>
+                </div>
+                {% set row = row + 1 %}
+                {% endif %}
+                <div class="row-s-{{ row }} row-e-{{ row }} col-s-1 col-e-7 v-center">
+                    <span class="darker-grey">Created {{ skill['created-at'] | datetime("date") }}</span>
+                    <div class="v-dot bg-darker-grey"></div>
+                    <span class="darker-grey">Last modified {{ skill['modified-at'] | datetime("date") }}</span>
+                </div>
+                <div    class="row-s-1 row-e-{{ row + 1 }} col-s-7 col-e-13 border-left border-medium border-darker-grey height-full padding-left-m v-center clickable" 
+                        id="skill-description">{{ skill.description }}</div>
+                
+                <div class="row-s-{{ row + 1 }} row-e-{{ row + 1 }} col-s-1 col-e-13" style="margin-top: 40px">
+                    <h3>Intents</h3>
+                </div>
+                <div class="row-s-{{ row + 2 }} row-e-10 col-s-1 col-e-13 box flex table row padding-top-l">
+                    {% if skill.intents|length == 0: %}
+                    <div class="center no-padding">
+                        <p>No intents yet.</p>
+                        <div class="h-center">
+                            <button class="green v-center transition hover-white" data-newintent="{{ skill.id }}">
+                                <i class="transition margin-right-l">add</i>
+                                <span class="transition margin-top-xs">Create New Intent</span>
+                            </button>
+                        </div>
+                    </div>
+                    {% else: %}
+
+                    <div class="head">
+                        <div class="v-center clickable blue absolute top-m right-l width-auto" data-newintent="{{ skill.id }}">
+                            <i class="transition margin-right-l">add</i>
+                            <span class="transition margin-top-xs">Create New Intent</span>
+                        </div>
+                    </div>
+
+                    {% for intent in skill.intents: %}
+                    {% set color = 'red' if intent.quality < 0.25 else 'orange' if intent.quality < 0.5 else 'green' %}
+                        <div class="clickable grid gap-s" onclick="redirect('/intent/edit/{{ skill.id }}/{{ intent.id }}');" data-quality="{{ intent.quality }}">
+                            <div class="row-s-1 row-e-3 col-s-1 col-e-2 v-center h-center">
+                                <div class="dot l {{ color }}"></div>
+                            </div>
+                            <div class="row-s-1 row-e-1 col-s-2 col-e-11">
+                                <span>{{ intent.name }}</span>
+                            </div>
+                            <div class="row-s-2 row-e-3 col-s-2 col-e-11">
+                                <span class="{{ color }}">{{ intent.utterances | length }} training example{{ "" if intent.utterances | length == 1 else "s" }}</span>
+                                <div class="v-dot bg-darker-grey"></div>
+                                <span>{{ intent.slots | length }} slot{{ "" if intent.slots | length == 1 else "s"}}</span>
+                            </div>
+                            <div class="row-s-1 row-e-3 col-s-11 col-e-13 padding-top-xs visible-on-hover hover-bg-light-grey hover-red border-radius v-center middle clickable dark-grey transition" data-skillid="{{ skill.id }}" data-deleteintent="{{ intent.id }}">
+                                <i style="margin: 0 10px 2px 0">clear</i>
+                                <span>Delete</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div id="no-break"></div>
+        </div>
+    </div>
+</body>
+
+</html>

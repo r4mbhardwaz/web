@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis</title>
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script src="/assets/js/chart.js"></script>
+    <script type="module" src="/assets/js/global.js"></script>
+</head>
+
+<body>
+    <div>
+        <div id="swup">
+            {% include "nlu.html" %}
+
+            <form class="container" method="POST">
+
+
+                <div class="row">
+                    <nav class="breadcrumb">
+                        <a href="/">Jarvis Server</a>
+                        <a href="/assistant">Assistant</a>
+                        <a href="/skill/new">New Skill</a>
+                    </nav>
+                </div>
+
+                <h1> <i>bolt</i> Add a new Skill</h1>
+
+                <div class="grid gap-l">
+                    <div class="row-s-1 row-e-1 col-s-1 col-e-5">
+                        <div class="input">
+                            <input type="text" name="skill-name" placeholder=" " required  autocomplete="off">
+                            <span>Skill name (eg. Weather, Clock, ...)</span>
+                        </div>
+                    </div>
+                    <div class="row-s-2 row-e-2 col-s-1 col-e-8">
+                        <div class="input">
+                            <textarea type="text" class="v-resize" name="skill-description" placeholder=" " required autocomplete="off"></textarea>
+                            <span>Description of your skill</span>
+                        </div>
+                    </div>
+                    <div class="checkbox-sides row-s-3 row-e-3 col-s-1 col-e-8">
+                        <input type="checkbox" class="switch" id="skill-public" name="skill-public">
+                        <label for="skill-public">Publish to the official Jarvis Skill store<br>
+                            <span class="dark-grey">Other users can install this skill on their Jarvis assistant</span>
+                        </label>
+                        <i style="cursor: pointer; margin-left: 20px" onmouseover="showInfoBox(this, 'Your skill will be published to the offical <span class=\'blue\'>Jarvis Skill store</span> and can be downloaded by everyone with a Jarvis device.<br>Users will be able to like and comment on your skill and rate it from 1-5<br><br>Only the skill name, icon, language and sentences you enter will be uploaded. If you check this box, make sure you <span class=\'red\'>do not enter sensitive data!</span>')"
+                            onmouseout="removeInfoBox()">info</i>
+                    </div>
+                    <div class="row-s-1 row-e-1 col-s-5 col-e-8">
+                        <select name="skill-language" required>
+                            <option disabled selected>Choose a language</option>
+                            <option value="de">German</option>
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="it">Italian</option>
+                            <option value="ja">Japanese</option>
+                            <option value="ko">Korean</option>
+                        </select>
+                    </div>
+                    <div class="row-s-1 row-e-5 col-s-8 col-e-12">
+                        <div class="chooser" id="icon-chooser">
+                            <i class="current blue">wb_cloudy</i>
+                            <input type="hidden" class="current-icon" name="skill-icon" value="wb_cloudy" >
+                            <input type="hidden" class="current-icon-color" name="skill-icon-color" value="blue">
+                            <div class="search box">
+                                <div class="input">
+                                    <input type="text" placeholder=" " oninput="searchIcon(this.value)">
+                                    <span>Search for an icon...</span>
+                                </div>
+                                <div class="icons">
+                                    <div class="row">
+                                        {% for icon in first_100_icons: %}
+                                        <div class="col-2" onclick="setIcon('{{ icon }}')">
+                                            <i>{{ icon }}</i>
+                                        </div>
+                                        {% if loop.index % 5 == 0 %}
+                                    </div>
+                                    <div class="row">
+                                        {% endif %} {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="colors">
+                                {% set colors = {"red": "#ff3f3f", "green": "#1dc558", "blue": "#3f65ff", "orange": "#ff9b3f"} %} {% for color in colors: %}
+                                <div class="box bg-{{ color }}" onclick="setColor('{{ color }}')"></div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-s-6 row-e-6 col-s-10 col-e-12">
+                        <button type="submit">Continue</button>
+                    </div>
+                </div>
+                <div id="no-break"></div>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>

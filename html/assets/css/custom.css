@@ -1,0 +1,53 @@
+/* CUSTOM STYLES FOR THE JARVIS WEBSITE */
+
+.card {
+    margin: 7px !important;
+}
+
+a {
+    transition: var(--transition);
+    color: var(--darker-grey);
+}
+
+a:hover {
+    color: var(--dark-grey);
+}
+
+.info-box-container {
+    transition: .2s;
+    transform: translate(calc((400px - 20px) / -2), 100px);
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    position: fixed;
+    width: 400px;
+    visibility: hidden;
+    opacity: 0;
+    padding: 20px;
+    box-shadow: var(--box-shadow-level-3);
+}
+
+.info-box-container::before {
+    content: "";
+    display: block;
+    background-color: #fff;
+    border-radius: 4px;
+    transform: rotate(45deg);
+    position: absolute;
+    top: 0px;
+    left: 0;
+    right: 0;
+    width: 50px;
+    height: 50px;
+    margin: auto;
+    z-index: -1;
+}
+
+.info-box-container.visible {
+    transform: translate(calc((400px - 20px) / -2), 40px);
+    visibility: visible;
+    opacity: 1;
+}
+
+.info-box-content {
+    margin: 0;
+}

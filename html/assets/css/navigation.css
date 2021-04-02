@@ -1,0 +1,50 @@
+/*  NAVIGATION DESIGNS  */
+
+.breadcrumb {
+    margin: 35px 0px 35px;
+    z-index: 2;
+    position: fixed;
+}
+
+.breadcrumb>* {
+    color: var(--dark-grey);
+    text-decoration: none;
+    transition: .2s;
+}
+
+.breadcrumb>*:not(:last-child)::after {
+    content: "\00a0\00a0\00a0\00a0/\00a0\00a0\00a0\00a0";
+    margin-left: 5px;
+}
+
+#swup > .container > .row:first-child,
+body > .container > .row:first-child {
+    position: fixed;
+    top: 0;
+    z-index: 10;
+}
+
+#swup > .container > .row:first-child::after,
+body > .container > .row:first-child::after {
+    content: "";
+    background-color: var(--blue);
+    width: 200%;
+    height: 90px;
+    top: 0;
+    position: fixed;
+    z-index: 1;
+    left: -25%;
+}
+
+.breadcrumb>a {
+    color: var(--white);
+}
+
+.breadcrumb>*:hover, .breadcrumb>a:last-child {
+    color: var(--lighter-grey);
+}
+
+body {
+    padding-top: 125px;
+}
+
