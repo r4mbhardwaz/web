@@ -1,5 +1,9 @@
-from __main__ import *
-import threading
+from werkzeug.datastructures import ContentRange
+from __main__ import app, login_required, request, ICONS, Response
+import json
+import time
+import traceback
+from jarvis import Database, Jarvis
 
 @app.route("/api/db-stats")
 @login_required
@@ -8,6 +12,15 @@ def api_dbstats():
         "timestamp": {"$gt": time.time() - (60*60*24*7)}
     }).sort("timestamp"))
     return Response(json.dumps(result), content_type="application/json")
+
+
+@app.route("/api/version")
+@login_required
+def api_jarvis_version():
+    res = Jarvis.api("jarvis/update/status", {}, timeout=10)
+    if isinstance(res, bool):
+        return Response(json.dumps({"success": False, "error": "Timeout"}), content_type="application/json")
+    return Response(res, content_type="application/json")
 
 
 @app.route("/api/test")
@@ -25,13 +38,6 @@ def api_test(id=None):
     return json.dumps(obj)
 
 
-@app.route("/api/endpoints")
-def api_endpoints():
-    print(app.view_functions)
-    return "check console"
-
-
-
 @app.route("/api/search-icon")
 @login_required
 def api_iconsearch():
@@ -45,7 +51,3 @@ def api_iconsearch():
         f = [x for x in ICONS if search in x]
     return Response(json.dumps(f), content_type="application/json")
 
-
-@app.route("/api/threads")
-def api_threads():
-    return Response(json.dumps(threading.active_count()), content_type="application/json")

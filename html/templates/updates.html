@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis</title>
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script type="module" src="/assets/js/global.js"></script>
+    
+    <style>
+        .nlu.box {
+            display: none !important
+        }
+    </style>
+</head>
+
+<body>
+    <div id="swup">
+        <div class="container">
+            <div class="row">
+                <nav class="breadcrumb">
+                    <a href="/">Jarvis Server</a>
+                    <a href="/updates">Update Center</a>
+                </nav>
+            </div>
+
+            <h1>Update Center</h1>
+
+            <div class="row">
+                <div class="col-1">
+                    <img src="/assets/img/ironman.png">
+                </div>
+                <div class="col-6 middle">
+                    {% set update_available = version.local != version.remote %}
+                    {% if not update_available: %}
+                    <h3 class="margin-0 margin-bottom-s">
+                        Jarvis {{ version.name.local }}
+                    </h3>
+                    <span class="darker-grey">
+                        Version {{ version.local }}
+                        <div class="v-dot bg-darker-grey"></div>
+                        {{ version["update-size"] | filesizeformat }}
+                    </span>
+                    {% else: %}
+                    Current Version: {{ version.local }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

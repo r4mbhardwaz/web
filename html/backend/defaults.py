@@ -1,8 +1,13 @@
 from __main__ import *
+from jarvis import Config, Security, Database
 
 @app.route("/")
 def index():
-    return render_template("index.html", config_size=Database().table("assistant").size)
+    cnf = Config()
+    version = cnf.get("version", None)
+    return render_template("index.html", 
+                            config_size=Database().table("assistant").size, 
+                            version=version)
 
 
 @app.route("/login", methods=['GET'])
@@ -35,3 +40,11 @@ def login_post():
 def assistant():
     return render_template("assistant.html", skills=list(Database().table("skills").all().sort("created-at").reverse()))
 
+
+@app.route("/updates")
+@login_required
+def updates():
+    cnf = Config()
+    version = cnf.get("version", None)
+    return render_template("updates.html", 
+                            version=version)

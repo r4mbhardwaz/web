@@ -14,7 +14,8 @@ def benchmark(func):
         start = time.time()
         res = func(*args, **kwargs)
         end = time.time()
-        print(f"Intent::{func.__name__} took {end-start}s")
+        if end-start > 1:
+            print(f"Intent::{func.__name__} took {end-start}s")
         return res
     return wrap
 

@@ -80,11 +80,11 @@ function getColorForHTTPCode(code) {
     }[code];
 }
 
+
 const HTTP_CODES = { 200: 'OK', 201: 'Created', 202: 'Accepted', 204: 'No Content', 206: 'Partial Content', 301: 'Moved Permanently', 302: 'Found', 304: 'Not Modified', 400: 'Bad Request', 401: 'Unauthorized', 403: 'Forbidden', 404: 'Not Found', 405: 'Method Not Allowed', 406: 'Not Acceptable', 409: 'Conflict', 412: 'Precondition Failed', 413: 'Payload Too Large', 414: 'URI Too Long', 415: 'Unsupported Media Type', 416: 'Range Not Satisfiable', 417: 'Expectation Failed', 500: 'Internal Server Error', 501: 'Not Implemented', 503: 'Service Unavailable' }
 
 updateStatistics();
 
-console.log("index.js");
 
 window.dbCtx = document.getElementById('db-stats').getContext('2d');
 window.accessCtx = document.getElementById('access-stats').getContext('2d');
@@ -245,8 +245,6 @@ window.accessChart = new Chart(accessCtx, {
 });
 
 
-
-
 // helper functions
 function subtract(r1, r2) {
     return Object.keys(r1).reduce((a, k) => {
@@ -258,3 +256,4 @@ function subtract(r1, r2) {
         return a;
     }, {});
 }
+
