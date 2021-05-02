@@ -1,6 +1,7 @@
 from __main__ import *
+import markdown
 
-@app.template_filter('datetime')
+@app.template_filter("datetime")
 def filter_datetime(value, format="full"):
     dt = datetime.utcfromtimestamp(int(value))
     str = f"Unknown format {format}"
@@ -11,3 +12,7 @@ def filter_datetime(value, format="full"):
     elif format == "full":
         str = format_datetime(dt, "EEEE, d. MMMM yyyy HH:mm:ss")
     return str
+
+@app.template_filter("markdown")
+def filter_markdown(value):
+    return markdown.markdown(value, output_format='html5')

@@ -54,7 +54,7 @@
                     <label>Update Center</label>
                     <p>Download and install the newest assistant software</p>
                     <div class="row">
-                        {% set update_available = version.local == version.remote %}
+                        {% set update_available = version.local != version.remote %}
                         <div class="col-7">
                             {% if version is not none: %}
                             <span>

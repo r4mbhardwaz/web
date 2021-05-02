@@ -478,3 +478,59 @@ input.error {
     0% {  transform: translateY(0px);  }
     100% {  transform: translateY(100px);  }
 }
+
+button + .button-options {
+    position: absolute;
+    right: -35px;
+    border: 2px solid #000;
+    height: 100%;
+    width: 60px;
+    transition: var(--transition);
+    z-index: -1;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    text-align: right;
+    vertical-align: middle;
+    cursor: pointer;
+    line-height: 100%;
+}
+button + .button-options > i { 
+    transform: translate(-7px, 7px); 
+    color: var(--light-black);
+    background: none !important;
+}
+button + .button-options.settings > i { transform: translate(8px, -5px); }
+button:hover + .button-options,
+
+button:hover + .button-options > i,
+.button-options:hover > i {
+    color: var(--white) !important;
+}
+
+button.orange + .button-options { border-color: var(--orange); }
+button.orange:hover + .button-options { background-color: var(--orange); }
+button.orange + .button-options:hover { background-color: var(--orange); }
+button.orange + .button-options > i { color: var(--orange); }
+
+button.green + .button-options { border-color: var(--green); }
+button.green:hover + .button-options { background-color: var(--green); }
+button.green + .button-options:hover { background-color: var(--green); }
+button.green + .button-options > i { color: var(--green); }
+
+button.blue + .button-options { border-color: var(--blue); }
+button.blue:hover + .button-options { background-color: var(--blue); }
+button.blue + .button-options:hover { background-color: var(--blue); }
+button.blue + .button-options > i { color: var(--blue); }
+
+button.red + .button-options { border-color: var(--red); }
+button.red:hover + .button-options { background-color: var(--red); }
+button.red + .button-options:hover { background-color: var(--red); }
+button.red + .button-options > i { color: var(--red); }
+.button-options > .options {
+    top: 45px !important;
+    right: 0px !important;
+    min-width: 250px;
+}
+button:disabled + .button-options {
+    opacity: .2s;
+    cursor: not-allowed;
+}

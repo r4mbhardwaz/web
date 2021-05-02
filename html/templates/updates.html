@@ -8,6 +8,7 @@
     <title>Jarvis</title>
 
     <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/markdown.css">
     <script type="module" src="/assets/js/global.js"></script>
     
     <style>
@@ -28,25 +29,116 @@
             </div>
 
             <h1>Update Center</h1>
-
+            
             <div class="row">
-                <div class="col-1">
+                <div class="col-1 margin-bottom-0">
                     <img src="/assets/img/ironman.png">
                 </div>
-                <div class="col-6 middle">
+                <div class="col-5 margin-bottom-0 middle">
                     {% set update_available = version.local != version.remote %}
-                    {% if not update_available: %}
-                    <h3 class="margin-0 margin-bottom-s">
+                    {% set color = "orange" if update_available else "green" %}
+                    <h3 class="margin-0 margin-bottom">
                         Jarvis {{ version.name.local }}
-                    </h3>
-                    <span class="darker-grey">
-                        Version {{ version.local }}
+                        {% if update_available: %}
                         <div class="v-dot bg-darker-grey"></div>
-                        {{ version["update-size"] | filesizeformat }}
+                        <span class="size-16 {{ color }}">{{ "Update available" if update_available else "Up-to-date!" }}</span>
+                        {% endif %}
+                    </h3>
+                    <span>
+                        <span class="darker-grey">Version {{ version.local }}</span>
+                        <div class="v-dot bg-darker-grey"></div>
+                        {% if update_available: %}
+                            <span class="darker-grey">{{ version["update-size"] | filesizeformat }} update size</span>
+                        {% else: %}
+                            <span class="green">Up-to-date!</span>
+                        {% endif %}
+                        <span>
+                            <i  style=" cursor: pointer; 
+                                        margin: 0 0 0 15px; 
+                                        transform: translateY(-1px)"
+                                class="absolute" 
+                                onmouseover="showInfoBox(this, `Update Server: {{ version.server }}<br>Last poll: {{ version.timestamp.local | datetime }}`)" 
+                                onmouseout="removeInfoBox()">info</i>
+                        </span>
                     </span>
-                    {% else: %}
-                    Current Version: {{ version.local }}
-                    {% endif %}
+                </div>
+                {% if update_available: %}
+                <div class="col-1 margin-bottom-0 v-center green">
+                    <i class="size-25">arrow_right_alt</i>
+                </div>
+                <div class="col-5 margin-bottom-0 middle">
+                    <h3 class="margin-0 margin-bottom">
+                        Jarvis {{ version.name.remote }}
+                    </h3>
+                    <span>
+                        <span class="darker-grey">Version {{ version.remote }}</span>
+                        <div class="v-dot bg-darker-grey"></div>
+                        <span class="darker-grey">Released {{ version.timestamp.remote | datetime("date") }} </span>
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+
+            <hr>
+            
+            <div class="row">
+                <div class="col-6">
+                    <h3 class="margin-top-0">Update Notes:</h3>
+                    <div class="box markdown">
+                        {{ version.notes.remote | markdown | safe }}
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h3 class="margin-top-0">Installation:</h3>
+                    <div class="box">
+                        <div class="row margin-top-s">
+                            <div class="col-3">
+                                <span>Download</span>
+                            </div>
+                            <div class="col-8">
+                                <div class="progress">
+                                    <div id="update-download-progress"></div>
+                                </div>
+                            </div>
+                            <div class="col-1">
+                                <span class="right" id="update-download-progress-percent">0%</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <span>Installation</span>
+                            </div>
+                            <div class="col-8">
+                                <div class="progress">
+                                    <div id="update-install-progress"></div>
+                                </div>
+                            </div>
+                            <div class="col-1">
+                                <span class="right" id="update-install-progress-percent">0%</span>
+                            </div>
+                        </div>
+
+                        <br>
+                        
+                        <div class="row">
+                            <div class="col-5 relative">
+                                <button class="green" id="install-update-button">Install Update</button>
+                                <div class="settings button-options">
+                                    <i>arrow_drop_down</i>
+                                    <div class="options hidden" id="update-options">
+                                        <div class="v-center hover-bg-green" id="update-download-only">
+                                            <i>download</i>
+                                            <span>Only Download</span>
+                                        </div>
+                                        <div class="v-center hover-bg-blue">
+                                            <i>download</i>
+                                            <span>Schedule Installation</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

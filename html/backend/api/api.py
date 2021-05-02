@@ -19,7 +19,25 @@ def api_dbstats():
 def api_jarvis_version():
     res = Jarvis.api("jarvis/update/status", {}, timeout=10)
     if isinstance(res, bool):
-        return Response(json.dumps({"success": False, "error": "Timeout"}), content_type="application/json")
+        return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
+    return Response(res, content_type="application/json")
+
+
+@app.route("/api/update/download", methods=["POST"])
+@login_required
+def api_update_download():
+    res = Jarvis.api("jarvis/update/download", {}, timeout=10)
+    if isinstance(res, bool):
+        return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
+    return Response(res, content_type="application/json")
+
+
+@app.route("/api/update/install", methods=["POST"])
+@login_required
+def api_update_install():
+    res = Jarvis.api("jarvis/update/install", {}, timeout=10)
+    if isinstance(res, bool):
+        return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
     return Response(res, content_type="application/json")
 
 

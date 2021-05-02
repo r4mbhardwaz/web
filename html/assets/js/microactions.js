@@ -19,16 +19,23 @@ document.querySelectorAll("[data-visiblewhen]").forEach(_el => {
 
     document.querySelectorAll(target).forEach(_el2 => {
         const el2 = _el2;
-        el2.addEventListener("input", ev => {
-            switch (event) {
-                case "checked":
-                    el.classList.remove(el2.checked ? "hidden" : "visible");
-                    el.classList.add(el2.checked ? "visible" : "hidden");
-                    break;
-                default:
-                    break;
-            }
-        })
+        if (event == "click") {
+            el2.addEventListener("click", ev => {
+                el.classList.toggle("hidden");
+                el.classList.toggle("visible");
+            });
+        } else {
+            el2.addEventListener("input", ev => {
+                switch (event) {
+                    case "checked":
+                        el.classList.remove(el2.checked ? "hidden" : "visible");
+                        el.classList.add(el2.checked ? "visible" : "hidden");
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
     });
 });
 
