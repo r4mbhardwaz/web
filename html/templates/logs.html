@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis</title>
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script type="module" src="/assets/js/global.js"></script>
+
+    <style>
+        tr > td:nth-child(1) { width: 200px; }
+        tr > td:nth-child(2) { width: 125px; }
+        tr > td:nth-child(3) { width: 200px; }
+        tr > td:nth-child(4) { width: 200px; }
+        tr > td:nth-child(5) { width: 200px; }
+    </style>
+</head>
+
+<body>
+    <div id="swup">
+        <div class="container">
+            <div class="row">
+                <nav class="breadcrumb">
+                    <a href="/">Jarvis Server</a>
+                    <a href="/logs">Logs</a>
+                </nav>
+            </div>
+
+            <h1> <i>rss_feed</i> Log inspection</h1>
+
+            <table>
+                <thead>
+                    <tr>
+                        <td>Time</td>
+                        <td>Importance</td>
+                        <td>Referrer</td>
+                        <td>Tag</td>
+                        <td>Message</td>
+                    </tr>
+                </thead>
+                <tbody id="log-entries">
+
+                </tbody>
+            </table>
+            <!-- <div class="row">
+                <div class="col-3">Time</div>
+                <div class="col-2">Importance</div>
+                <div class="col-1">Referrer</div>
+                <div class="col-1">Tag</div>
+                <div class="col-5">Message</div>
+            </div>
+            
+            <div id="log-entries" class="row">
+                
+            </div> -->
+        </div>
+    </div>
+</body>
+</html>

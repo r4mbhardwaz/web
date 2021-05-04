@@ -46,6 +46,7 @@ import backend.defaults
 import backend.skill
 import backend.slot
 import backend.intent
+import backend.logs
 
 # API functions
 import backend.api.train
