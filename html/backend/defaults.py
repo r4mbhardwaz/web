@@ -7,6 +7,8 @@ def index():
     version = cnf.get("version", None)
     return render_template("index.html", 
                             config_size=Database().table("assistant").size, 
+                            logs_size=Database().table("logs").size,
+                            log_entries_count=Database().table("logs").count,
                             version=version)
 
 

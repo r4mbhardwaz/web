@@ -57,6 +57,10 @@ window.ElementList = class {
         return this.list[index];
     }
 
+    get length() {
+        return this.list.length;
+    }
+
     get value() {
         let arr = []
         this.list.forEach(el => { arr.push(el.value) })

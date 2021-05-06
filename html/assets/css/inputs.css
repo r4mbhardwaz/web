@@ -27,8 +27,13 @@ select,
     cursor: pointer;
 }
 
+.disabled,
 button:disabled {
     opacity: .2;
+    cursor: not-allowed;
+}
+
+.disabled * {
     cursor: not-allowed;
 }
 
@@ -408,6 +413,7 @@ div.input.file>label {
     margin: auto;
     width: 450px;
     height: fit-content;
+    height: -moz-fit-content;
     background-color: var(--lighter-grey);
     animation: opacity .2s forwards;
     border-radius: var(--border-radius);
@@ -499,12 +505,11 @@ button + .button-options > i {
     background: none !important;
 }
 button + .button-options.settings > i { transform: translate(8px, -5px); }
-button:hover + .button-options,
 
 button:hover + .button-options > i,
 .button-options:hover > i {
     color: var(--white) !important;
-}
+} 
 
 button.orange + .button-options { border-color: var(--orange); }
 button.orange:hover + .button-options { background-color: var(--orange); }

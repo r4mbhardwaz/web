@@ -7,7 +7,7 @@ from __main__ import app, login_required, request, ICONS, Response
 import json
 import time
 import traceback
-from jarvis import Database, Jarvis
+from jarvis import Database, Jarvis, Config
 
 
 @app.route("/api/db-stats")
@@ -46,6 +46,48 @@ def api_update_install():
     return Response(res, content_type="application/json")
 
 
+@app.route("/api/update/poll", methods=["POST"])
+@login_required
+def api_update_poll():
+    res = Jarvis.api("jarvis/update/poll", {}, timeout=20)
+    if isinstance(res, bool):
+        return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
+    return Response(res, content_type="application/json")
+
+
+@app.route("/api/update/schedule", methods=["POST"])
+@login_required
+def api_update_schedule():
+    json_data = request.get_json(force=True)
+    max_future_days = 30
+    def set_schedule(key):
+        if not isinstance(json_data[key], int):
+            return Response(json.dumps({"success": False, "error": f"The given {key} timestamp is not an integer!"}), content_type="application/json")
+        if json_data[key] < time.time():
+            return Response(json.dumps({"success": False, "error": "The date has to be in the future!"}), content_type="application/json")
+        if json_data[key] > time.time() + (60 * 60 * 24 * (max_future_days + 1)):
+            return Response(json.dumps({"success": False, "error": f"The date has to be a maximum of {max_future_days} days in the future!"}), content_type="application/json")
+        cnf = Config()
+        cnf.set(f"schedule-{key}", json_data[key])
+        return Response(json.dumps({"success": True}), content_type="application/json")
+    if "install" in json_data:
+        return set_schedule("install")
+    if "download" in json_data:
+        return set_schedule("download")
+    return Response(json.dumps({"success": False, "error": "You can only schedule an installation or download!"}))
+
+
+@app.route("/api/update/schedule/cancel", methods=["POST"])
+@login_required
+def api_cancel_scheduled_update():
+    try:
+        cnf = Config()
+        cnf.set("schedule-install", False)
+        return Response(json.dumps({"success": True}))
+    except Exception:
+        return Response(json.dumps({"success": False, "error": "Database connection failed"}))
+
+
 @app.route("/api/test")
 @app.route("/api/test/<id>")
 def api_test(id=None):
@@ -65,13 +107,13 @@ def api_test(id=None):
 @login_required
 def api_get_all_logs():
     try:
-        logs = list(Database().table("logs").all())
+        logs = list(Database().table("logs").all().sort("timestamp").reverse()) # newest first
         for i in range(len(logs)):
             del logs[i]["_id"]
             del logs[i]["_rev"]
         return Response(json.dumps({"success": True, "logs": logs, "length": len(logs)}), content_type="application/json")
     except Exception:
-        return Response(json.dumps({"success": False, "error": "Database connection failed!"}), content_type="application/json")
+        return Response(json.dumps({"success": False, "error": "Database connection failed"}), content_type="application/json")
 
 
 @app.route("/api/logs/delete", methods=["POST"])
@@ -81,7 +123,25 @@ def api_delete_all_logs():
         Database().table("logs").all().delete()
         return Response(json.dumps({"success": True}))
     except Exception:
-        return Response(json.dumps({"success": False, "error": "Database connection failed!"}), content_type="application/json")
+        return Response(json.dumps({"success": False, "error": "Database connection failed"}), content_type="application/json")
+
+
+@app.route("/api/log/delete", methods=["POST"])
+@login_required
+def api_delete_one_log():
+    json_data = request.get_json(force=True)
+    if "timestamp" in json_data and "referrer" in json_data and "tag" in json_data:
+        try:
+            Database().table("logs").find({
+                "timestamp": { "$eq": json_data["timestamp"] },
+                "referrer":  { "$eq": json_data["referrer"]  },
+                "tag":       { "$eq": json_data["tag"]       }
+            }).delete()
+            return Response(json.dumps({"success": True}))
+        except Exception:
+            return Response(json.dumps({"success": False, "error": "Database connection failed"}), content_type="application/json")
+    else:
+        return Response(json.dumps({"success": False, "error": "Need to provide fields 'timestamp', 'referrer' and 'tag'"}), content_type="application/json")
 
 
 @app.route("/api/search-icon")

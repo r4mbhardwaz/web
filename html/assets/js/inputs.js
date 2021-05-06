@@ -73,10 +73,27 @@ window._hide_wrapper = function(wrapperElement) {
     }, 0.25 * 1000);
 }
 
+const alertQueue = [];
+
+function handleAlertQueue() {
+    if (alertQueue.length > 0 && !document.getElementById("prompt")) {
+        let alertObject = alertQueue.shift();
+        try {
+            window[alertObject.functionName](...alertObject.functionArguments);
+        } catch (er) { console.log("error in handleAlertQueue", alertObject, er); }
+    }
+    setTimeout(handleAlertQueue, 500);
+}
+handleAlertQueue();
+
 window.alert = function(headerText, descriptionText) {
     return new Promise(function(resolve, reject) {
         if (document.getElementById("prompt")) {
-            reject(new Error("another alert is already shown"));
+            alertQueue.push({
+                functionName: "alert",
+                functionArguments: [headerText, descriptionText]
+            });
+            reject(new Error("another alert is already shown, add to alertQueue"));
             return;
         }
 

@@ -11,11 +11,40 @@
     <script type="module" src="/assets/js/global.js"></script>
 
     <style>
-        tr > td:nth-child(1) { width: 200px; }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        html, body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;         
+        }
+        table {
+            width: unset !important;
+        }
+        table td {
+            padding: 10px 0px !important;
+            box-sizing: content-box;
+        }
+        tr > td:nth-child(1) { width: 175px; }
         tr > td:nth-child(2) { width: 125px; }
-        tr > td:nth-child(3) { width: 200px; }
-        tr > td:nth-child(4) { width: 200px; }
-        tr > td:nth-child(5) { width: 200px; }
+        tr > td:nth-child(3) { width: 110px; }
+        tr > td:nth-child(4) { width: 110px; }
+        tr > td:nth-child(5) { width: 100%;  }
+        tr > td:nth-child(6) { width: 10px;  }
+        tr > td:nth-child(7) { width: 125px; }
+        .hidden {
+            display: none;
+        }
+        #prompt-inner {
+            width: 70%;
+            min-width: 500px;
+        }
+        input#filter-timeframe {
+            width: 200px;
+        }
+        code, div.code {
+            user-select: text;
+        }
     </style>
 </head>
 
@@ -31,31 +60,37 @@
 
             <h1> <i>rss_feed</i> Log inspection</h1>
 
+            <div class="row">
+                <div class="col-4 flex row left v-center">
+                    <input id="filter-severity-level" type="range" min="0" max="4" step="1" value="2" oninput="updateSeverityLevel(this)">
+                    <label for="filter-severity-level">Severity Level: <span id="filter-severity-level-html"><span class="orange">Warning</span></span></label>
+                </div>
+                <div class="col-7 flex row left v-center">
+                    <!-- use 10080 for 7 days -->
+                    <!-- use 1440 for 1 day -->
+                    <input id="filter-timeframe" type="range" min="15" max="1440" step="15" value="1440" oninput="updateTimeFilter(this)">
+                    <label for="filter-timeframe">Time Frame: <span id="filter-timeframe-html" class="blue">Last 24 hours</span></label>
+                </div>
+            </div>
+
             <table>
                 <thead>
                     <tr>
                         <td>Time</td>
-                        <td>Importance</td>
+                        <td>Severity</td>
                         <td>Referrer</td>
                         <td>Tag</td>
                         <td>Message</td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </thead>
                 <tbody id="log-entries">
-
+                    <tr id="loading-data">
+                        <td rowspan="7" class="center"> Loading data... </td>
+                    </tr>
                 </tbody>
             </table>
-            <!-- <div class="row">
-                <div class="col-3">Time</div>
-                <div class="col-2">Importance</div>
-                <div class="col-1">Referrer</div>
-                <div class="col-1">Tag</div>
-                <div class="col-5">Message</div>
-            </div>
-            
-            <div id="log-entries" class="row">
-                
-            </div> -->
         </div>
     </div>
 </body>

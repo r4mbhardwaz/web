@@ -89,9 +89,14 @@
                     </div>
                 </div>
                 <div class="col-6 box clickable" onclick="redirect('/logs');">
-                    <i class="green">rss_feed</i>
+                    <i class="orange">rss_feed</i>
                     <label>Logs</label>
                     <p>Inspect logs and trace errors</p>
+                    {# 1.048.576 = 1024 * 1024 = 1MB #}
+                    {# 430.656 = 430kB REAL DATA #}
+                    {# > 100MB dangerous #}
+                    {# > 300MB critically #}
+                    <p>Log Size: <span class="{{ 'green' if logs_size < (1024 * 1024 * 100) else 'orange' if logs_size < (1024 * 1024 * 300) else 'red' }}">{{ logs_size | filesizeformat }}</span> ({{ log_entries_count }} entries)</p>
                 </div>
             </div>
         </div>

@@ -78,6 +78,7 @@ th {
 }
 td {
     padding: 15px 20px 0;
+    vertical-align: top;
 }
 
 table {
@@ -86,6 +87,19 @@ table {
     flex-flow: column;
     height: 100%;
     width: 100%;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 30px 50px;
+}
+table thead td {
+    padding-bottom: 25px !important;
+    border-bottom: 2px solid var(--light-grey);
+}
+table tbody > tr:not(.hidden) td {
+    padding-top: 25px !important;
+}
+table tbody > tr:not(.hidden) ~ tr:not(.hidden) td {
+    padding-top: unset !important;
 }
 table thead {
     flex: 0 0 auto;

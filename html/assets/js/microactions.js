@@ -51,28 +51,34 @@ window.updateLabelFileConnector = function() {
     document.querySelectorAll("label[data-fileinput]").forEach(window._updateLabelFileConnectorHandler);
 };
 
-document.querySelectorAll(".settings").forEach(_el => {
-    const el = _el;
-    el.children[1].classList.add("hidden");
-
-    el.addEventListener("click", _ev => {
-        document.querySelectorAll(".box > .settings").forEach(_el => {
-            _el.children[1].classList.remove("visible");
-            _el.children[1].classList.add("hidden");
-        });
-
-        _ev.stopPropagation();
-        el.children[1].classList.remove("hidden");
-        el.children[1].classList.add("visible");
-    });
-
-    window.addEventListener("click", ev => {
-        if (!el.contains(ev.target)) {
-            el.children[1].classList.remove("visible");
-            el.children[1].classList.add("hidden");
+window.updateSettingsHandler = function() {
+    document.querySelectorAll(".settings").forEach(_el => {
+        const el = _el;
+        el.children[1].classList.add("hidden");
+    
+        function eventClickListener(_ev) {
+            document.querySelectorAll(".box > .settings").forEach(_el => {
+                _el.children[1].classList.remove("visible");
+                _el.children[1].classList.add("hidden");
+            });
+    
+            _ev.stopPropagation();
+            el.children[1].classList.remove("hidden");
+            el.children[1].classList.add("visible");
         }
+        function windowClickListener(ev) {
+            if (!el.contains(ev.target)) {
+                el.children[1].classList.remove("visible");
+                el.children[1].classList.add("hidden");
+            }
+        }
+    
+        el.addEventListener("click", eventClickListener);
+        window.addEventListener("click", windowClickListener);
     });
-});
+}
+window.updateSettingsHandler();
+setInterval(window.updateSettingsHandler, 500);
 
 function onInputFinish(newValue, target, newElement, callback, oldValue = "") {
     if (target.contains(newElement)) {
@@ -213,6 +219,6 @@ window.hideBottomNews = function() {
 };
 
 window.redirect = function(url) {
-    // window.location.href = url;
-    swup.loadPage({url: url});
+    window.location.href = url;
+    // swup.loadPage({url: url});
 };

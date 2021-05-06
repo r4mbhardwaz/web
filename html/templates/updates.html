@@ -76,9 +76,19 @@
                         <span class="darker-grey">Released {{ version.timestamp.remote | datetime("date") }} </span>
                     </span>
                 </div>
+                {% else: %}
+                <div class="col-3 margin-bottom-0 middle">
+                    <div class="v-center h-center">
+                        <button class="blue hover-white transition v-center h-center" onclick="checkForUpdate(this)">
+                            <i class="transition margin-right">loop</i> 
+                            <span class="transition">Check for updates</span>
+                        </button>
+                    </div>
+                </div>
                 {% endif %}
             </div>
 
+            {% if update_available: %}
             <hr>
             
             <div class="row">
@@ -90,57 +100,15 @@
                 </div>
                 <div class="col-6">
                     <h3 class="margin-top-0">Installation:</h3>
-                    <div class="box">
-                        <div class="row margin-top-s">
-                            <div class="col-3">
-                                <span>Download</span>
-                            </div>
-                            <div class="col-8">
-                                <div class="progress">
-                                    <div id="update-download-progress"></div>
-                                </div>
-                            </div>
-                            <div class="col-1">
-                                <span class="right" id="update-download-progress-percent">0%</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-3">
-                                <span>Installation</span>
-                            </div>
-                            <div class="col-8">
-                                <div class="progress">
-                                    <div id="update-install-progress"></div>
-                                </div>
-                            </div>
-                            <div class="col-1">
-                                <span class="right" id="update-install-progress-percent">0%</span>
-                            </div>
-                        </div>
-
-                        <br>
-                        
-                        <div class="row">
-                            <div class="col-5 relative">
-                                <button class="green" id="install-update-button">Install Update</button>
-                                <div class="settings button-options">
-                                    <i>arrow_drop_down</i>
-                                    <div class="options hidden" id="update-options">
-                                        <div class="v-center hover-bg-green" id="update-download-only">
-                                            <i>download</i>
-                                            <span>Only Download</span>
-                                        </div>
-                                        <div class="v-center hover-bg-blue">
-                                            <i>download</i>
-                                            <span>Schedule Installation</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="box" id="installation-options">
+                        <div class="v-center"> 
+                            <i class="rotating margin-right">loop</i> 
+                            <span>Loading data</span> 
                         </div>
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </body>
