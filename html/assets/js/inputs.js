@@ -73,7 +73,7 @@ window._hide_wrapper = function(wrapperElement) {
     }, 0.25 * 1000);
 }
 
-const alertQueue = [];
+window.alertQueue = [];
 
 function handleAlertQueue() {
     if (alertQueue.length > 0 && !document.getElementById("prompt")) {

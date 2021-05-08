@@ -1,22 +1,25 @@
 'use strict';
 
-id("update-download-only").click(_ => {
-    const icon = qry("#update-download-only i").get(0);
-    loading(icon);
-    post(`/api/update/download`).then(JSON.parse).then(d => {
-        if (d.success) {
-            qry("#update-options").classList.toggle("visible");
-            qry("#update-options").classList.toggle("hidden");
-            id("install-update-button").get(0).parentElement.classList.add("disabled");
-        } else {
-            throw new Error(d.error);
-        }
-    }).catch(er => {
-        alert("Failed to download update!", er);
-    }).finally(_ => {
-        loadingStop(icon);
-    });
-});
+setInterval(() => {
+    function updateDownloadOnlyHandler() {
+        const icon = qry("#update-download-only i").get(0);
+        loading(icon);
+        post(`/api/update/download`).then(JSON.parse).then(d => {
+            if (d.success) {
+                qry("#update-options").classList.toggle("visible");
+                qry("#update-options").classList.toggle("hidden");
+                id("install-update-button").get(0).parentElement.classList.add("disabled");
+            } else {
+                throw new Error(d.error);
+            }
+        }).catch(er => {
+            alert("Failed to download update!", er);
+        }).finally(_ => {
+            loadingStop(icon);
+        });
+    }
+    id("update-download-only").click(updateDownloadOnlyHandler);
+}, 500);
 
 let updateObject = null;
 let version = null;
@@ -102,21 +105,26 @@ function insertUpdateOptions(downloadPending, installationPending, installationS
         `<br>` +
 
         `<div class="row">` +
-            `<div class="col-5 relative">` +
+            `<div class="col-6 relative">` +
             (   downloadPending || installationPending ? 
-                    `<button class="green height-full" id="install-update-button">Install Update</button>` +
+                    `<button id="install-update-button" class="height-full v-center h-center hover-white ${downloadPending || installationPending ? "green" : "blue"}" ` +
+                            `onclick="${downloadPending ? `downloadUpdate(this)` : `installUpdate(this)`}">` + 
+                        `<i class="transition margin-right">${downloadPending ? "download" : "downloading"}</i>` +
+                        `${downloadPending ? "Download Update" : (installationPending ? "Install Update" : "Check for updates")}` +
+                    `</button>` +
+                    ( installationPending ?
                     `<div class="settings button-options">` +
                         `<i>arrow_drop_down</i>` +
                         `<div class="options hidden" id="update-options">` +
-                            (   downloadPending ?
-                                `<div class="v-center hover-bg-green hover-white" id="update-download-only">` +
-                                    `<i>download</i>` +
-                                    `<span>Only Download</span>` +
-                                `</div>` 
-                                : ``) +
+                            // (   (downloadPending && false) ?
+                            //     `<div class="v-center hover-bg-green hover-white" id="update-download-only">` +
+                            //         `<i>download</i>` +
+                            //         `<span>Download</span>` +
+                            //     `</div>` 
+                            //     : ``) +
                             (   installationPending ?
                                 `<div class="v-center hover-bg-blue hover-white">` +
-                                    `<i>download</i>` +
+                                    `<i>downloading</i>` +
                                     `<span>Install now</span>` +
                                 `</div>` +
                                 `<div class="v-center hover-bg-blue hover-white" onclick="scheduleInstall()">` +
@@ -125,21 +133,17 @@ function insertUpdateOptions(downloadPending, installationPending, installationS
                                 `</div>`
                                 : ``) +
                         `</div>` +
-                    `</div>`
+                    `</div>` : "")
                     : ``) +
             `</div>` +
-            `<div class="col-1">` +
-            `</div>` +
-            `<div class="col-5 v-center padding-left scheduled-installation-info">` +
-                `<span class="dark-grey size-14">${installationScheduled ? `Installation scheduled:<br>${new Date(installationScheduled * 1000).toLocaleString()}` : ""}</span>` +
-            `</div>` +
-                (installationScheduled ? 
-                    `<div class="col-1 v-center h-center clickable red scheduled-installation-info" onclick="cancelScheduleInstall(this)">` +
-                        `<i class="size-15">clear</i>` +
-                    `</div>`
-                    :
-                    ""
-                ) + 
+            (installationPending && installationScheduled ? 
+                `<div class="col-5 v-center padding-left scheduled-installation-info">` +
+                    `<span class="dark-grey size-14">Installation scheduled:<br>${new Date(installationScheduled * 1000).toLocaleString()}</span>` +
+                `</div>` +
+                `<div class="col-1 v-center h-center clickable red scheduled-installation-info" onclick="cancelScheduleInstall(this)">` +
+                    `<i class="size-15">clear</i>` +
+                `</div>` 
+                : "") +
         `</div>`;
 
     id("installation-options").text(code);
@@ -195,7 +199,7 @@ function scheduleInstall() {
         if (isNaN(datePicked)) {
             return;
         }
-        
+
         post(`/api/update/schedule`, {
             install: datePicked
         })
@@ -214,7 +218,39 @@ function scheduleInstall() {
         })
     });
 }
+function downloadUpdate(el) {
+    if (el.classList.contains("disabled")) {
+        return;
+    }
+    el.classList.add("disabled");
+    try {
+        loading(el.childNodes[0]);
+    } catch (err) {}
+    post(`/api/update/download`, {})
+    .then(JSON.parse)
+    .then(d => {
+        if (d.success) {
+            insertUpdateOptions(false, true, updateObject["schedule-install"]);
+        } else {
+            throw new Error(d.error);
+        }
+    })
+    .catch(er => {
+        alert("Failed!", "Could not download update:<br><br>" + er.message);
+    })
+    .finally(_ => {
+        el.classList.remove("disabled");
+        try {
+            loadingStop(el.childNodes[0]);
+        } catch (err) {}
+    });
+}
+function installUpdate() {
+
+}
 
 window.checkForUpdate = checkForUpdate;
 window.scheduleInstall = scheduleInstall;
 window.cancelScheduleInstall = cancelScheduleInstall;
+window.downloadUpdate = downloadUpdate;
+window.installUpdate = installUpdate;
