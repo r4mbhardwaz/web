@@ -1,12 +1,12 @@
 from __main__ import *
 from copy import deepcopy
-from jarvis import MQTT, Jarvis
+from jarvis import MQTT
 
 
 @app.route("/api/assistant/status")
 @login_required
 def api_assistant_status():
-    result = Jarvis.api("jarvis/satellite/nlu/status", {}, 2)
+    result = MQTT.onetime("jarvis/satellite/nlu/status", {}, 2)
     return Response(json.dumps({"success": True, "result": json.loads(result)}), content_type="application/json")
 
 
@@ -36,7 +36,7 @@ def api_assistant_parse():
             "code": "ERR_ASSISTANT_INVALID_ARGS",
             "error": "need to provide field 'utterance' in json post body"
         }), content_type="application/json")
-    result = Jarvis.api("jarvis/satellite/nlu/parse", {"utterance": json_data["utterance"]}, 2)
+    result = MQTT.onetime("jarvis/satellite/nlu/parse", {"utterance": json_data["utterance"]}, 2)
     return Response(json.dumps({"success": bool(result), "result": json.loads(result)["result"]}))
 
 

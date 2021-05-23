@@ -7,7 +7,7 @@ from __main__ import app, login_required, request, ICONS, Response
 import json
 import time
 import traceback
-from jarvis import Database, Jarvis, Config
+from jarvis import Database, MQTT, Config
 
 
 @app.route("/api/db-stats")
@@ -22,7 +22,7 @@ def api_dbstats():
 @app.route("/api/version")
 @login_required
 def api_jarvis_version():
-    res = Jarvis.api("jarvis/update/status", {}, timeout=10)
+    res = MQTT.onetime("jarvis/update/status", {}, timeout=10)
     if isinstance(res, bool):
         return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
     return Response(res, content_type="application/json")
@@ -31,7 +31,7 @@ def api_jarvis_version():
 @app.route("/api/update/download", methods=["POST"])
 @login_required
 def api_update_download():
-    res = Jarvis.api("jarvis/update/download", {}, timeout=10)
+    res = MQTT.onetime("jarvis/update/download", {}, timeout=10)
     if isinstance(res, bool):
         return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
     return Response(res, content_type="application/json")
@@ -40,7 +40,7 @@ def api_update_download():
 @app.route("/api/update/install", methods=["POST"])
 @login_required
 def api_update_install():
-    res = Jarvis.api("jarvis/update/install", {}, timeout=10)
+    res = MQTT.onetime("jarvis/update/install", {}, timeout=10)
     if isinstance(res, bool):
         return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
     return Response(res, content_type="application/json")
@@ -49,7 +49,7 @@ def api_update_install():
 @app.route("/api/update/poll", methods=["POST"])
 @login_required
 def api_update_poll():
-    res = Jarvis.api("jarvis/update/poll", {}, timeout=20)
+    res = MQTT.onetime("jarvis/update/poll", {}, timeout=20)
     if isinstance(res, bool):
         return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
     return Response(res, content_type="application/json")
