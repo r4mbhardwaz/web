@@ -3,7 +3,11 @@ Copyright (c) 2021 Philipp Scheer
 """
 
 
-from __main__ import app, render_template, login_required
+
+from __main__ import app
+from flask import render_template
+from .decorators import login_required
+
 
 @app.route("/logs")
 @login_required

@@ -1,4 +1,6 @@
-from __main__ import *
+from __main__ import app
+from flask import render_template, redirect, session, request
+from .decorators import login_required
 from jarvis import Config, Security, Database
 
 @app.route("/")
@@ -48,5 +50,12 @@ def assistant():
 def updates():
     cnf = Config()
     version = cnf.get("version", None)
-    return render_template("updates.html", 
-                            version=version)
+    return render_template("updates.html", version=version)
+
+
+@app.route("/clients")
+@login_required
+def clients():
+    clients = Database().table("clients").all()
+    return render_template("clients.html", clients=clients)
+

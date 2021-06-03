@@ -21,11 +21,11 @@ const severity = {
 
 function getAllLogs() {
     return new Promise((res, rej) => {
-        get(`/api/logs/all`)
+        get(`/api/logs/get?min=${currentFilter.timeframe}&sev=${currentFilter.severity}`)
         .then(JSON.parse)
         .then(d => {
             if (d.success) {
-                console.log(d.length, "entries");
+                id("entries").text(`${d.length} Entries`);
                 res({
                     logs: d.logs,
                     length: d.length
@@ -55,9 +55,6 @@ function displayLogs(data, max = 50) {
         let exceptionMessageRegex = /([A-Za-z0-9.]+)(: )([^\n]+)/g;
         let errorFiles = fileInfoRegex.exec(log["exception"])
         let exceptionMessage = exceptionMessageRegex.exec(log["exception"]);
-
-        console.log(el);
-        console.log(errorFiles, exceptionMessage);
 
         el.setAttribute("data-severity", severity[log["importance"]]);
         el.setAttribute("data-timestamp", log["timestamp"]);
@@ -92,11 +89,10 @@ function displayLogs(data, max = 50) {
 
 let currentFilter = {
     severity: 2,      // warnings +
-    timeframe: 1440,  // seconds = 24 hours
+    timeframe: 1440,  // minutes = 24 hours
 };
 
 function filterLogs(filter=currentFilter) {
-    console.log("filtering", filter);
     let logEntries = qry("tbody > tr[data-timestamp]");
     let resultsLeft = logEntries.length;
     logEntries.classList.remove("hidden");
@@ -110,8 +106,6 @@ function filterLogs(filter=currentFilter) {
             resultsLeft -= 1;
         }
     });
-
-    console.log("filter returned", resultsLeft, "elements");
 
     if (resultsLeft == 0) {
         if (id("filter-no-results").length == 0) {

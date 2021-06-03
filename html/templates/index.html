@@ -49,6 +49,11 @@
                         <br> Current configuration size: <span class="{{ 'green' if config_size // 1024 < 1024 else ('orange' if config_size // 1024 // 1024 < 100 else 'red') }}">{{ config_size // 1024 }} kB</span> {% endif %}
                     </p>
                 </div>
+                <div class="col-6 box clickable" onclick="redirect('/clients');">
+                    <i class="blue">person</i>
+                    <label>Clients</label>
+                    <p class="margin-bottom-s">Manage clients</p>
+                </div>
                 <div class="col-6 box clickable" onclick="redirect('/updates');">
                     <i class="green">update</i>
                     <label>Update Center</label>

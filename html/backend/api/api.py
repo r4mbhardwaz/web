@@ -3,11 +3,23 @@ Copyright (c) 2021 Philipp Scheer
 """
 
 
-from __main__ import app, login_required, request, ICONS, Response
+from __main__ import app
 import json
 import time
 import traceback
 from jarvis import Database, MQTT, Config
+from flask import request
+from flask.wrappers import Response
+from ..decorators import login_required
+from ..variables import ICONS
+
+
+SERVER_MQTT = None
+cnf  = Config()
+id   = cnf.get("mqtt-server-id", None)
+keys = cnf.get("keys", None)
+if id is not None and keys is not None:
+    SERVER_MQTT = MQTT(id, keys["private"], keys["public"], keys["public"])
 
 
 @app.route("/api/db-stats")
@@ -22,37 +34,37 @@ def api_dbstats():
 @app.route("/api/version")
 @login_required
 def api_jarvis_version():
-    res = MQTT.onetime("jarvis/update/status", {}, timeout=10)
+    res = SERVER_MQTT.request("jarvis/update/status", {}, timeout=20)
     if isinstance(res, bool):
         return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
-    return Response(res, content_type="application/json")
+    return Response(json.dumps(res), content_type="application/json")
 
 
 @app.route("/api/update/download", methods=["POST"])
 @login_required
 def api_update_download():
-    res = MQTT.onetime("jarvis/update/download", {}, timeout=10)
+    res = SERVER_MQTT.request("jarvis/update/download", {}, timeout=20)
     if isinstance(res, bool):
         return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
-    return Response(res, content_type="application/json")
+    return Response(json.dumps(res), content_type="application/json")
 
 
 @app.route("/api/update/install", methods=["POST"])
 @login_required
 def api_update_install():
-    res = MQTT.onetime("jarvis/update/install", {}, timeout=10)
+    res = SERVER_MQTT.request("jarvis/update/install", {}, timeout=20)
     if isinstance(res, bool):
         return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
-    return Response(res, content_type="application/json")
+    return Response(json.dumps(res), content_type="application/json")
 
 
 @app.route("/api/update/poll", methods=["POST"])
 @login_required
 def api_update_poll():
-    res = MQTT.onetime("jarvis/update/poll", {}, timeout=20)
+    res = SERVER_MQTT.request("jarvis/update/poll", {}, timeout=20)
     if isinstance(res, bool):
         return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
-    return Response(res, content_type="application/json")
+    return Response(json.dumps(res), content_type="application/json")
 
 
 @app.route("/api/update/schedule", methods=["POST"])
@@ -103,16 +115,24 @@ def api_test(id=None):
     return json.dumps(obj)
 
 
-@app.route("/api/logs/all", methods=["GET"])
+@app.route("/api/logs/get", methods=["GET"])
 @login_required
 def api_get_all_logs():
+    max_minutes = int(request.args.get("min", -1))
+    min_severity = int(request.args.get("sev", 0))
+    severities = ["S", "I", "W", "E", "C"]
+    filter_severities = severities[min_severity:]
     try:
-        logs = list(Database().table("logs").all().sort("timestamp").reverse()) # newest first
+        logs = list(Database().table("logs").find({
+                "timestamp": { "$gt": time.time() - max_minutes },
+                "importance": { "$in": filter_severities }
+            }).sort("timestamp").reverse()) # newest first
         for i in range(len(logs)):
             del logs[i]["_id"]
             del logs[i]["_rev"]
         return Response(json.dumps({"success": True, "logs": logs, "length": len(logs)}), content_type="application/json")
     except Exception:
+        print(traceback.format_exc())
         return Response(json.dumps({"success": False, "error": "Database connection failed"}), content_type="application/json")
 
 
