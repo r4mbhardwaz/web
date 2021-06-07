@@ -22,7 +22,7 @@ def filter_datetime(value, format="full"):
     return str
 
 @app.template_filter("timediff")
-def filter_timediff(value):
+def filter_timediff(value, max_depth: int = 5):
     diff  = time.time() - value
     delta = dt.timedelta(seconds=diff)
     res   = []
@@ -37,7 +37,7 @@ def filter_timediff(value):
 
     if len(res) == 0: # everything under 1 minute is considered just now
         return "Just now"
-    return ", ".join(res) + " ago"
+    return ", ".join(res[:max_depth]) + " ago"
 
 @app.template_filter("markdown")
 def filter_markdown(value):

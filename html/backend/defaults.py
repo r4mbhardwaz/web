@@ -56,6 +56,5 @@ def updates():
 @app.route("/clients")
 @login_required
 def clients():
-    clients = Database().table("clients").all()
-    return render_template("clients.html", clients=clients)
+    return render_template("clients.html")
 

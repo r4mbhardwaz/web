@@ -12,10 +12,13 @@
     <script type="module" src="/assets/js/global.js"></script>
 
     <style>
-        table tr > td:nth-child(1) {
-            width: 30px !important;
+        table tr > td:nth-child(1):not([colspan]) {
+            width: 35px !important;
         }
-        table tr > td:nth-child(1), 
+        table tr > td:nth-child(2) {
+            width: 35px !important;
+        }
+        table tr > td:nth-child(1):not([colspan]), 
         table tr > td:nth-child(2) {
             width: 20px;
             padding: 0;
@@ -43,16 +46,16 @@
                 <table>
                     <thead>
                         <tr>
-                            <td></td> <!-- security (display a lock on secure device) -->
+                            <td></td>
                             <td></td>
                             <td>Name</td>
                             <td>Created At</td>
                             <td>Last Seen</td>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="devices-container">
                         {% for client in clients: %}
-                        {% set securityIcon = "lock" if client["secure"] else "lock_open" %} <!-- or no_encryption -->
+                        {% set securityIcon = "lock" if client["secure"] else "lock_open" %}
                         {% set securityColor = "green" if client["secure"] else "red" %}
                         {% set securityTitle = "Encrypted Traffic" if client["secure"] else "Unencrypted Traffic" %}
                         {% set deviceType = client["device"] %}
@@ -68,7 +71,7 @@
                                 <td title="{{ securityTitle }}"> <i class="{{ securityColor }}">{{ securityIcon }}</i> </td>
                                 <td>{{ client["name"] }}</td>
                                 <td>{{ client["created-at"] | datetime("date") }}</td>
-                                <td>{{ client["last-seen"] | timediff }}</td>
+                                <td>{{ client["last-seen"] | timediff(2) }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>

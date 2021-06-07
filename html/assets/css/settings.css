@@ -548,10 +548,31 @@ div.v-dot {
 .width-p-100   {  width: 100% !important;     }
 
 
+.none   {  display: none;  }
+.block  {  display: block; }
+
+
 .rotating {
     -webkit-animation:spin 2s linear infinite;
     -moz-animation:spin 2s linear infinite;
     animation:spin 2s linear infinite;
+}
+.loader,
+.loading {
+    --size: 20px;
+    --color: #000;
+    font-family: 'Material Icons Round';
+    width: var(--size);
+    height: var(--size);
+    font-size: var(--size);
+    color: var(--color);
+    -webkit-animation:spin 2s linear infinite;
+    -moz-animation:spin 2s linear infinite;
+    animation:spin 2s linear infinite;
+}
+.loader::after,
+.loading::after {
+    content: "\E627";
 }
 
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }

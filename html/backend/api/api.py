@@ -100,6 +100,15 @@ def api_cancel_scheduled_update():
         return Response(json.dumps({"success": False, "error": "Database connection failed"}))
 
 
+@app.route("/api/clients")
+@login_required
+def api_get_clients():
+    try:
+        return Response(json.dumps({"success": True, "clients": list(Database().table("clients").all())}))
+    except Exception:
+        return Response(json.dumps({"success": False, "error": "Database connection failed"}))
+
+
 @app.route("/api/test")
 @app.route("/api/test/<id>")
 def api_test(id=None):
