@@ -89,7 +89,7 @@ table {
     width: 100%;
     background-color: var(--white);
     border-radius: var(--border-radius);
-    padding: 30px 50px;
+    padding: 25px 50px;
 }
 table thead td {
     padding-bottom: 25px !important;

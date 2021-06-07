@@ -10,6 +10,21 @@
     <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="stylesheet" href="/assets/css/markdown.css">
     <script type="module" src="/assets/js/global.js"></script>
+
+    <style>
+        table tr > td:nth-child(1) {
+            width: 30px !important;
+        }
+        table tr > td:nth-child(1), 
+        table tr > td:nth-child(2) {
+            width: 20px;
+            padding: 0;
+        }
+        table tr > td:nth-child(1) > i,
+        table tr > td:nth-child(2) > i {
+            transform: translate(0, -3px);
+        }
+    </style>
 </head>
 
 <body>
@@ -28,25 +43,32 @@
                 <table>
                     <thead>
                         <tr>
+                            <td></td> <!-- security (display a lock on secure device) -->
+                            <td></td>
                             <td>Name</td>
-                            <td>Platform</td>
-                            <td>Type</td>
-                            <td>Security</td>
-                            <td>Public-Key</td>
                             <td>Created At</td>
                             <td>Last Seen</td>
                         </tr>
                     </thead>
                     <tbody>
                         {% for client in clients: %}
+                        {% set securityIcon = "lock" if client["secure"] else "lock_open" %} <!-- or no_encryption -->
+                        {% set securityColor = "green" if client["secure"] else "red" %}
+                        {% set securityTitle = "Encrypted Traffic" if client["secure"] else "Unencrypted Traffic" %}
+                        {% set deviceType = client["device"] %}
+                        {% set deviceIcons = {
+                                                "computer"  :  "computer",
+                                                "jarvis"    :  "smart_button",
+                                                "phone"     :  "smartphone",
+                                                "mic"       :  "mic"
+                                            } %}
+                        {% set deviceIcon = deviceIcons[deviceType]  %}
                             <tr>
+                                <td title="Device Type: {{ deviceType | capitalize }}"> <i class="blue">{{ deviceIcon }}</i> </td>
+                                <td title="{{ securityTitle }}"> <i class="{{ securityColor }}">{{ securityIcon }}</i> </td>
                                 <td>{{ client["name"] }}</td>
-                                <td>{{ client["platform"] }}</td>
-                                <td>{{ client["type"] }}</td>
-                                <td>{{ client["security"] }}</td>
-                                <td>{{ client["public-key"] }}</td>
-                                <td>{{ client["created-at"] }}</td>
-                                <td>{{ client["last-seen"] }}</td>
+                                <td>{{ client["created-at"] | datetime("date") }}</td>
+                                <td>{{ client["last-seen"] | timediff }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
