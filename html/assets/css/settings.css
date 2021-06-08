@@ -557,6 +557,7 @@ div.v-dot {
     -moz-animation:spin 2s linear infinite;
     animation:spin 2s linear infinite;
 }
+.load,
 .loader,
 .loading {
     --size: 20px;
@@ -570,6 +571,7 @@ div.v-dot {
     -moz-animation:spin 2s linear infinite;
     animation:spin 2s linear infinite;
 }
+.load::after,
 .loader::after,
 .loading::after {
     content: "\E627";

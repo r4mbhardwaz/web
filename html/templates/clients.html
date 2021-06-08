@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="stylesheet" href="/assets/css/markdown.css">
+    <script type="module" src="/assets/js/lib/qr.js"></script>
     <script type="module" src="/assets/js/global.js"></script>
 
     <style>
@@ -54,26 +55,13 @@
                         </tr>
                     </thead>
                     <tbody id="devices-container">
-                        {% for client in clients: %}
-                        {% set securityIcon = "lock" if client["secure"] else "lock_open" %}
-                        {% set securityColor = "green" if client["secure"] else "red" %}
-                        {% set securityTitle = "Encrypted Traffic" if client["secure"] else "Unencrypted Traffic" %}
-                        {% set deviceType = client["device"] %}
-                        {% set deviceIcons = {
-                                                "computer"  :  "computer",
-                                                "jarvis"    :  "smart_button",
-                                                "phone"     :  "smartphone",
-                                                "mic"       :  "mic"
-                                            } %}
-                        {% set deviceIcon = deviceIcons[deviceType]  %}
-                            <tr>
-                                <td title="Device Type: {{ deviceType | capitalize }}"> <i class="blue">{{ deviceIcon }}</i> </td>
-                                <td title="{{ securityTitle }}"> <i class="{{ securityColor }}">{{ securityIcon }}</i> </td>
-                                <td>{{ client["name"] }}</td>
-                                <td>{{ client["created-at"] | datetime("date") }}</td>
-                                <td>{{ client["last-seen"] | timediff(2) }}</td>
-                            </tr>
-                        {% endfor %}
+                        <tr>
+                            <td colspan="5" class="v-center h-center">
+                                <div class="loading margin-right"></div>
+                                <span>Loading clients</span>
+                            </td>
+                        </tr>
+                        <!-- clients inserted by javasciprt -->
                     </tbody>
                 </table>
             </div>

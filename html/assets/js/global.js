@@ -1,4 +1,4 @@
-import { swup } from "./_swup.js";
+import { swup } from "./lib/_swup.js";
 import "./http.js";
 
 async function init() {

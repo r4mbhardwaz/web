@@ -2,8 +2,6 @@
 
 
 const FETCH_CLIENTS_INTERVIEW = 5; // seconds
-const LOADING = id("loading-devices").get(0);
-const NO_DEVS = id("no-devices").get(0);
 const DEV_CONTAINER = id("devices-container").get(0);
 
 
@@ -28,17 +26,17 @@ function fetchClients() {
                     mic       :  "mic"
                 };
                 const security = {
-                    color: el.secure ? "green" : "red",
+                    color: el.secure ? "green"             : "red",
                     title: el.secure ? "Encrypted Traffic" : "Unencrypted Traffic",
-                    icon: el.secure ? "lock" : "lock_open",
+                    icon:  el.secure ? "lock"              : "lock_open",
                 };
-                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; //, hour: 'numeric', minute: 'numeric' };
                 code += `<tr class="device-entry">`;
-                code += `<td title="Device Type: ${capitalizeFirstLetter(el.device)}"> <i class="blue">${devIcons[el.device]}</i> </td>`;
-                code += `<td title="${security.title}"> <i class="${security.color}">${security.icon}</i> </td>`;
-                code += `<td>${el.name}</td>`;
-                code += `<td>${new Date(el["created-at"] * 1000).toLocaleString(getLang(), options)}</td>`;
-                code += `<td>${dateDelta(el["last-seen"] * 1000, 2)}</td>`;
+                code +=     `<td title="Device Type: ${capitalizeFirstLetter(el.device)}"> <i class="blue">${devIcons[el.device]}</i> </td>`;
+                code +=     `<td title="${security.title}"> <i class="${security.color}">${security.icon}</i> </td>`;
+                code +=     `<td>${el.name}</td>`;
+                code +=     `<td>${new Date(el["created-at"] * 1000).toLocaleString(getLang(), options)}</td>`;
+                code +=     `<td>${dateDelta(el["last-seen"] * 1000, 2)}</td>`;
                 code += `</tr>`;
             });
             DEV_CONTAINER.innerHTML = code;
