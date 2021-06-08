@@ -552,6 +552,16 @@ div.v-dot {
 .block  {  display: block; }
 
 
+.tag {
+    padding: 5px 7px;
+    border-radius: 99px;
+}
+.tag.red    {  background-color: var(--red);     color: #fff }
+.tag.blue   {  background-color: var(--blue);    color: #fff }
+.tag.green  {  background-color: var(--green);   color: #fff }
+.tag.orange {  background-color: var(--orange);  color: #fff }
+
+
 .rotating {
     -webkit-animation:spin 2s linear infinite;
     -moz-animation:spin 2s linear infinite;
