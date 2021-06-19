@@ -9,8 +9,8 @@
 
     <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="stylesheet" href="/assets/css/markdown.css">
-    <script type="module" src="/assets/js/lib/qr.js"></script>
     <script type="module" src="/assets/js/global.js"></script>
+    <script type="module" src="/assets/js/lib/qr.js"></script>
 
     <style>
         table tr > td:nth-child(1):not([colspan]) {
@@ -41,7 +41,15 @@
                 </nav>
             </div>
 
-            <h1>Clients</h1>
+            <div class="flex space-between">
+                <h1>Clients</h1>
+                <div class="flex align-center">
+                    <button id="add-device" class="v-center">
+                        <i class="margin-right-l margin-bottom-xs">add</i>
+                        Add device
+                    </button>
+                </div>
+            </div>
 
             <div class="row">
                 <table>

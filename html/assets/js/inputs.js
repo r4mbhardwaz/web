@@ -86,12 +86,12 @@ function handleAlertQueue() {
 }
 handleAlertQueue();
 
-window.alert = function(headerText, descriptionText) {
+window.alert = function(headerText, descriptionText, customElement=null) {
     return new Promise(function(resolve, reject) {
         if (document.getElementById("prompt")) {
             alertQueue.push({
                 functionName: "alert",
-                functionArguments: [headerText, descriptionText]
+                functionArguments: [headerText, descriptionText, customElement]
             });
             reject(new Error("another alert is already shown, add to alertQueue"));
             return;
@@ -107,6 +107,12 @@ window.alert = function(headerText, descriptionText) {
             header.innerHTML = "Alert";
             content.innerHTML = headerText;
         }
+
+        try {
+            console.log(customElement, arguments);
+            if (customElement)
+                customBox.appendChild(customElement);
+        } catch (er) { console.error(er); }
         
         okButton.addEventListener("click", ev => {
             resolve(true);

@@ -3,13 +3,47 @@
 
 const FETCH_CLIENTS_INTERVIEW = 5; // seconds
 const DEV_CONTAINER = id("devices-container").get(0);
+const ADD_DEVICES = id("add-device").get(0);
 
+
+ADD_DEVICES.addEventListener("click", ev => {
+    if (window.location.hostname == "localhost" || window.location.hostname.startsWith("127.")) {
+        alert("Localhost detected", "You cannot register a new device from a localhost address.<br>Please switch to a reachable address");
+        return;
+    }
+    window.prompt("New Device", "Enter device name:", "Device name").then(name => {
+        if (!name)
+            return;
+        post(`/api/device/new`, {
+            name: name
+        }).then(JSON.parse)
+        .then(res => {
+            if (!res.success) {
+                alert("Failed!", `Could not add new device:<br>${res.error}`);
+                return;
+            }
+            const qrCanvas = document.createElement("canvas");
+            qrCanvas.classList.add("margin-top-l");
+            QrCreator.render({
+                text: `jarvis://client?ip=${window.location.hostname}&id=${res.result}`,
+                radius: 0.5, // 0.0 to 0.5
+                ecLevel: 'L', // L, M, Q, H
+                fill: '#3f65ff', // foreground color
+                background: null, // color or null for transparent
+                size: 200 // in pixels
+            }, qrCanvas);
+            alert("Register Device", "Scan this QR code on your device:", qrCanvas);
+            qry("#prompt .custom").get(0);
+        });
+    });
+});
 
 
 function capitalizeFirstLetter(string) {
+    if (!string)
+        return string
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
-  
 
 function fetchClients() {
     get(`/api/clients`)

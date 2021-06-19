@@ -53,6 +53,7 @@ import backend.api.train
 import backend.api.skill
 import backend.api.slot
 import backend.api.intent
+import backend.api.device
 import backend.api.api
 
 
