@@ -25,7 +25,7 @@ ADD_DEVICES.addEventListener("click", ev => {
             const qrCanvas = document.createElement("canvas");
             qrCanvas.classList.add("margin-top-l");
             QrCreator.render({
-                text: `jarvis://client?ip=${window.location.hostname}&id=${res.result}`,
+                text: `jarvis://client?host=${window.location.hostname}&id=${res.result}`,
                 radius: 0.5, // 0.0 to 0.5
                 ecLevel: 'L', // L, M, Q, H
                 fill: '#3f65ff', // foreground color
