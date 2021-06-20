@@ -30,6 +30,11 @@ app.secret_key = "abc"
 babel = Babel(app)
 
 
+import logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
+
 # Decorator functions like @login_required
 from backend.variables import *
 
