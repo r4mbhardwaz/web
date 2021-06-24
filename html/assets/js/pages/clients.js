@@ -70,7 +70,7 @@ function fetchClients() {
                 code +=     `<td title="${security.title}"> <i class="${security.color}">${security.icon}</i> </td>`;
                 code +=     `<td>${el.name}</td>`;
                 code +=     `<td>${new Date(el["created-at"] * 1000).toLocaleString(getLang(), options)}</td>`;
-                code +=     `<td>${dateDelta(el["last-seen"] * 1000, 2)}</td>`;
+                code +=     `<td title="${dateDelta(el["last-seen"] * 1000)}">${dateDelta(el["last-seen"] * 1000, 1)}</td>`;
                 code += `</tr>`;
             });
             DEV_CONTAINER.innerHTML = code;
