@@ -1,7 +1,7 @@
 'use strict';
 
 
-const FETCH_CLIENTS_INTERVIEW = 5; // seconds
+const FETCH_DEVICES_INTERVALL = 5; // seconds
 const DEV_CONTAINER = id("devices-container").get(0);
 const ADD_DEVICES = id("add-device").get(0);
 
@@ -22,37 +22,24 @@ ADD_DEVICES.addEventListener("click", ev => {
                 alert("Failed!", `Could not add new device:<br>${res.error}`);
                 return;
             }
-            const qrCanvas = document.createElement("canvas");
-            qrCanvas.classList.add("margin-top-l");
-            QrCreator.render({
-                text: `jarvis://client?host=${window.location.hostname}&id=${res.result}`,
-                radius: 0.5, // 0.0 to 0.5
-                ecLevel: 'L', // L, M, Q, H
-                fill: '#3f65ff', // foreground color
-                background: null, // color or null for transparent
-                size: 200 // in pixels
-            }, qrCanvas);
-            alert("Register Device", "Scan this QR code on your device:", qrCanvas);
-            qry("#prompt .custom").get(0);
+            generateQrCode(res.result);
         });
     });
 });
 
 
-function capitalizeFirstLetter(string) {
-    if (!string)
-        return string
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
+let oldData = null;
+function fetchDevices() {
+    get(`/api/devices`)
+        .then(JSON.parse)
+        .then(d => {
+            if (!d.success) { throw new Error(d.error); }
+            if (JSON.stringify(d) == oldData) { return; }
+            oldData = JSON.stringify(d);
 
-function fetchClients() {
-    get(`/api/clients`)
-    .then(JSON.parse)
-    .then(d => {
-        if (!d.success) { throw new Error(d.error); }
             qry(".device-entry").forEach(el => el.remove());
             let code = ``;
-            d.clients.forEach(el => {
+            d.devices.forEach(el => {
                 const devIcons = {
                     computer  :  "computer",
                     jarvis    :  "smart_button",
@@ -66,24 +53,51 @@ function fetchClients() {
                 };
                 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; //, hour: 'numeric', minute: 'numeric' };
                 code += `<tr class="device-entry">`;
-                code +=     `<td title="Device Type: ${capitalizeFirstLetter(el.device)}"> <i class="blue">${devIcons[el.device]}</i> </td>`;
-                code +=     `<td title="${security.title}"> <i class="${security.color}">${security.icon}</i> </td>`;
-                code +=     `<td>${el.name}</td>`;
-                code +=     `<td>${new Date(el["created-at"] * 1000).toLocaleString(getLang(), options)}</td>`;
-                code +=     `<td title="${dateDelta(el["last-seen"] * 1000)}">${dateDelta(el["last-seen"] * 1000, 1)}</td>`;
+                code +=     `<td title="Device Type: ${capitalizeFirstLetter(el.device)}">  <i class="blue">${devIcons[el.device]}</i>  </td>`;
+                code +=     `<td title="${security.title}">  <i class="${security.color}">${security.icon}</i>  </td>`;
+                code +=     `<td class="flex left">  <span class="pointer relative" data-editable data-editablecallback='window.changeDeviceName'>${el.name}</span> ${el.activated ?"": `<i title='You have not activated this device.\nClick to generate your QR code' class='margin-left-l blue pointer' style='transform:translateY(-2px)' onclick='window.generateQrCode(\"${el.id}\")'>qr_code</i>`} </td>`;
+                code +=     `<td>  ${new Date(el["created-at"] * 1000).toLocaleString(getLang(), options)} </td>`;
+                code +=     `<td title="${dateDelta(el["last-seen"] * 1000)}">  ${dateDelta(el["last-seen"] * 1000, 1)}  </td>`;
                 code += `</tr>`;
             });
             DEV_CONTAINER.innerHTML = code;
+            updateDataEditable();
         })
         .catch(er => {
             alert("Failed to retrieve devices", er);
         })
         .finally(_ => {
-            setTimeout(fetchClients, FETCH_CLIENTS_INTERVIEW * 1000);
+            setTimeout(fetchDevices, FETCH_DEVICES_INTERVALL * 1000);
         });
 }
-fetchClients();
+fetchDevices();
 
+
+
+window.generateQrCode = id => {
+    const qrCanvas = document.createElement("canvas");
+    qrCanvas.classList.add("margin-top-l");
+    QrCreator.render({
+        text: `jarvis://client?host=${window.location.hostname}&id=${id}`,
+        radius: 0.5,      // 0.0 to 0.5
+        ecLevel: 'L',     // L, M, Q, H
+        fill: '#3f65ff',  // foreground color
+        background: null, // color or null for transparent
+        size: 200         // in pixels
+    }, qrCanvas);
+    alert("Register Device", "Scan this QR code on your device:", qrCanvas);
+}
+
+window.changeDeviceName = (newVal, el, oldVal) => {
+    console.log("changeDeviceName", newVal, el, oldVal);
+}
+
+
+function capitalizeFirstLetter(string) {
+    if (!string)
+        return string
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 function getLang() {
     if (navigator.languages != undefined)  {

@@ -300,7 +300,8 @@ div.v-dot {
     line-height: 1.2rem;
 }
 
-.clickable {
+.clickable,
+.pointer {
     cursor: pointer;
 }
 
