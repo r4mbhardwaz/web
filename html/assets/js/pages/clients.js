@@ -55,9 +55,25 @@ function fetchDevices() {
                 code += `<tr class="device-entry">`;
                 code +=     `<td title="Device Type: ${capitalizeFirstLetter(el.device)}">  <i class="blue">${devIcons[el.device]}</i>  </td>`;
                 code +=     `<td title="${security.title}">  <i class="${security.color}">${security.icon}</i>  </td>`;
-                code +=     `<td class="flex left">  <span class="pointer relative" data-editable data-editablecallback='window.changeDeviceName'>${el.name}</span> ${el.activated ?"": `<i title='You have not activated this device.\nClick to generate your QR code' class='margin-left-l blue pointer' style='transform:translateY(-2px)' onclick='window.generateQrCode(\"${el.id}\")'>qr_code</i>`} </td>`;
+                code +=     `<td title="${security.title}">${el.activated ?"": 
+                                `<i title='You have not activated this device.\nClick to generate your QR code' 
+                                    class='blue pointer' 
+                                    onclick='window.generateQrCode(\"${el.id}\")'>qr_code</i>`}</td>`;
+                code +=     `<td>
+                                <div class="flex left">
+                                    <span class="pointer relative" data-id='${el.id}' 
+                                            style="width: 100%; box-sizing: content-box" 
+                                            data-editable 
+                                            data-editablecallback='changeDeviceName'>${el.name}</span>
+                                </div>
+                            </td>`;
                 code +=     `<td>  ${new Date(el["created-at"] * 1000).toLocaleString(getLang(), options)} </td>`;
                 code +=     `<td title="${dateDelta(el["last-seen"] * 1000)}">  ${dateDelta(el["last-seen"] * 1000, 1)}  </td>`;
+                code +=     `<td class="padding-top-xs visible-on-hover hover-bg-light-grey hover-red border-radius v-center middle clickable dark-grey transition">
+                                <i style="margin: 3px 10px 0 0">clear</i>
+                                <span>Delete</span>
+                            </td>`;
+                // code +=     `<td style="width: 100%"></td>`;
                 code += `</tr>`;
             });
             DEV_CONTAINER.innerHTML = code;
@@ -89,7 +105,15 @@ window.generateQrCode = id => {
 }
 
 window.changeDeviceName = (newVal, el, oldVal) => {
-    console.log("changeDeviceName", newVal, el, oldVal);
+    post(`/api/device/set`, { id: el.dataset.id, key: "name", value: newVal })
+        .then(JSON.parse)
+        .then(d => {
+            if (!d.success)
+                throw new Error(d.error);
+        })
+        .catch(er => {
+            alert("Error", "Failed to change device name.<br><br>" + er);
+        })
 }
 
 

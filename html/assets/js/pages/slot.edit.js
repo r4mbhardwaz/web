@@ -10,7 +10,8 @@ window.submitNewData = function(ev) {
     const synonymsElement   = id("new-slot-synonyms").get(0);
     const synonyms          = synonymsElement.value;
     const target            = ev.currentTarget;
-    post(`/api/slot/${target.dataset.id}/add-data`, {
+    const slotId            = qry("[data-slotid]").get(0).dataset.slotid;
+    post(`/api/slot/${slotId}/add-data`, {
         value: value,
         synonyms: synonyms
     }).then(JSON.parse).then(d => {

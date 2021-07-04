@@ -30,6 +30,30 @@ def api_device_new():
     return Response(json.dumps(result), content_type="application/json")
 
 
+@app.route("/api/device/set", methods=["POST"])
+def api_device_set_value():
+    json_data = request.get_json(force=True)
+    if not ("key" in json_data and "id" in json_data and "value" in json_data):
+        return Response(json.dumps({ "success": False, "error": "Missing device ID, key or value" }), content_type="application/json")
+    allowed_keys = ["name"]
+    if json_data["key"] in allowed_keys:
+        client = Database().table("clients").find({ "_id": { "$eq": json_data["id"] }})
+        def update_name(old):
+            old[json_data["key"]] = json_data["value"]
+            return old
+        client.update(update_name)
+        return Response(json.dumps({ "success": True }), content_type="application/json")
+    return Response(json.dumps({ "success": False, "error": "Invalid key specified" }), content_type="application/json")
+
+
+@app.route("/api/device/delete", methods=["POST"])
+def api_device_delete():
+    json_data = request.get_json(force=True)
+    if "id" not in json_data:
+        return Response(json.dumps({"success": True, "error": "Need to specify device ID"}), content_type="application/json") 
+    # TODO: 
+
+
 @app.route("/api/devices")
 @login_required
 def api_get_devices():
