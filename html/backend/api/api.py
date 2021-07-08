@@ -164,6 +164,22 @@ def api_delete_one_log():
         return Response(json.dumps({"success": False, "error": "Need to provide fields 'timestamp', 'referrer' and 'tag'"}), content_type="application/json")
 
 
+@app.route("/api/host", methods=["POST"])
+@login_required
+def api_host_info():
+    res = list(Database().table("analytics").find({
+        "$and": [
+            {
+                "type": { "$eq": "system" } # only include statistics for the current system
+            },
+            {
+                "timestamp": { "$gt": int(time.time()) - ( 60 * 60 * 24 * 1 ) } # include data from 1 day
+            }
+        ]
+    }))
+    return Response(json.dumps({"success": True, "data": res}))
+
+
 @app.route("/api/search-icon")
 @login_required
 def api_iconsearch():

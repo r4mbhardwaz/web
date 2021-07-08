@@ -44,10 +44,17 @@
     --darker-grey: #666;
     --light-black: #333;
     --black: #000;
+    
     --red: #ff3f3f;
-    --green: #1dc558;
     --blue: #3f65ff;
+    --green: #1dc558;
     --orange: #ff9b3f;
+
+    --red50: #ff3f3f20;
+    --blue50: #3f65ff20;
+    --green50: #1dc55820;
+    --orange50: #ff9b3f20;
+
     --border-color: var(--grey);
     --background-color: var(--light-grey);
     --background-color-secondary: var(--lighter-grey);
@@ -69,18 +76,31 @@
 .grey,          .grey *         {  color: var(--grey);	        }
 .dark-grey,     .dark-grey *    {  color: var(--dark-grey);	    }
 .darker-grey,   .darker-grey *  {  color: var(--darker-grey);	}
+.red50,         .red50 *        {  color: var(--red-50p);       }
+.blue50,        .blue50 *       {  color: var(--green-50p);     }
+.green50,       .green50 *      {  color: var(--blue-50p);      }
+.orange50,      .orange50 *     {  color: var(--orange-50p);    }
+
 
 
 /*  HOVER CLASSES  */
-.hover-red:hover,           .hover-red:hover *          {  color: var(--red)	                                }
-.hover-blue:hover,          .hover-blue:hover *         {  color: var(--blue)	                                }
+.hover-red:hover,           .hover-red:hover *          {  color: var(--red);                                   }
+.hover-blue:hover,          .hover-blue:hover *         {  color: var(--blue);                                  }
 .hover-green:hover,         .hover-green:hover *        {  color: var(--green);                                 }
 .hover-orange:hover,        .hover-orange:hover *       {  color: var(--orange);                                }
+.hover-red50:hover,         .hover-red50:hover *        {  color: var(--red50);                                 }
+.hover-blue50:hover,        .hover-blue50:hover *       {  color: var(--blue50);                                }
+.hover-green50:hover,       .hover-green50:hover *      {  color: var(--green50);                               }
+.hover-orange50:hover,      .hover-orange50:hover *     {  color: var(--orange50);                              }
 .hover-white:hover,         .hover-white:hover *        {  color: var(--white);                                 }
 .hover-bg-red:hover                                     {  background-color: var(--red) !important;	            }
 .hover-bg-blue:hover                                    {  background-color: var(--blue) !important;	        }
 .hover-bg-green:hover                                   {  background-color: var(--green) !important;	        }
 .hover-bg-orange:hover                                  {  background-color: var(--orange) !important;	        }
+.hover-bg-red50:hover                                   {  background-color: var(--red50) !important;	        }
+.hover-bg-blue50:hover                                  {  background-color: var(--blue50) !important;	        }
+.hover-bg-green50:hover                                 {  background-color: var(--green50) !important;	        }
+.hover-bg-orange50:hover                                {  background-color: var(--orange50) !important;	    }
 .hover-bg-white:hover                                   {  background-color: var(--white) !important;	        }
 .hover-bg-lighter-grey:hover                            {  background-color: var(--lighter-grey) !important;    }
 .hover-bg-light-grey:hover                              {  background-color: var(--light-grey) !important;	    }
@@ -101,6 +121,10 @@
 .bg-blue            {  background-color: var(--blue) !important;	     }
 .bg-green           {  background-color: var(--green) !important;	     }
 .bg-orange          {  background-color: var(--orange) !important;	     }
+.bg-red50           {  background-color: var(--red50) !important;	         }
+.bg-blue50          {  background-color: var(--blue50) !important;	     }
+.bg-green50         {  background-color: var(--green50) !important;	     }
+.bg-orange50        {  background-color: var(--orange50) !important;	     }
 .bg-white           {  background-color: var(--white) !important;        }
 .bg-light-grey      {  background-color: var(--light-grey) !important;	 }
 .bg-light-black     {  background-color: var(--light-black) !important;	 }
@@ -115,6 +139,10 @@
 .border-blue, .border-blue:hover *                {  border-color: var(--blue) !important;	                                                              }
 .border-green, .border-green:hover *              {  border-color: var(--green) !important;	                                                              }
 .border-orange, .border-orange:hover *            {  border-color: var(--orange) !important;                                                              }
+.border-red50, .border-red50:hover *              {  border-color: var(--red50) !important;	                                                              }
+.border-blue50, .border-blue50:hover *            {  border-color: var(--blue50) !important;	                                                          }
+.border-green50, .border-green50:hover *          {  border-color: var(--green50) !important;	                                                          }
+.border-orange50, .border-orange50:hover *        {  border-color: var(--orange50) !important;                                                            }
 .border-white, .border-white:hover *              {  border-color: var(--orange) !important;                                                              }
 .border-light-grey, .border-light-grey:hover *    {  border-color: var(--light-grey) !important;                                                          }
 .border-light-black, .border-light-black:hover *  {  border-color: var(--light-black) !important;                                                         }
@@ -126,6 +154,10 @@
 .hover-border-blue:hover                          {  border-color: var(--blue) !important;	                                                              }
 .hover-border-green:hover                         {  border-color: var(--green) !important;	                                                              }
 .hover-border-orange:hover                        {  border-color: var(--orange) !important;                                                              }
+.hover-border-red50:hover                         {  border-color: var(--red50) !important;	                                                              }
+.hover-border-blue50:hover                        {  border-color: var(--blue50) !important;	                                                          }
+.hover-border-green50:hover                       {  border-color: var(--green50) !important;	                                                          }
+.hover-border-orange50:hover                      {  border-color: var(--orange50) !important;                                                            }
 .hover-border-white:hover                         {  border-color: var(--orange) !important;                                                              }
 .hover-border-light-grey:hover                    {  border-color: var(--light-grey) !important;                                                          }
 .hover-border-light-black:hover                   {  border-color: var(--light-black) !important;                                                         }
@@ -399,40 +431,47 @@ div.v-dot {
 .v-padding                  {  padding-top: 10px;   padding-bottom: 10px;  }
 .v-padding-m                {  padding-top: 15px;   padding-bottom: 15px;  }
 .v-padding-l                {  padding-top: 20px;   padding-bottom: 20px;  }
+.v-padding-xl               {  padding-top: 30px;   padding-bottom: 30px;  }
 .h-padding-xs               {  padding-left: 2px;   padding-right: 2px;    }
 .h-padding-s                {  padding-left: 5px;   padding-right: 5px;    }
 .h-padding                  {  padding-left: 10px;  padding-right: 10px;   }
 .h-padding-m                {  padding-left: 15px;  padding-right: 15px;   }
 .h-padding-l                {  padding-left: 20px;  padding-right: 20px;   }
+.h-padding-xl               {  padding-left: 30px;  padding-right: 30px;   }
 .padding-left-0             {  padding-left: 0px     !important;  }
 .padding-left-xs            {  padding-left: 2px     !important;  }
 .padding-left-s             {  padding-left: 5px     !important;  }
 .padding-left               {  padding-left: 10px    !important;  }
 .padding-left-m             {  padding-left: 15px    !important;  }
 .padding-left-l             {  padding-left: 20px    !important;  }
+.padding-left-xl            {  padding-left: 30px    !important;  }
 .padding-right-0            {  padding-right: 0px    !important;  }
 .padding-right-xs           {  padding-right: 2px    !important;  }
 .padding-right-s            {  padding-right: 5px    !important;  }
 .padding-right              {  padding-right: 10px   !important;  }
 .padding-right-m            {  padding-right: 15px   !important;  }
 .padding-right-l            {  padding-right: 20px   !important;  }
+.padding-right-xl           {  padding-right: 30px   !important;  }
 .padding-top-0              {  padding-top: 0px      !important;  }
 .padding-top-xs             {  padding-top: 2px      !important;  }
 .padding-top-s              {  padding-top: 5px      !important;  }
 .padding-top                {  padding-top: 10px     !important;  }
 .padding-top-m              {  padding-top: 15px     !important;  }
 .padding-top-l              {  padding-top: 20px     !important;  }
+.padding-top-xl             {  padding-top: 30px     !important;  }
 .padding-bottom-0           {  padding-bottom: 0px   !important;  }
 .padding-bottom-xs          {  padding-bottom: 2px   !important;  }
 .padding-bottom-s           {  padding-bottom: 5px   !important;  }
 .padding-bottom             {  padding-bottom: 10px  !important;  }
 .padding-bottom-m           {  padding-bottom: 15px  !important;  }
 .padding-bottom-l           {  padding-bottom: 20px  !important;  }
+.padding-bottom-xl          {  padding-bottom: 30px  !important;  }
 .padding-xs                 {  padding: 2px !important;           }
 .padding-s                  {  padding: 5px !important;           }
 .padding                    {  padding: 10px !important;          }
 .padding-m                  {  padding: 15px !important;          }
 .padding-l                  {  padding: 20px !important;          }
+.padding-xl                 {  padding: 30px !important;          }
 
 .size-10  {  font-size: 10px;  }
 .size-11  {  font-size: 11px;  }
@@ -551,6 +590,7 @@ div.v-dot {
 
 .none   {  display: none;  }
 .block  {  display: block; }
+.inline-block  {  display: inline-block;  }
 
 
 .tag {

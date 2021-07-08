@@ -5,31 +5,35 @@ const FETCH_DEVICES_INTERVALL = 5; // seconds
 const DEV_CONTAINER = id("devices-container").get(0);
 const ADD_DEVICES = id("add-device").get(0);
 
-
+if (ADD_DEVICES) // basically check if the user is on the /devices page (this script is also used on the /device/abcdef page)
 ADD_DEVICES.addEventListener("click", ev => {
     if (window.location.hostname == "localhost" || window.location.hostname.startsWith("127.")) {
         alert("Localhost detected", "You cannot register a new device from a localhost address.<br>Please switch to a reachable address");
         return;
     }
-    window.prompt("New Device", "Enter device name:", "Device name").then(name => {
-        if (!name)
-            return;
-        post(`/api/device/new`, {
-            name: name
-        }).then(JSON.parse)
-        .then(res => {
-            if (!res.success) {
-                alert("Failed!", `Could not add new device:<br>${res.error}`);
-                return;
-            }
-            generateQrCode(res.result);
-        });
+    post(`/api/device/new`, {
+        name: "My new device"
+    })
+    .then(JSON.parse)
+    .then(res => {
+        if (!res.success)
+            throw new Error(res.error);
+        fetchDevices(true);
+        generateQrCode(res.result);
+    })
+    .catch(er => {
+        alert("Could not add new device", er);
     });
+    // window.prompt("New Device", "Enter device name:", "Device name").then(name => {
+    //     if (!name)
+    //         return;
+    //     // INSERT CODE HERE
+    // });
 });
 
 
 let oldData = null;
-function fetchDevices() {
+function fetchDevices(oneTimer=false) {
     get(`/api/devices`)
         .then(JSON.parse)
         .then(d => {
@@ -69,11 +73,24 @@ function fetchDevices() {
                             </td>`;
                 code +=     `<td>  ${new Date(el["created-at"] * 1000).toLocaleString(getLang(), options)} </td>`;
                 code +=     `<td title="${dateDelta(el["last-seen"] * 1000)}">  ${dateDelta(el["last-seen"] * 1000, 1)}  </td>`;
-                code +=     `<td class="padding-top-xs visible-on-hover hover-bg-light-grey hover-red border-radius v-center middle clickable dark-grey transition">
+                if (el.device)
+                    code += `<td class="border-radius clickable transition"
+                                onclick="redirect('/device/${el.id}')">
+                                <span class="blue hover-bg-blue50 transition clickable h-padding-xl v-padding border-radius">
+                                    <span>Details</span>
+                                </span>
+                            </td>`;
+                else
+                    code +=     `<td></td>`;
+                if (!el["is-root"]) // only show delete button on non-root devices
+                    code += `<td class="padding-top-xs visible-on-hover hover-bg-light-grey hover-red border-radius v-center middle clickable dark-grey transition"
+                                 onclick="deleteDevice('${el.id}', this)">
                                 <i style="margin: 3px 10px 0 0">clear</i>
                                 <span>Delete</span>
                             </td>`;
-                // code +=     `<td style="width: 100%"></td>`;
+                else
+                    code += `<td></td>`;
+                code +=     `<td style="width: 100%"></td>`;
                 code += `</tr>`;
             });
             DEV_CONTAINER.innerHTML = code;
@@ -83,25 +100,29 @@ function fetchDevices() {
             alert("Failed to retrieve devices", er);
         })
         .finally(_ => {
-            setTimeout(fetchDevices, FETCH_DEVICES_INTERVALL * 1000);
+            if (!oneTimer)
+                setTimeout(fetchDevices, FETCH_DEVICES_INTERVALL * 1000);
         });
 }
+if (ADD_DEVICES) // basically check if the user is on the /devices page (this script is also used on the /device/abcdef page)
 fetchDevices();
 
 
 
-window.generateQrCode = id => {
-    const qrCanvas = document.createElement("canvas");
-    qrCanvas.classList.add("margin-top-l");
-    QrCreator.render({
+window.generateQrCode = (id, el=undefined, config={}) => {
+    const qrCanvas = el ? el : document.createElement("canvas");
+    QrCreator.render(Object.assign({}, {
         text: `jarvis://client?host=${window.location.hostname}&id=${id}`,
         radius: 0.5,      // 0.0 to 0.5
         ecLevel: 'L',     // L, M, Q, H
         fill: '#3f65ff',  // foreground color
         background: null, // color or null for transparent
         size: 200         // in pixels
-    }, qrCanvas);
-    alert("Register Device", "Scan this QR code on your device:", qrCanvas);
+    }, config), qrCanvas);
+    if (!el) {
+        qrCanvas.classList.add("margin-top-l");
+        alert("Register Device", "Scan this QR code on your device:", qrCanvas);
+    }
 }
 
 window.changeDeviceName = (newVal, el, oldVal) => {
@@ -112,8 +133,27 @@ window.changeDeviceName = (newVal, el, oldVal) => {
                 throw new Error(d.error);
         })
         .catch(er => {
-            alert("Error", "Failed to change device name.<br><br>" + er);
-        })
+            alert("Failed to change device name", er);
+        });
+}
+
+window.deleteDevice = (id, el) => {
+    if (el)
+        loading(el.children[0]);
+        post(`/api/device/delete`, { id: id })
+            .then(JSON.parse)
+            .then(d => {
+                if (!d.success)
+                    throw new Error(d.error);
+                fetchDevices(true);
+            })
+            .catch(er => {
+                alert("Failed to delete device", er);
+            })
+            .finally(_ => {
+                if (el)
+                    loadingStop(el.children[0]);
+            });
 }
 
 

@@ -1,8 +1,9 @@
 import { swup } from "./lib/_swup.js";
 import "./http.js";
 
+
 async function init() {
-    let pagename = window.location.pathname.substring(1).replaceAll("/", ".").replace(/[a-f0-9.]{6,}/, "");
+    let pagename = window.location.pathname.substring(1).replace(/\/?([a-f0-9.]{6,}|server$)/, "").replaceAll("/", ".");
     let impStr = pagename + ".js";
     if (impStr == ".js") {
         impStr = "index.js";
@@ -20,7 +21,9 @@ async function init() {
     } catch (error) {}
 }
 
+
 let infoBoxVisible = false;
+
 
 window.showInfoBox = function(element, htmlText) {
     if (infoBoxVisible) { return false; }

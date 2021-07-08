@@ -131,11 +131,15 @@ window.dataEditable = function(ev) {
         target.appendChild(newElement);
         newElement.focus();
 
+        newElement.addEventListener("click", ev => {
+            ev.stopImmediatePropagation();
+        });
+
         newElement.addEventListener("blur", ev => {
             ev.stopImmediatePropagation();
             onInputFinish(newElement.value, target, newElement, callback, currentText);
         });
-        
+
         newElement.addEventListener("keydown", ev => {
             ev.stopImmediatePropagation();
             if (ev.key == "Enter" || ev.keyCode == 13) {

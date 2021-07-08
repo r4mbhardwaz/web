@@ -1,0 +1,33 @@
+<div class="row">
+    <p>
+        We know nothing about this device yet! <br>
+        You can register one by scanning this QR code:
+    </p>
+</div>
+
+<div class="row">
+    <div>
+        <i id="canvas-loader" class="rotating blue" style="font-size: 30px;animation-duration: 0.7s;">loop</i>
+    </div>
+    <canvas id="qr-canvas" class="margin-top-l"></canvas>
+    <script>
+        window.addEventListener('DOMContentLoaded', _ => {
+            function genQR() {
+                try {
+                    generateQrCode(
+                        document.querySelector(`[data-id`).dataset.id,
+                        document.getElementById("qr-canvas"),
+                        {
+                            size: 250
+                        }
+                        );
+                    loadingStop(document.getElementById("canvas-loader"));
+                } catch (er) {
+                    setTimeout(genQR, 100); // takes usually 0.7 seconds, 7 iteration
+                    console.log(er);
+                }
+            }
+            genQR();
+        });
+    </script>
+</div>

@@ -16,6 +16,7 @@ def api_device_new():
             "ip": None,
             "data": {},
             "name": json_data["name"],
+            "device": None,
             "secure": False,
             "activated": False,
             "public-key": None,
@@ -23,7 +24,7 @@ def api_device_new():
             "created-at": int(time.time()),
             "modified-at": int(time.time())
         }
-        Database().table("clients").insert(new_client)
+        Database().table("devices").insert(new_client)
         del result["error"]
         result["success"] = True
         result["result"]  = new_client["_id"],
@@ -31,13 +32,14 @@ def api_device_new():
 
 
 @app.route("/api/device/set", methods=["POST"])
+@login_required
 def api_device_set_value():
     json_data = request.get_json(force=True)
     if not ("key" in json_data and "id" in json_data and "value" in json_data):
         return Response(json.dumps({ "success": False, "error": "Missing device ID, key or value" }), content_type="application/json")
     allowed_keys = ["name"]
     if json_data["key"] in allowed_keys:
-        client = Database().table("clients").find({ "_id": { "$eq": json_data["id"] }})
+        client = Database().table("devices").find({ "_id": { "$eq": json_data["id"] }})
         def update_name(old):
             old[json_data["key"]] = json_data["value"]
             return old
@@ -47,18 +49,26 @@ def api_device_set_value():
 
 
 @app.route("/api/device/delete", methods=["POST"])
+@login_required
 def api_device_delete():
     json_data = request.get_json(force=True)
     if "id" not in json_data:
-        return Response(json.dumps({"success": True, "error": "Need to specify device ID"}), content_type="application/json") 
-    # TODO: 
+        return Response(json.dumps({"success": False, "error": "Need to specify device ID"}), content_type="application/json")
+    dev = Database().table("devices").find({ "_id": { "$eq": json_data["id"] }})
+    if dev.found:
+        if "is-root" in dev[0] and dev[0]["is-root"]:
+            return Response(json.dumps({"success": False, "error": "Cannot delete the Jarvis device"}), content_type="application/json") 
+        dev.delete()
+        return Response(json.dumps({"success": True}), content_type="application/json") 
+    else:
+        return Response(json.dumps({"success": False, "error": "Device not found!"}), content_type="application/json") 
 
 
 @app.route("/api/devices")
 @login_required
 def api_get_devices():
     try:
-        devices = list(Database().table("clients").all())
+        devices = list(Database().table("devices").all())
         for i in range(len(devices)):
             devices[i]["id"] = devices[i]["_id"]
             del devices[i]["_rev"]

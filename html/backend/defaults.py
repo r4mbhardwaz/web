@@ -53,8 +53,21 @@ def updates():
     return render_template("updates.html", version=version)
 
 
-@app.route("/clients")
+@app.route("/devices")
 @login_required
-def clients():
-    return render_template("clients.html")
+def devices():
+    return render_template("devices.html")
 
+@app.route("/device/<dev_id>")
+@login_required
+def device_info(dev_id: str):
+    dev = Database().table("devices").find({ "_id": { "$eq" : dev_id } })
+    if not dev.found:
+        return redirect("/devices", code=302)
+    dev = dev[0]
+    dev["id"] = dev["_id"]
+    del dev["_id"]
+    del dev["_rev"]
+    return render_template("devices/info.html", device=dev)
+        
+    

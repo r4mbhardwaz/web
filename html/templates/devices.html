@@ -17,7 +17,6 @@
         table tr > td:nth-child(2),
         table tr > td:nth-child(3) {
             width: 35px !important;
-            padding: 0 !important;
             box-sizing: border-box;
         }
 
@@ -30,14 +29,17 @@
             padding-top: 7px !important;
         }
         /* move the icons up by a few pixels */
-        table tbody#devices-container > tr > td > i {
+        table tbody#devices-container > tr > td > i:not(.rotating) {
             transform: translateY(-3px);
+        }
+        /* keep the icon up because the translate does not work with rotating */
+        table tbody#devices-container > tr > td > i.rotating {
+            margin: 0px 10px 3px 0 !important;
         }
 
         /* move the device name header a bit to the left to respect the editable fields padding */
         table thead > tr > td:nth-child(4) {
-            padding-left:  calc(20px + 20px);
-            padding-right: calc(20px - 20px);
+            transform: translateX(20px);
         }
         
         /* decrease the cell padding top for autoeditable cells */
@@ -56,7 +58,7 @@
         /* delete buttons */
         table tbody > tr:first-child > td.visible-on-hover {
             padding-top: 7px !important;
-            transform: translateY(10px);
+            transform: translateY(15px);
         }
         .visible-on-hover {
             padding-bottom: 5px !important;
@@ -64,12 +66,18 @@
             padding-right: 10px;
         }
 
+        td {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
         /* row widths */
         table tr > td              {  box-sizing: content-box;  }
-        table tr > td:nth-child(4) {  width: 200px; display: table-cell;  } /* device name */
-        table tr > td:nth-child(5) {  width: 200px;  } /* created at */
+        table tr > td:nth-child(4) {  width: 200px; display: table-cell; padding-right: 20px;  } /* device name */
+        table tr > td:nth-child(5) {  width: 225px;  } /* created at */
         table tr > td:nth-child(6) {  width: 150px;  } /* last seen */
-        table tr > td:nth-child(7) {  width: 120px;  } /* delete button */
+        table tr > td:nth-child(7) {  width: 120px;  } /* info button */
+        table tr > td:nth-child(8) {  width: 120px;  } /* delete button */
     </style>
 </head>
 
@@ -79,16 +87,16 @@
             <div class="row">
                 <nav class="breadcrumb">
                     <a href="/">Jarvis Server</a>
-                    <a href="/updates">Update Center</a>
+                    <a href="/devices">Devices</a>
                 </nav>
             </div>
 
             <div class="flex space-between">
-                <h1>Clients</h1>
+                <h1>Devices</h1>
                 <div class="flex align-center">
                     <button id="add-device" class="v-center">
                         <i class="margin-right-l margin-bottom-xs">add</i>
-                        Add device
+                        Connect device
                     </button>
                 </div>
             </div>
@@ -103,8 +111,9 @@
                             <td>Name</td>
                             <td>Created At</td>
                             <td>Last Seen</td>
+                            <td></td> <!-- Info Button -->
                             <td></td> <!-- Delete Button -->
-                            <!-- <td style="width: 100%"></td> -->
+                            <td style="width: 100%"></td>
                         </tr>
                     </thead>
                     <tbody id="devices-container">

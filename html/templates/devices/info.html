@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis</title>
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/markdown.css">
+    <script type="module" src="/assets/js/global.js"></script>
+    <script type="module" src="/assets/js/lib/qr.js"></script>
+</head>
+
+<body>
+    <div id="swup">
+        <div class="container">
+            <div class="row">
+                <nav class="breadcrumb">
+                    <a href="/">Jarvis Server</a>
+                    <a href="/devices">Devices</a>
+                    <a href="/device/{{ device.id }}" class="device-name">{{ device.name }}</a>
+                </nav>
+            </div>
+
+            {% set x = device.__setitem__("device", device.device if device.device else "none") %}
+
+            <h1>
+                <script>
+                    // script does not load fast enough in external file
+                    window.changeDeviceName_2 = (newVal, el, oldVal) => {
+                        window.changeDeviceName(newVal, el, oldVal);
+                        qry(`.device-name`).text(newVal);
+                    }                    
+                </script>
+                {% set icons = {
+                    "computer"  :  "computer",
+                    "jarvis"    :  "smart_button",
+                    "phone"     :  "smartphone",
+                    "mic"       :  "mic",
+                    "none"      :  "device_unknown"
+                } %}
+                <i class="blue">{{ icons[device.device] }}</i>
+                <span class="clickable relative width-full" data-id="{{ device.id }}" data-editable data-editablecallback="changeDeviceName_2">
+                    {{ device.name }}
+                </span>
+            </h1>
+                        
+            {% include "devices/snippets/" + device.device  + ".html" %}
+        </div>
+    </div>
+</body>
+
+</html>
