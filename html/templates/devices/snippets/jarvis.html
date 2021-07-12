@@ -3,13 +3,13 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
+    color: #fff;
 }
 .legend > ul > li {
     list-style-type: none;
 }
 .legend > ul > li > span {
     cursor: pointer;
-    color: #fff;
     padding: 10px 30px;
     border-radius: var(--border-radius);
     margin: 0px 5px 5px;
@@ -266,7 +266,7 @@
                   console.log(chart.data.datasets[i]); // see what's inside the obj.
                   text.push('<li>');
                   let cls = chart.data.datasets[i].colorClass;
-                  text.push(`<span data-id="${i}" class="bg-${cls} hover-bg-${cls}50 hover-${cls}">${chart.data.datasets[i].label}</span>`);
+                  text.push(`<span data-id="${i}" onclick="this.classList.toggle('bg-${cls}50');this.classList.toggle('${cls}')" class="bg-${cls} hover-bg-${cls}50 hover-${cls}">${chart.data.datasets[i].label}</span>`);
                   text.push('</li>');
                 }
                 text.push('</ul>');
@@ -420,7 +420,7 @@
                   console.log(chart.data.datasets[i]); // see what's inside the obj.
                   text.push('<li>');
                     let cls = chart.data.datasets[i].colorClass;
-                    text.push(`<span data-id="${i}" class="bg-${cls} hover-bg-${cls}50 hover-${cls}">${chart.data.datasets[i].label}</span>`);
+                    text.push(`<span data-id="${i}" onclick="this.classList.toggle('bg-${cls}50');this.classList.toggle('${cls}')" class="bg-${cls} hover-bg-${cls}50 hover-${cls}">${chart.data.datasets[i].label}</span>`);
                     text.push('</li>');
                 }
                 text.push('</ul>');
