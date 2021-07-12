@@ -1,6 +1,437 @@
+<style type="text/css">
+.legend > ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+.legend > ul > li {
+    list-style-type: none;
+}
+.legend > ul > li > span {
+    cursor: pointer;
+    color: #fff;
+    padding: 10px 30px;
+    border-radius: var(--border-radius);
+    margin: 0px 5px 5px;
+    transition: .2s;
+}
+</style>
+
 <div class="row">
-    <div class="col-3"></div>
-    <div class="col-3"></div>
-    <div class="col-3"></div>
-    <div class="col-3"></div>
+    <div class="col-6">
+        <div class="row">
+            <div id="legend-cpu-ram-disk" class="legend cpu-ram-disk-legend"></div>
+        </div>
+        <div class="row">
+            <canvas id="data-cpu-ram-disk"></canvas>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div id="legend-network" class="legend network-legend"></div>
+        </div>
+        <div class="row">
+            <canvas id="data-network"></canvas>
+        </div>
+    </div>
 </div>
+
+<script src="/assets/js/lib/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", ev => {
+        post(`/api/host`, {})
+        .then(JSON.parse)
+        .then(d => {
+            d.data.sort((a, b) => a.timestamp - b.timestamp);
+            let configChartCpuRamDisk = {...window._chartJsDefaultData}; //  { ...window._chartJsDefaultData }; // create a copy
+            let configChartNetwork = {...window._chartJsDefaultData2}; // { ...window._chartJsDefaultData }; // create a copy
+
+            configChartCpuRamDisk.data.datasets.length = 3;
+            configChartCpuRamDisk.data.datasets[0].label = "CPU Usage";
+            configChartCpuRamDisk.data.datasets[0].data = d.data.map(x => x.stats.cpu);
+            configChartCpuRamDisk.data.datasets[0].yAxisID = "y1";
+            configChartCpuRamDisk.data.datasets[1].label = "RAM Usage";
+            configChartCpuRamDisk.data.datasets[1].data = d.data.map(x => x.stats.ram.usage);
+            configChartCpuRamDisk.data.datasets[0].yAxisID = "y1";
+            configChartCpuRamDisk.data.datasets[2].label = "Disk Usage";
+            configChartCpuRamDisk.data.datasets[2].data = d.data.map(x => x.stats.storage.usage);
+            configChartCpuRamDisk.data.datasets[0].yAxisID = "y1";
+            configChartCpuRamDisk.data.labels = d.data.map(x => new Date(x.timestamp * 1000));
+            window.cpuRamDiskCtx = document.getElementById('data-cpu-ram-disk').getContext('2d');
+            window.cpuRamDiskChart = new Chart(window.cpuRamDiskCtx, configChartCpuRamDisk);
+
+            document.getElementById('legend-cpu-ram-disk').innerHTML = window.cpuRamDiskChart.generateLegend();
+
+            let i = 0;
+            let oldVal = null;
+            d.data.map(x => {
+                if (i == 0) {
+                    oldVal = x.stats.network;
+                    x.stats.network = {
+                        bytes: { received: 0, sent: 0 },
+                        packets: { received: 0, sent: 0 }
+                    };
+                } else {
+                    console.log(x.stats.network.bytes.received, oldVal.bytes.received, x.stats.network.bytes.received - oldVal.bytes.received);
+                    const tmp = {
+                        bytes: {
+                            received: x.stats.network.bytes.received - oldVal.bytes.received,
+                            sent: x.stats.network.bytes.sent - oldVal.bytes.sent
+                        },
+                        packets: {
+                            received: x.stats.network.packets.received - oldVal.packets.received,
+                            sent: x.stats.network.packets.sent - oldVal.packets.sent
+                        }
+                    }
+                    oldVal = x.stats.network;
+                    x.stats.network = tmp;
+                }
+                i++;
+                /*
+                console.log(x.stats.network.bytes.received);
+                */
+                return x;
+            });
+
+            configChartNetwork.data.datasets[0].label = "Packets out";
+            configChartNetwork.data.datasets[0].data = d.data.map(x => x.stats.network.packets.sent);
+            configChartNetwork.data.datasets[0].yAxisID = "y1";
+            configChartNetwork.data.datasets[1].label = "Packets in";
+            configChartNetwork.data.datasets[1].data = d.data.map(x => x.stats.network.packets.received);
+            configChartNetwork.data.datasets[1].yAxisID = "y1";
+            configChartNetwork.data.datasets[2].label = "Bytes out";
+            configChartNetwork.data.datasets[2].data = d.data.map(x => x.stats.network.bytes.sent);
+            configChartNetwork.data.datasets[2].yAxisID = "y2";
+            configChartNetwork.data.datasets[3].label = "Bytes in";
+            configChartNetwork.data.datasets[3].data = d.data.map(x => x.stats.network.bytes.received);
+            configChartNetwork.data.datasets[3].yAxisID = "y2";
+            configChartNetwork.data.labels = d.data.map(x => new Date(x.timestamp * 1000));
+            window.networkCtx = document.getElementById('data-network').getContext('2d');
+            window.networkChart = new Chart(window.networkCtx, configChartNetwork);
+
+            document.getElementById('legend-network').innerHTML = window.networkChart.generateLegend();
+
+            document.querySelectorAll(".cpu-ram-disk-legend span").forEach(el => {
+                el.addEventListener("click", ev => {
+                    const isHidden = window.cpuRamDiskChart.data.datasets[ev.target.dataset.id].hidden ? !window.cpuRamDiskChart.data.datasets[ev.target.dataset.id].hidden : true;
+                    window.cpuRamDiskChart.data.datasets[ev.target.dataset.id].hidden = isHidden;
+                    window.cpuRamDiskChart.update();
+
+                    if (isHidden) {
+                        ev.target.style.backgroundColor = ev.target.style.backgroundColor.replace(")", ", 20)");
+                    } else {
+                        ev.target.style.backgroundColor = ev.target.style.backgroundColor.replace(", 20)", ")");
+                    }
+                });
+            });
+            document.querySelectorAll(".network-legend span").forEach(el => {
+                el.addEventListener("click", ev => {
+                    const isHidden = window.networkChart.data.datasets[ev.target.dataset.id].hidden ? !window.networkChart.data.datasets[ev.target.dataset.id].hidden : true;
+                    window.networkChart.data.datasets[ev.target.dataset.id].hidden = isHidden;
+                    window.networkChart.update();
+                });
+            });
+        })
+        .catch(er => {
+            console.error(er);
+            alert("Failed to fetch device data", er);
+        });
+    });
+
+    
+    window._chartJsDefaultData = {
+        type: "line",
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                fill: false,
+                label: "read",
+                borderColor: "#1dc558",
+                radius: 0,
+                pointRadius: 30,
+                pointHoverRadius: 30,
+                pointBackgroundColor: "#ffffff00",
+                pointBorderWidth: 0,
+                pointBorderColor: "#ffffff00",
+                colorClass: "green"
+            }, {
+                data: [],
+                fill: false,
+                label: "write",
+                borderColor: "#ff3f3f",
+                radius: 0,
+                pointRadius: 30,
+                pointHoverRadius: 30,
+                pointBackgroundColor: "#ffffff00",
+                pointBorderWidth: 0,
+                pointBorderColor: "#ffffff00",
+                colorClass: "red"
+            }, {
+                data: [],
+                fill: false,
+                label: "purge",
+                borderColor: "#3f65ff",
+                radius: 0,
+                pointRadius: 30,
+                pointHoverRadius: 30,
+                pointBackgroundColor: "#ffffff00",
+                pointBorderWidth: 0,
+                pointBorderColor: "#ffffff00",
+                colorClass: "blue"
+            }, {
+                data: [],
+                fill: false,
+                label: "insert",
+                borderColor: "#ff9b3f",
+                radius: 0,
+                pointRadius: 30,
+                pointHoverRadius: 30,
+                pointBackgroundColor: "#ffffff00",
+                pointBorderWidth: 0,
+                pointBorderColor: "#ffffff00",
+                colorClass: "orange"
+            }]
+        },
+        options: {
+            responsive: true,
+            title: { display: false },
+            scales: {
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        displayFormats: {
+                            day: 'MMM D',
+                        },
+                        tooltipFormat: 'MMM D h:mm a',
+                    },
+                    display: true,
+                    ticks: {
+                        autoSkip: true,
+                        maxRotation: 0,
+                        minRotation: 0
+                    }
+                }],
+                yAxes: [{
+                    id: 'y1',
+                    type: 'linear',
+                    position: 'right',
+                    ticks: {
+                        min: 0,
+                        max: 1
+                    },
+                    scaleLabel: 'Percentage',
+                    afterTickToLabelConversion : function(q){
+                        for(var tick in q.ticks){
+                            const currentValue = parseFloat(q.ticks[tick]);
+                            q.ticks[tick] = `${(currentValue * 100).toFixed(0)}%`;
+                        }
+                    }
+                }]
+            },
+            tooltips: {
+                backgroundColor: '#f1f1f1',
+                titleFontSize: 14,
+                titleFontColor: '#333333',
+                bodyFontColor: '#333333',
+                bodyFontSize: 13,
+                displayColors: false,
+                mode: 'x-axis',
+                intersect: false,
+                callbacks: {
+                    label: function(tooltipItems, data) {
+                        const datasetIndexes = [ "CPU", "RAM", "Disk" ]
+                        return `${datasetIndexes[tooltipItems.datasetIndex]} Usage: ${(tooltipItems.yLabel * 100).toFixed(1)}%`;
+                        console.log(tooltipItems, data);
+                        return "test";
+                    }
+                }
+            },
+            elements: {
+                point: {
+                    radius: 0
+                },
+                line: {
+                    tension: 0.2
+                }
+            },
+            legend: {
+                display: false
+            },
+            legendCallback: function(chart) {
+                var text = [];
+                text.push('<ul>');
+                for (var i=0; i<chart.data.datasets.length; i++) {
+                  console.log(chart.data.datasets[i]); // see what's inside the obj.
+                  text.push('<li>');
+                  let cls = chart.data.datasets[i].colorClass;
+                  text.push(`<span data-id="${i}" class="bg-${cls} hover-bg-${cls}50 hover-${cls}">${chart.data.datasets[i].label}</span>`);
+                  text.push('</li>');
+                }
+                text.push('</ul>');
+                return text.join("");
+              },            
+        }
+    };
+    window._chartJsDefaultData2 = {
+        type: "line",
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                fill: false,
+                label: "read",
+                borderColor: "#1dc558",
+                radius: 0,
+                pointRadius: 30,
+                pointHoverRadius: 30,
+                pointBackgroundColor: "#ffffff00",
+                pointBorderWidth: 0,
+                pointBorderColor: "#ffffff00",
+                colorClass: "green"
+            }, {
+                data: [],
+                fill: false,
+                label: "write",
+                borderColor: "#ff3f3f",
+                radius: 0,
+                pointRadius: 30,
+                pointHoverRadius: 30,
+                pointBackgroundColor: "#ffffff00",
+                pointBorderWidth: 0,
+                pointBorderColor: "#ffffff00",
+                colorClass: "red"
+            }, {
+                data: [],
+                fill: false,
+                label: "purge",
+                borderColor: "#3f65ff",
+                radius: 0,
+                pointRadius: 30,
+                pointHoverRadius: 30,
+                pointBackgroundColor: "#ffffff00",
+                pointBorderWidth: 0,
+                pointBorderColor: "#ffffff00",
+                colorClass: "blue"
+            }, {
+                data: [],
+                fill: false,
+                label: "insert",
+                borderColor: "#ff9b3f",
+                radius: 0,
+                pointRadius: 30,
+                pointHoverRadius: 30,
+                pointBackgroundColor: "#ffffff00",
+                pointBorderWidth: 0,
+                pointBorderColor: "#ffffff00",
+                colorClass: "orange"
+            }]
+        },
+        options: {
+            responsive: true,
+            title: { display: false },
+            scales: {
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        displayFormats: {
+                            day: 'MMM D',
+                        },
+                        tooltipFormat: 'MMM D h:mm a',
+                    },
+                    display: true,
+                    ticks: {
+                        autoSkip: true,
+                        maxRotation: 0,
+                        minRotation: 0
+                    }
+                }],
+                yAxes: [{
+                    id: 'y1',
+                    type: 'linear',
+                    position: 'right',/*
+                    ticks: {
+                        min: 0,
+                        max: 1
+                    }*/
+                    scaleLabel: 'Packets transmitted',
+                    afterTickToLabelConversion : function(q){
+                        for(var tick in q.ticks){
+                            const currentValue = parseInt(q.ticks[tick]);
+                            q.ticks[tick] = Number((currentValue).toFixed(0)).toLocaleString("en-US");
+                        }
+                    }
+                }, {
+                    id: 'y2',
+                    type: 'linear',
+                    position: 'left',
+                    scaleLabel: 'Bytes transmitted',
+                    afterTickToLabelConversion : function(q){
+                        for(var tick in q.ticks){
+                            const currentValue = parseInt(q.ticks[tick]);
+                            q.ticks[tick] = bytesToSize(currentValue);
+                        }
+                    }
+                
+                    /*
+                    ticks: {
+                        min: 0,
+                        max: 1
+                    }*/
+
+                }]
+            },
+            tooltips: {
+                backgroundColor: '#f1f1f1',
+                titleFontSize: 14,
+                titleFontColor: '#333333',
+                bodyFontColor: '#333333',
+                bodyFontSize: 13,
+                displayColors: false,
+                mode: 'x-axis',
+                intersect: false,
+                callbacks: {
+                    label: function(tooltipItems, data) {
+                        const datasetIndexes = [ "Packets out", "Packets in", "Bytes out", "Bytes in" ];
+                        if (tooltipItems.datasetIndex > 1)
+                            return `${datasetIndexes[tooltipItems.datasetIndex]}: ${bytesToSize(tooltipItems.yLabel)}`;
+                        else
+                            return `${datasetIndexes[tooltipItems.datasetIndex]}: ${Number((tooltipItems.yLabel).toFixed(0)).toLocaleString("en-US")}`;
+                    }
+                }
+            },
+            elements: {
+                point: {
+                    radius: 0
+                },
+                line: {
+                    tension: 0.3
+                }
+            },
+            legend: {
+                display: false
+            },
+            legendCallback: function(chart) {
+                var text = [];
+                text.push('<ul>');
+                for (var i=0; i<chart.data.datasets.length; i++) {
+                  console.log(chart.data.datasets[i]); // see what's inside the obj.
+                  text.push('<li>');
+                    let cls = chart.data.datasets[i].colorClass;
+                    text.push(`<span data-id="${i}" class="bg-${cls} hover-bg-${cls}50 hover-${cls}">${chart.data.datasets[i].label}</span>`);
+                    text.push('</li>');
+                }
+                text.push('</ul>');
+                return text.join("");
+              },            
+        }
+    };
+    window.bytesToSize = bytes => {
+        var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+        if (bytes == 0) return '0 Bytes';
+        var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+        return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+    }     
+</script>

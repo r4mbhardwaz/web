@@ -173,10 +173,17 @@ def api_host_info():
                 "type": { "$eq": "system" } # only include statistics for the current system
             },
             {
-                "timestamp": { "$gt": int(time.time()) - ( 60 * 60 * 24 * 1 ) } # include data from 1 day
+                "timestamp": { "$gt": int(time.time()) - ( 60 * 60 * 2 ) } # include data from 2 hrs
+                                                                            # the couchdb limit is 25, so 25 * 5 minutes = 2.08h are possible
             }
         ]
     }))
+    def stripper(el):
+        del el["_id"]
+        del el["_rev"]
+        del el["type"]
+        return el
+    res = list(map(stripper, res))
     return Response(json.dumps({"success": True, "data": res}))
 
 

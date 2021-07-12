@@ -74,9 +74,9 @@ function fetchDevices(oneTimer=false) {
                 code +=     `<td>  ${new Date(el["created-at"] * 1000).toLocaleString(getLang(), options)} </td>`;
                 code +=     `<td title="${dateDelta(el["last-seen"] * 1000)}">  ${dateDelta(el["last-seen"] * 1000, 1)}  </td>`;
                 if (el.device)
-                    code += `<td class="border-radius clickable transition"
-                                onclick="redirect('/device/${el.id}')">
-                                <span class="blue hover-bg-blue50 transition clickable h-padding-xl v-padding border-radius">
+                    code += `<td class="border-radius clickable transition">
+                                <span class="blue hover-bg-blue50 transition clickable h-padding-xl v-padding border-radius"
+                                        onclick="redirect('/device/${el.id}')">
                                     <span>Details</span>
                                 </span>
                             </td>`;
