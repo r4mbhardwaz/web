@@ -22,8 +22,7 @@ from flask_babel import Babel, format_datetime
 
 # context = Security.ssh_context()
 
-app = Flask(__name__, static_url_path="",
-            static_folder="", template_folder="templates")
+app = Flask(__name__, static_url_path="", static_folder="", template_folder="templates")
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 # app.secret_key = Security.id(128)
 app.secret_key = "abc"

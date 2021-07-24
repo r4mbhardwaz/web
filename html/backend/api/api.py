@@ -14,12 +14,7 @@ from ..decorators import login_required
 from ..variables import ICONS
 
 
-SERVER_MQTT = None
-cnf  = Config()
-id   = cnf.get("mqtt-server-id", None)
-keys = cnf.get("keys", None)
-if id is not None and keys is not None:
-    SERVER_MQTT = MQTT(id, keys["private"], keys["public"], keys["public"])
+SERVER_MQTT = MQTT()
 
 
 @app.route("/api/db-stats")
