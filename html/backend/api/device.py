@@ -11,23 +11,19 @@ from jarvis import Database, Config
 def api_device_new():
     json_data = request.get_json(force=True)
     result = { "success": False, "error": "missing required 'name' field" }
-    if "name" in json_data: # TODO: normalize using the Server::Client class
-        new_client = {
-            "ip": None,
-            "data": {},
+    if "name" in json_data: # TODO: normalize using the Server::Device class
+        new_device = {
             "name": json_data["name"],
             "device": None,
-            "secure": False,
             "activated": False,
-            "public-key": None,
             "last-seen": int(time.time()),
             "created-at": int(time.time()),
             "modified-at": int(time.time())
         }
-        Database().table("devices").insert(new_client)
+        Database().table("devices").insert(new_device)
         del result["error"]
         result["success"] = True
-        result["result"]  = new_client["_id"],
+        result["result"]  = new_device["_id"],
     return Response(json.dumps(result), content_type="application/json")
 
 
@@ -39,11 +35,11 @@ def api_device_set_value():
         return Response(json.dumps({ "success": False, "error": "Missing device ID, key or value" }), content_type="application/json")
     allowed_keys = ["name"]
     if json_data["key"] in allowed_keys:
-        client = Database().table("devices").find({ "_id": { "$eq": json_data["id"] }})
+        device = Database().table("devices").find({ "_id": { "$eq": json_data["id"] }})
         def update_name(old):
             old[json_data["key"]] = json_data["value"]
             return old
-        client.update(update_name)
+        device.update(update_name)
         return Response(json.dumps({ "success": True }), content_type="application/json")
     return Response(json.dumps({ "success": False, "error": "Invalid key specified" }), content_type="application/json")
 

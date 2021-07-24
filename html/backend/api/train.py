@@ -1,4 +1,4 @@
-from __main__ import *
+from __main__ import app, login_required, Response
 
 import json
 from copy import deepcopy
@@ -23,7 +23,7 @@ def api_assistant_train():
     data["intents"] = get_intents(deepcopy(all_skills), get_slots(deepcopy(all_skills)))
     data["language"] = "de" # TODO: add option for language change
 
-    mqtt = MQTT(client_id="web")
+    mqtt = MQTT()
     mqtt.publish("jarvis/satellite/nlu/train", json.dumps({"data": data}))
     return Response(json.dumps({"success": True}), content_type="application/json")
 
