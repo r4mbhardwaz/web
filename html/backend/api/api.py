@@ -14,9 +14,6 @@ from ..decorators import login_required
 from ..variables import ICONS
 
 
-SERVER_MQTT = MQTT()
-
-
 @app.route("/api/db-stats")
 @login_required
 def api_dbstats():
