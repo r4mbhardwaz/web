@@ -50,16 +50,10 @@ function fetchDevices(oneTimer=false) {
                     phone     :  "smartphone",
                     mic       :  "mic"
                 };
-                const security = {
-                    color: el.secure ? "green"             : "red",
-                    title: el.secure ? "Encrypted Traffic" : "Unencrypted Traffic",
-                    icon:  el.secure ? "lock"              : "lock_open",
-                };
                 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; //, hour: 'numeric', minute: 'numeric' };
                 code += `<tr class="device-entry">`;
                 code +=     `<td title="Device Type: ${capitalizeFirstLetter(el.device)}">  <i class="blue">${devIcons[el.device]}</i>  </td>`;
-                code +=     `<td title="${security.title}">  <i class="${security.color}">${security.icon}</i>  </td>`;
-                code +=     `<td title="${security.title}">${el.activated ?"": 
+                code +=     `<td>${el.activated ?"": 
                                 `<i title='You have not activated this device.\nClick to generate your QR code' 
                                     class='blue pointer' 
                                     onclick='window.generateQrCode(\"${el.id}\")'>qr_code</i>`}</td>`;

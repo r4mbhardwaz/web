@@ -14,18 +14,17 @@
 
     <style>
         table tr > td:nth-child(1):not([colspan]),
-        table tr > td:nth-child(2),
-        table tr > td:nth-child(3) {
+        table tr > td:nth-child(2) {
             width: 35px !important;
             box-sizing: border-box;
         }
 
         /* set the padding-top of the most upper row in the tbody */
-        table tbody#devices-container > tr:first-child > td:nth-child(4) {
+        table tbody#devices-container > tr:first-child > td:nth-child(3) {
             padding-top: calc(25px - 7px) !important;
         }
         /* set the padding-top of other trs in the tbody */
-        table tbody#devices-container > tr:not(:first-child) > td:not(:nth-child(4)) {
+        table tbody#devices-container > tr:not(:first-child) > td:not(:nth-child(3)) {
             padding-top: 7px !important;
         }
         /* move the icons up by a few pixels */
@@ -38,20 +37,20 @@
         }
 
         /* move the device name header a bit to the left to respect the editable fields padding */
-        table thead > tr > td:nth-child(4) {
+        table thead > tr > td:nth-child(3) {
             transform: translateX(20px);
         }
         
         /* decrease the cell padding top for autoeditable cells */
-        table tbody#devices-container > tr:first-child > td:nth-child(4) {
+        table tbody#devices-container > tr:first-child > td:nth-child(3) {
             padding-top: calc(38px - 20px) !important;
             padding-bottom: 3px; /* measured */
         }
-        table tbody#devices-container > tr:not(:first-child) > td:nth-child(4) {
+        table tbody#devices-container > tr:not(:first-child) > td:nth-child(3) {
             padding-top: 0px !important;
         }
 
-        table tbody#devices-container > tr:first-child > td:nth-child(7) {
+        table tbody#devices-container > tr:first-child > td:nth-child(6) {
             margin-top: 7px;
         }
 
@@ -73,11 +72,11 @@
 
         /* row widths */
         table tr > td              {  box-sizing: content-box;  }
-        table tr > td:nth-child(4) {  width: 200px; display: table-cell; padding-right: 20px;  } /* device name */
-        table tr > td:nth-child(5) {  width: 225px;  } /* created at */
-        table tr > td:nth-child(6) {  width: 150px;  } /* last seen */
-        table tr > td:nth-child(7) {  width: 120px;  } /* info button */
-        table tr > td:nth-child(8) {  width: 120px;  } /* delete button */
+        table tr > td:nth-child(3) {  width: 200px; display: table-cell; padding-right: 20px;  } /* device name */
+        table tr > td:nth-child(4) {  width: 225px;  } /* created at */
+        table tr > td:nth-child(5) {  width: 150px;  } /* last seen */
+        table tr > td:nth-child(6) {  width: 120px;  } /* info button */
+        table tr > td:nth-child(7) {  width: 120px;  } /* delete button */
     </style>
 </head>
 
@@ -106,7 +105,6 @@
                     <thead>
                         <tr>
                             <td></td> <!-- Device Icon -->
-                            <td></td> <!-- Secure/Insecure Icon -->
                             <td></td> <!-- QR Code -->
                             <td>Name</td>
                             <td>Created At</td>
