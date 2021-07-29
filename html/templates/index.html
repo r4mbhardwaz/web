@@ -50,11 +50,16 @@
                     </p>
                 </div>
                 <div class="col-6 box clickable" onclick="redirect('/devices');">
-                    <i class="blue">person</i>
+                    <i class="blue">devices</i>
                     <label>Devices</label>
                     <p class="margin-bottom-s">Manage connected devices</p>
                 </div>
-                <div class="col-6 box clickable" onclick="redirect('/updates');">
+                <div class="col-6 box clickable" onclick="redirect('/people');">
+                    <i class="blue">person</i>
+                    <label>People</label>
+                    <p class="margin-bottom-s">A list of people Jarvis knows</p>
+                </div>
+                <!-- <div class="col-6 box clickable" onclick="redirect('/updates');">
                     <i class="blue">update</i>
                     <label>Update Center</label>
                     <p>Download and install the newest assistant software</p>
@@ -102,7 +107,7 @@
                     {# > 100MB dangerous #}
                     {# > 300MB critically #}
                     <p>Log Size: <span class="{{ 'green' if logs_size < (1024 * 1024 * 100) else 'orange' if logs_size < (1024 * 1024 * 300) else 'red' }}">{{ logs_size | filesizeformat }}</span> ({{ log_entries_count }} entries)</p>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

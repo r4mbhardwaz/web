@@ -4,6 +4,7 @@ from .decorators import login_required
 from jarvis import Config, Security, Database
 
 @app.route("/")
+@login_required
 def index():
     cnf = Config()
     version = cnf.get("version", None)
@@ -70,4 +71,7 @@ def device_info(dev_id: str):
     del dev["_rev"]
     return render_template("devices/info.html", device=dev)
         
-    
+@app.route("/people")
+@login_required
+def people():
+    return render_template("people.html")
