@@ -1,7 +1,8 @@
-from __main__ import app
+from __main__ import *
 from flask import render_template, redirect, session, request
 from .decorators import login_required
 from jarvis import Config, Security, Database
+
 
 @app.route("/")
 @login_required
@@ -43,7 +44,7 @@ def login_post():
 @app.route("/assistant")
 @login_required
 def assistant():
-    return render_template("assistant.html", skills=list(Database().table("skills").all().sort("created-at").reverse()))
+    return render_template("assistant.html", skills=Skill.all())
 
 
 @app.route("/updates")

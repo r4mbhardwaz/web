@@ -8,20 +8,7 @@ from .Slot import Slot
 from functools import total_ordering, wraps
 
 
-def benchmark(func):
-    @wraps(func)
-    def wrap(*args, **kwargs):
-        start = time.time()
-        res = func(*args, **kwargs)
-        end = time.time()
-        if end-start > 1:
-            print(f"Intent::{func.__name__} took {end-start}s")
-        return res
-    return wrap
-
-
 class Intent:
-    @benchmark
     def __init__(self, new: bool, existing_data: dict = None) -> None:
         if existing_data:
             new = False
@@ -63,7 +50,6 @@ class Intent:
 
 
     # USUAL FUNCTIONS
-    @benchmark
     def get_slots(self):
         for slot_name in self.intent["slots"]:
             slot_id = self.intent["slots"][slot_name]
@@ -76,7 +62,6 @@ class Intent:
                 self.intent["slots"][slot_name] = {}
         return self.intent["slots"]
 
-    @benchmark
     def add_slot(self, name: str, slot: Slot, only_keep_reference: bool = True):
         self.intent["modified-at"] = int(time.time())
         if name in self.intent["slots"]:
@@ -84,14 +69,12 @@ class Intent:
         self.intent["slots"][name] = slot["id"] if only_keep_reference else slot
         return True
 
-    @benchmark
     def change_slot(self, name: str, slot: Slot, only_keep_reference: bool = True):
         self.intent["modified-at"] = int(time.time())
         self.intent["slots"][name] = slot["id"] if only_keep_reference else slot
         return True
 
     # PRIVATE FUNCTIONS
-    @benchmark
     def _update_slots(self) -> None:
         for slotname in self.intent["slots"]:
             slot = self.intent["slots"][slotname]
@@ -100,14 +83,12 @@ class Intent:
                 del self.intent["slots"][slotname]["_id"]
                 del self.intent["slots"][slotname]["_rev"]
 
-    @benchmark
     def _reverse_slots(self, only_keep_reference: bool = True) -> None:
         for slotname in self.intent["slots"]:
             slot = self.intent["slots"][slotname]
             if isinstance(slot, Slot) or isinstance(slot, dict):
                 self.intent["slots"][slotname] = slot["id"] if only_keep_reference else slot.__dict__()
 
-    @benchmark
     def _update_quality(self) -> None:
         quality = 0
         if len(self.intent["utterances"]) == 0:

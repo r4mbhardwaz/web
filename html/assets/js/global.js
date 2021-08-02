@@ -3,7 +3,8 @@ import "./http.js";
 
 
 async function init() {
-    let pagename = window.location.pathname.substring(1).replace(/\/?([a-f0-9.]{6,}|server$)/, "").replaceAll("/", ".");
+    // let pagename = window.location.pathname.substring(1).replace(/\/?([a-f0-9.]{6,}|server$)/, "").replaceAll("/", ".");
+    let pagename = window.location.pathname.substring(1).replace(/\/?([a-f0-9./]{6,}|server$)/, "").replaceAll("/", ".");
     let impStr = pagename + ".js";
     if (impStr == ".js") {
         impStr = "index.js";

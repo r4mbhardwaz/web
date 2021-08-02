@@ -1,4 +1,4 @@
-from __main__ import app, login_required, Response
+from __main__ import app, login_required, Response, Skill
 
 import json
 from copy import deepcopy

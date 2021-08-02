@@ -1,5 +1,11 @@
+import json
+import time
 from core.Skill import Skill
-from __main__ import *
+from __main__ import app, Intent, Skill, Slot
+from ..decorators import login_required, retrain
+from flask import request
+from flask.wrappers import Response
+from jarvis import Security
 
 
 @app.route("/api/intent/<skill_id>/<intent_id>/set", methods=["POST"])
@@ -10,8 +16,8 @@ def api_intent_set_value(skill_id: str, intent_id: str):
     json_data = request.get_json(force=True)
     if "key" in json_data and "value" in json_data:
         if json_data["key"] in allowed:
-            skill = Skill(skill_id)
-            if skill.found:
+            skill = Skill.load(skill_id)
+            if skill:
                 intent = skill.get_intent(intent_id)
                 if intent:
                     intent[json_data["key"]] = json_data["value"]
@@ -51,8 +57,8 @@ def api_intent_add(skill_id: str):
     json_data = request.get_json(force=True)
     if "name" in json_data and "description" in json_data:
         # TODO: perform checks to see if name and description are well formatted
-        skill = Skill(skill_id)
-        if skill.found:
+        skill = Skill.load(skill_id)
+        if skill:
             if skill.unused_intent():
                 intent = skill.unused_intent()
             else:
@@ -73,8 +79,8 @@ def api_intent_add(skill_id: str):
 @login_required
 @retrain
 def api_intent_delete(skill_id: str, intent_id: str):
-    skill = Skill(skill_id)
-    if skill.found:
+    skill = Skill.load(skill_id)
+    if skill:
         intent = skill.get_intent(intent_id)
         if intent:
             success = skill.remove_intent(intent_id)
@@ -92,8 +98,8 @@ def api_intent_add_slot(skill_id: str, intent_id: str):
         return Response(json.dumps({"success": False, "code": "ERR_INTENT_INVALID_ARGS", "error": "need to provide 'name' and 'slot-id' in json post body"}), content_type="application/json")
     slot_name = json_data["name"]
     slot_id = json_data["slot-id"]
-    skill = Skill(skill_id)
-    if not skill.found:
+    skill = Skill.load(skill_id)
+    if not skill:
         return Response(json.dumps({"success": False, "code": "ERR_INTENT_SKILL_NOT_FOUND", "error": "couldn't find skill by id"}), content_type="application/json")
     intent = skill.get_intent(intent_id)
     if not intent:
@@ -116,8 +122,8 @@ def api_intent_change_slot(skill_id: str, intent_id: str):
         return Response(json.dumps({"success": False, "code": "ERR_INTENT_INVALID_ARGS", "error": "need to provide 'name' and 'slot-id' in json post body"}), content_type="application/json")
     slot_name = json_data["name"]
     slot_id = json_data["slot-id"]
-    skill = Skill(skill_id)
-    if not skill.found:
+    skill = Skill.load(skill_id)
+    if not skill:
         return Response(json.dumps({"success": False, "code": "ERR_INTENT_SKILL_NOT_FOUND", "error": "couldn't find skill by id"}), content_type="application/json")
     intent = skill.get_intent(intent_id)
     if not intent:
@@ -135,8 +141,8 @@ def api_intent_change_slot(skill_id: str, intent_id: str):
 @login_required
 @retrain
 def api_intent_remove_slot(skill_id: str, intent_id: str, slot_name: str):
-    skill = Skill(skill_id)
-    if not skill.found:
+    skill = Skill.load(skill_id)
+    if not skill:
         return Response(json.dumps({
             "success": False, 
             "code": "ERR_INTENT_SKILL_NOT_FOUND", 
@@ -169,8 +175,8 @@ def api_intent_rename_slot(skill_id: str, intent_id: str, slot_name: str):
             "code": "ERR_INTENT_INVALID_ARGS", 
             "error": "need to provide field 'new-name' in json post body"}), content_type="application/json")
     new_name = json_data["new-name"]
-    skill = Skill(skill_id)
-    if not skill.found:
+    skill = Skill.load(skill_id)
+    if not skill:
         return Response(json.dumps({
             "success": False, 
             "code": "ERR_INTENT_SKILL_NOT_FOUND", 
@@ -209,8 +215,8 @@ def api_intent_add_training_data(skill_id: str, intent_id: str):
             "code": "ERR_INTENT_DATA_ADD_INVALID_ARGS", 
             "error": "need to provide non-empty field 'sentence' in json post body"}), content_type="application/json")
     sentence = json_data["sentence"]
-    skill = Skill(skill_id)
-    if not skill.found:
+    skill = Skill.load(skill_id)
+    if not skill:
         return Response(json.dumps({
             "success": False, 
             "code": "ERR_INTENT_SKILL_NOT_FOUND", 
@@ -246,8 +252,8 @@ def api_intent_delete_training_data(skill_id: str, intent_id: str):
             "code": "ERR_INTENT_INVALID_ARGS", 
             "error": "need to provide field 'training-data-id' in json post body"}), content_type="application/json")
     utterance_id = json_data["training-data-id"]
-    skill = Skill(skill_id)
-    if not skill.found:
+    skill = Skill.load(skill_id)
+    if not skill:
         return Response(json.dumps({
             "success": False, 
             "code": "ERR_INTENT_SKILL_NOT_FOUND", 
@@ -287,8 +293,8 @@ def api_intent_modify_training_data(skill_id: str, intent_id: str):
             "error": "need to provide non-empty field 'id' and 'data' in json post body"}), content_type="application/json")
     data_id = json_data["id"]
     new_data = json_data["data"]
-    skill = Skill(skill_id)
-    if not skill.found:
+    skill = Skill.load(skill_id)
+    if not skill:
         return Response(json.dumps({
             "success": False, 
             "code": "ERR_INTENT_SKILL_NOT_FOUND", 

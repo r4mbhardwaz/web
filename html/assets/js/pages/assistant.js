@@ -5,8 +5,8 @@ qry(".delete-skill").click(ev => {
 
     loading(target.children[0])
 
-    get(`/api/skill/${skillId}/delete`).then(d => {
-        swup.cache.remove(window.location.pathname);
+    post(`/api/skill/${skillId}/delete`, {})
+    .then(d => {
         redirect(window.location.pathname);
     }).catch(er => {
         alert("Failed to delete skill!", "An internal error occured and we were unable to delete your skill.<br><br>Please try again later");

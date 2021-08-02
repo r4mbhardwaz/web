@@ -3,8 +3,8 @@ from __main__ import *
 @app.route("/slot/edit/<skill_id>/<intent_id>/<slot_id>")
 @login_required
 def add_slot(skill_id: str, intent_id: str, slot_id: str = None):
-    skill = Skill(skill_id)
-    if skill.found:
+    skill = Skill.load(skill_id)
+    if skill:
         intent = skill.get_intent(intent_id)
         if intent:
             if slot_id is None:

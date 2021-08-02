@@ -41,3 +41,45 @@ window.searchRepos = function(value) {
         document.querySelector("#search-repos-results").innerHTML = code;
     })
 }
+
+document.querySelector("#create-skill").addEventListener("click", ev => {
+    let canSend = true;
+
+    function inv(name) {
+        const val = document.querySelector(`[name=${name}]`).value;
+        if (!val) {
+            canSend = false;
+            document.querySelector(`[name=${name}]`).classList.add("error");
+            setTimeout(_ => {
+                document.querySelector(`[name=${name}]`).classList.remove("error");
+            }, 1500);
+            return null;
+        }
+        return val;
+    }
+
+    let skillObject = {
+        name: inv("skill-name"),
+        icon: {
+            icon: inv("skill-icon"),
+            color: inv("skill-icon-color")
+        },
+        language: inv("skill-language"),
+        description: inv("skill-description"),
+        public: inv("skill-public") == "on"
+    };
+
+    if (!canSend) return;
+
+    post(`/api/skill/new`, skillObject)
+    .then(JSON.parse)
+    .then(d => {
+        if (d.success) {
+            redirect(`/skill/edit/${d.id}`);
+        } else {
+            throw Error(d.error);
+        }
+    }).catch(er => {
+        alert("Failed to create skill", er);
+    });
+});

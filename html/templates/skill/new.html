@@ -16,8 +16,7 @@
         <div id="swup">
             {% include "nlu.html" %}
 
-            <form class="container" method="POST">
-
+            <div class="container">
 
                 <div class="row">
                     <nav class="breadcrumb">
@@ -52,7 +51,7 @@
                     </div>
                     <div class="row-s-1 row-e-1 col-s-5 col-e-8">
                         <select name="skill-language" required>
-                            <option disabled selected>Choose a language</option>
+                            <option value="" disabled selected>Choose a language</option>
                             <option value="de">German</option>
                             <option value="en">English</option>
                             <option value="es">Spanish</option>
@@ -94,7 +93,7 @@
                     </div>
 
                     <div class="row-s-6 row-e-6 col-s-10 col-e-12">
-                        <button type="submit">Continue</button>
+                        <button type="submit" id="create-skill">Continue</button>
                     </div>
                 </div>
                 <div id="no-break"></div>
