@@ -8,6 +8,7 @@ import json
 import time
 import tempfile
 import traceback
+import requests
 from datetime import datetime
 
 from core.Skill import Skill
@@ -32,6 +33,19 @@ babel = Babel(app)
 import logging
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
+
+
+http_api_port = Config().get("api", {
+    "port": 5522
+})["port"] - 1
+
+def API_endpoint(path, data):
+    x = requests.post(f"http://127.0.0.1:{http_api_port}/{path}", json={**data, **{ 
+        "$username": session["username"],
+        "$password": session["password"]
+    }}).json()
+    return x
+
 
 
 # Decorator functions like @login_required

@@ -5,7 +5,6 @@
 import time
 from jarvis import Database, Security
 from .Slot import Slot
-from functools import total_ordering, wraps
 
 
 class Intent:
@@ -66,12 +65,12 @@ class Intent:
         self.intent["modified-at"] = int(time.time())
         if name in self.intent["slots"]:
             return False
-        self.intent["slots"][name] = slot["id"] if only_keep_reference else slot
+        self.intent["slots"][name] = slot.id if only_keep_reference else slot
         return True
 
     def change_slot(self, name: str, slot: Slot, only_keep_reference: bool = True):
         self.intent["modified-at"] = int(time.time())
-        self.intent["slots"][name] = slot["id"] if only_keep_reference else slot
+        self.intent["slots"][name] = slot.id if only_keep_reference else slot
         return True
 
     # PRIVATE FUNCTIONS
@@ -79,15 +78,23 @@ class Intent:
         for slotname in self.intent["slots"]:
             slot = self.intent["slots"][slotname]
             if not isinstance(slot, Slot) and not isinstance(slot, dict):
-                self.intent["slots"][slotname] = Slot(slot).__dict__()
-                del self.intent["slots"][slotname]["_id"]
-                del self.intent["slots"][slotname]["_rev"]
+                slot_from_db = Slot.load(slot)
+                if slot_from_db:
+                    slot_from_db = slot_from_db.__dict__()
+                    slot_from_db["id"] = slot_from_db["_id"]
+                    del slot_from_db["_id"]
+                    del slot_from_db["_rev"]
+                    self.intent["slots"][slotname] = slot_from_db
+                else: # slot got deleted
+                    self.intent["slots"][slotname] = {}
 
     def _reverse_slots(self, only_keep_reference: bool = True) -> None:
         for slotname in self.intent["slots"]:
             slot = self.intent["slots"][slotname]
+            print(slot)
             if isinstance(slot, Slot) or isinstance(slot, dict):
-                self.intent["slots"][slotname] = slot["id"] if only_keep_reference else slot.__dict__()
+                sid = slot.id if isinstance(slot, Slot) else slot["_id"] if "_id" in slot else slot["id"]
+                self.intent["slots"][slotname] = sid if only_keep_reference else slot.__dict__()
 
     def _update_quality(self) -> None:
         quality = 0

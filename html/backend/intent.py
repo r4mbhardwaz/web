@@ -8,7 +8,6 @@ from .decorators import login_required
 @app.route("/intent/edit/<skill_id>/<intent_id>")
 @login_required
 def create_intent(skill_id: str, intent_id: str = None):
-    print(skill_id, intent_id)
     if intent_id is None:
         skill = Skill.load(skill_id)
         if skill:
@@ -23,7 +22,6 @@ def create_intent(skill_id: str, intent_id: str = None):
         return Response(json.dumps({"success": False, "error": "couldn't find skill by id"}))
     else:
         skill = Skill.load(skill_id)
-        print(skill)
         if skill:
             intent = skill.get_intent(intent_id)
             slots = intent["slots"]

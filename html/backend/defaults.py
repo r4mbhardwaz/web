@@ -1,4 +1,4 @@
-from __main__ import *
+from __main__ import app, Skill, User
 from flask import render_template, redirect, session, request
 from .decorators import login_required
 from jarvis import Config, Security, Database
@@ -27,15 +27,11 @@ def login_post():
     username = request.form["username"]
     password = request.form["password"]
 
-    result = Database().table("users").find({
-        "username": username,
-        "password": Security.password_hash(password)
-    })
-    success = result.found
     url = session["redirect_url"] if "redirect_url" in session else "/"
 
-    if success:
-        session["login_user"] = result[0]["username"]
+    if User.validate(username, password):
+        session["username"] = username
+        session["password"] = User.hash(password)
         return redirect(url, code=302)
 
     return render_template("login.html", success=False, url=url)

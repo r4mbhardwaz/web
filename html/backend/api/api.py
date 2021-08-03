@@ -3,12 +3,12 @@ Copyright (c) 2021 Philipp Scheer
 """
 
 
-from __main__ import app
+from __main__ import app, API_endpoint
 import json
 import time
 import traceback
-from jarvis import Database, MQTT, Config
-from flask import request
+from jarvis import Database, Config
+from flask import request, session
 from flask.wrappers import Response
 from ..decorators import login_required
 from ..variables import ICONS
@@ -26,37 +26,25 @@ def api_dbstats():
 @app.route("/api/version")
 @login_required
 def api_jarvis_version():
-    res = SERVER_MQTT.request("jarvis/update/status", {}, timeout=20)
-    if isinstance(res, bool):
-        return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
-    return Response(json.dumps(res), content_type="application/json")
+    return Response(json.dumps(API_endpoint("update/status", {})), content_type="application/json")
 
 
 @app.route("/api/update/download", methods=["POST"])
 @login_required
 def api_update_download():
-    res = SERVER_MQTT.request("jarvis/update/download", {}, timeout=20)
-    if isinstance(res, bool):
-        return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
-    return Response(json.dumps(res), content_type="application/json")
+    return Response(json.dumps(API_endpoint("update/download", {})), content_type="application/json")
 
 
 @app.route("/api/update/install", methods=["POST"])
 @login_required
 def api_update_install():
-    res = SERVER_MQTT.request("jarvis/update/install", {}, timeout=20)
-    if isinstance(res, bool):
-        return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
-    return Response(json.dumps(res), content_type="application/json")
+    return Response(json.dumps(API_endpoint("update/install", {})), content_type="application/json")
 
 
 @app.route("/api/update/poll", methods=["POST"])
 @login_required
 def api_update_poll():
-    res = SERVER_MQTT.request("jarvis/update/poll", {}, timeout=20)
-    if isinstance(res, bool):
-        return Response(json.dumps({"success": False, "error": "The request timed out!"}), content_type="application/json")
-    return Response(json.dumps(res), content_type="application/json")
+    return Response(json.dumps(API_endpoint("update/poll", {})), content_type="application/json")
 
 
 @app.route("/api/update/schedule", methods=["POST"])

@@ -1,15 +1,14 @@
-from __main__ import app, login_required, Response, Skill
+from __main__ import app, login_required, Response, Skill, API_endpoint
+from flask import request
 
 import json
 from copy import deepcopy
-from jarvis import MQTT
 
 
 @app.route("/api/assistant/status")
 @login_required
 def api_assistant_status():
-    result = "{}" #MQTT.onetime("jarvis/satellite/nlu/status", {}, timeout=2)
-    return Response(json.dumps({"success": True, "result": json.loads(result)}), content_type="application/json")
+    return Response(json.dumps(API_endpoint("nlu/status", {})), content_type="application/json")
 
 
 @app.route("/api/assistant/train", methods=["POST", "GET"])
@@ -23,9 +22,7 @@ def api_assistant_train():
     data["intents"] = get_intents(deepcopy(all_skills), get_slots(deepcopy(all_skills)))
     data["language"] = "de" # TODO: add option for language change
 
-    mqtt = MQTT()
-    mqtt.publish("jarvis/satellite/nlu/train", json.dumps({"data": data}))
-    return Response(json.dumps({"success": True}), content_type="application/json")
+    return Response(json.dumps(API_endpoint("nlu/train", {"data": data})), content_type="application/json")
 
 
 @app.route("/api/assistant/parse", methods=["POST"])
@@ -38,8 +35,7 @@ def api_assistant_parse():
             "code": "ERR_ASSISTANT_INVALID_ARGS",
             "error": "need to provide field 'utterance' in json post body"
         }), content_type="application/json")
-    result = "{}" #MQTT.onetime("jarvis/satellite/nlu/parse", {"utterance": json_data["utterance"]}, timeout=2)
-    return Response(json.dumps({"success": bool(result), "result": json.loads(result)["result"]}))
+    return Response(json.dumps(API_endpoint("nlu/parse", {"utterance": json_data["utterance"]})), content_type="application/json")
 
 
 def get_intents(skills, slots):

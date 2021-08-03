@@ -104,8 +104,8 @@ def api_intent_add_slot(skill_id: str, intent_id: str):
     intent = skill.get_intent(intent_id)
     if not intent:
         return Response(json.dumps({"success": False, "code": "ERR_INTENT_NOT_FOUND", "error": "couldn't find intent by id"}), content_type="application/json")
-    slot = Slot(slot_id)
-    if not slot.found:
+    slot = Slot.load(slot_id)
+    if not slot:
         return Response(json.dumps({"success": False, "code": "ERR_INTENT_SLOT_NOT_FOUND", "error": "couldn't find slot by id"}), content_type="application/json")
     intent.add_slot(slot_name, slot, True)
     skill.update_intent(intent_id, intent)
@@ -128,8 +128,8 @@ def api_intent_change_slot(skill_id: str, intent_id: str):
     intent = skill.get_intent(intent_id)
     if not intent:
         return Response(json.dumps({"success": False, "code": "ERR_INTENT_NOT_FOUND", "error": "couldn't find intent by id"}), content_type="application/json")
-    slot = Slot(slot_id)
-    if not slot.found:
+    slot = Slot.load(slot_id)
+    if not slot:
         return Response(json.dumps({"success": False, "code": "ERR_INTENT_SLOT_NOT_FOUND", "error": "couldn't find slot by id"}), content_type="application/json")
     intent.change_slot(slot_name, slot, True)
     skill.update_intent(intent_id, intent)

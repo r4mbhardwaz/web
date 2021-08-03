@@ -1,10 +1,12 @@
-from __main__ import *
+from __main__ import app
 from functools import wraps
+from flask import session, redirect, request
+
 
 def login_required(func):
     @wraps(func)
     def wrap(*args, **kwargs):
-        if "login_user" in session:
+        if "username" in session:
             return func(*args, **kwargs)
         else:
             return redirect(f"/login?url={request.path}", code=302)

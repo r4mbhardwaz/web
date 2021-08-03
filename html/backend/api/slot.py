@@ -1,4 +1,10 @@
-from __main__ import *
+import time
+import json
+from __main__ import app, Slot
+from flask import request
+from flask.wrappers import Response
+from ..decorators import login_required
+from jarvis import Security
 
 
 @app.route("/api/slot/create", methods=["POST"])
@@ -7,7 +13,7 @@ def slot_create_new():
     json_data = request.get_json(force=True)
     # TODO: check json_data["name"] format with regex
     if "name" in json_data and "description" in json_data:
-        slot = Slot()
+        slot = Slot.new()
         slot["created-at"] = int(time.time()) - 1
         slot["name"] = json_data["name"]
         slot["description"] = json_data["description"]
@@ -24,8 +30,8 @@ def api_add_data_to_slot(slot_id: str):
     if "value" in json_data and "synonyms" in json_data:
         if json_data["value"].strip() == "":
             return Response(json.dumps({"success":False, "code": "ERR_SLOT_VALUE_EMPTY", "error": "value must not be empty"}), content_type="application/json")
-        slot = Slot(slot_id)
-        if not slot.found:
+        slot = Slot.load(slot_id)
+        if not slot:
             return json.dumps({"success": False, "code": "ERR_SLOT_NOT_FOUND", "error": "slot not defined yet."})
         id = Security.id(16)
         slot["data"].append({
@@ -47,7 +53,7 @@ def api_set_slot_key(slot_id: str):
     key = json_data["key"]
     value = json_data["value"]
     if key in ["name", "description", "extensible", "strictness", "use-synonyms"]:
-        slot = Slot(slot_id)
+        slot = Slot.load(slot_id)
         slot[key] = value
         slot.save()
         return json.dumps({"success": True})
@@ -57,8 +63,8 @@ def api_set_slot_key(slot_id: str):
 @app.route("/api/slot/<slot_id>/delete/<slot_value_id>")
 @login_required
 def api_slot_remove(slot_id: str, slot_value_id: str):
-    slot = Slot(slot_id)
-    if slot.found:
+    slot = Slot.load(slot_id)
+    if slot:
         new_data = []
         for x in slot["data"]:
             if x["id"] != slot_value_id:
@@ -80,7 +86,7 @@ def api_slot_delete(slot_id: str):
 def api_slot_item_change(slot_id: str, item_id: str):
     json_data = request.get_json(force=True)
     if "value" in json_data:
-        slot = Slot(slot_id)
+        slot = Slot.load(slot_id)
         for i in range(len(slot["data"])):   # loop through data
             element = slot["data"][i]
             if element["id"] == item_id:    # if we found the id
@@ -89,7 +95,7 @@ def api_slot_item_change(slot_id: str, item_id: str):
         slot.save()
         return json.dumps({"success": True})
     elif "synonyms" in json_data:
-        slot = Slot(slot_id)
+        slot = Slot.load(slot_id)
         for i in range(len(slot["data"])):   # loop through data
             element = slot["data"][i]
             if element["id"] == item_id:    # if we found the id
@@ -111,8 +117,8 @@ def api_slot_import(slot_id):
             "code": "ERR_SLOT_INVALID_ARGS",
             "error": "need to provide field 'values' in json post body"
             }), content_type="application/json")
-    slot = Slot(slot_id)
-    if not slot.found:
+    slot = Slot.load(slot_id)
+    if not slot:
         return Response(json.dumps({
             "success": False, 
             "code": "ERR_SLOT_NOT_FOUND",
@@ -141,8 +147,8 @@ def api_slot_load_data(slot_id):
             "code": "ERR_SLOT_INVALID_ARGS",
             "error": "need to provide field 'start' and 'count' in json post body"
             }), content_type="application/json")
-    slot = Slot(slot_id)
-    if not slot.found:
+    slot = Slot.load(slot_id)
+    if not slot:
         return Response(json.dumps({
             "success": False, 
             "code": "ERR_SLOT_NOT_FOUND",
@@ -159,8 +165,8 @@ def api_slot_load_data(slot_id):
 @app.route("/api/slot/<slot_id>/empty", methods=["POST"])
 @login_required
 def api_slot_empty(slot_id):
-    slot = Slot(slot_id)
-    if not slot.found:
+    slot = Slot.load(slot_id)
+    if not slot:
         return Response(json.dumps({
             "success": False, 
             "code": "ERR_SLOT_NOT_FOUND",

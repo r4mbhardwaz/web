@@ -334,9 +334,9 @@ window.addSlot = ev => {
             if (!d.success) {
                 throw new Error("server side error");
             }
-    
+
             const chooser = document.createElement("div");
-    
+
             const addElement = document.createElement("div");
             addElement.classList.add("border-dashed");
             addElement.classList.add("box");
