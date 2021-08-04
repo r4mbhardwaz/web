@@ -6,10 +6,11 @@ div.nlu {
     border-style: none none none solid;
     border-radius: 0px !important;
     box-shadow: none !important;
-    width: calc(100% - 70rem - 2 * 7.5vw);
+    width: 400px;
     /* padding: 250px 30px; */
     padding: 125px 30px;
     transition: var(--transition);
+    display: none;
 }
 
 div.nlu.ready {
@@ -17,7 +18,7 @@ div.nlu.ready {
 }
 
 div.nlu + .container {
-    margin-left: 7.5vw !important;
+    margin-left: auto !important;
 }
 
 .code .key      {  color: var(--blue);    }
@@ -26,11 +27,12 @@ div.nlu + .container {
 .code .boolean  {  color: var(--orange);  }
 .code .null     {  color: var(--orange);  }
 
-@media screen and (max-width: 1500px) {
+@media screen and (min-width: 1300px) {
     div.nlu {
-        display: none !important;
+        display: block !important;
     }
-    .container {
-        margin-left: auto !important;
+    div.nlu + .container {
+        margin-left: 7.5vw !important;
+        width: calc(100vw - 2*7.5vw - 400px);
     }
 }

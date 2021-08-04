@@ -95,31 +95,27 @@
             {% set public_string = 'Public' if skill.public else 'Private' %}
 
             <div class="grid margin-bottom-xl">
-                <div class="row-s-1 row-e-2 col-s-1 col-e-7">
+                <div class="row-s-1 row-e-2 col-s-1 col-e-13">
                     <span class="blue clickable">By You</span>
                     <div class="v-dot bg-darker-grey"></div>
                     <span class="{{ public_color }}">{{ public_string }}</span>
                     <div class="v-dot bg-darker-grey"></div>
                     <span class="{{ color }}">{{ quality_str }}</span>
                 </div>
-                <div class="row-s-2 row-e-3 col-s-1 col-e-7">
+                <div class="row-s-2 row-e-3 col-s-1 col-e-13">
                     <span class="darker-grey">Created {{ intent['created-at'] | datetime("date") }}</span>
                     <div class="v-dot bg-darker-grey"></div>
                     <span class="darker-grey">Last modified {{ intent['modified-at'] | datetime("date") }}</span>
                 </div>
-                <div    class="row-s-1 row-e-3 col-s-7 col-e-13 border-left border-medium border-darker-grey height-full padding-left-m v-center clickable"
-                        id="intent-description">{{ intent.description }}</div>
+                <div class="row-s-3 row-e-4 col-s-1 col-e-13 padding-top border-medium border-top border-solid border-grey clickable" id="intent-description">{{ intent.description }}</div>
             </div>
 
-            <br><br><br>
-
-            <div class="grid">
+            <div class="grid" style="margin-top: 50px;">
                 <div class="row-s-1 row-e-1 col-s-1 col-e-4">
                     <p class="v-center fat large margin-0 margin-bottom">
-                        <span id="intent-slot-count">
-                            {{ intent.slots | length }}</span>&nbsp;Slot{{ "" if intent.slots | length == 1 else "s" }}
+                        <span id="intent-slot-count">{{ intent.slots | length }}</span>&nbsp;Slot{{ "" if intent.slots | length == 1 else "s" }}
                         <i style="cursor: pointer; margin: 0 0 3px 15px" onmouseover="showInfoBox(this, `Slots are used to extract the <span class=\'green\'>parameters</span> that may be contained in a sentence.<br><br>For example, let’s consider this sentence:<br><span class=\'blue\'>&quot;Turn on the light in the kitchen&quot;</span><br>Let\'s assume we have an intent called <span class=\'green\'>switchLightOn</span>, now there is an additional piece of information which is contained in the word <span class=\'green\'>&quot;kitchen&quot;</span>.<br>This intent contains one slot, which is the room in which the light should be turned on.<br><br>Let’s consider another example:<br><span class=\'blue\'>&quot;Find me a flight from Paris to Tokyo&quot;</span><br>Here we assume we have an intent called <span class=\'green\'>searchFlight</span>, and now there are two slots in the sentence being contained in <span class=\'green\'>&quot;Paris&quot;</span> and <span class=\'green\'>&quot;Tokyo&quot;</span>. These two values are of the same type as they both correspond to a <span class=\'green\'>location</span> however they have different roles, as <span class=\'orange\'>Paris is the departure</span> and <span class=\'orange\'>Tokyo is the arrival</span>.<br><br>In this context, we call location a slot type (or entity) and departure and arrival are slot names.`)"
-                            onmouseout="removeInfoBox()">info</i>
+                           onmouseout="removeInfoBox()">info</i>
                     </p>
                 </div>
                 <div class="row-s-2 row-e-2 col-s-1 col-e-4">

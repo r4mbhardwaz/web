@@ -30,7 +30,7 @@
             </h1>
 
             <div class="grid">
-                <div class="row-s-1 row-e-1 col-s-1 col-e-7 relative v-center">
+                <div class="row-s-1 row-e-1 col-s-1 col-e-13 relative v-center">
                     <span class="blue clickable">By You</span> 
                     <div class="v-dot bg-darker-grey"></div>
                     {% set full_stars = skill.social.rating|round(0, 'floor')|int %}
@@ -45,7 +45,7 @@
                 </div>
                 {% set row = 2 %}
                 {% if skill.public: %}
-                <div class="row-s-{{ row }} row-e-{{ row }} col-s-1 col-e-7 relative v-center">
+                <div class="row-s-{{ row }} row-e-{{ row }} col-s-1 col-e-13 relative v-center">
                     <span>{{ skill.social.downloads|length }} Downloads</span>
                     <div class="v-dot bg-darker-grey"></div>
                     <span class="v-center">
@@ -60,15 +60,15 @@
                 </div>
                 {% set row = row + 1 %}
                 {% endif %}
-                <div class="row-s-{{ row }} row-e-{{ row }} col-s-1 col-e-7 v-center">
+                <div class="row-s-{{ row }} row-e-{{ row }} col-s-1 col-e-13 v-center">
                     <span class="darker-grey">Created {{ skill['created-at'] | datetime("date") }}</span>
                     <div class="v-dot bg-darker-grey"></div>
-                    <span class="darker-grey">Last modified {{ skill['modified-at'] | datetime("date") }}</span>
+                    <span class="darker-grey">Last Modified {{ skill['modified-at'] | datetime("date") }}</span>
                 </div>
-                <div    class="row-s-1 row-e-{{ row + 1 }} col-s-7 col-e-13 border-left border-medium border-darker-grey height-full padding-left-m v-center clickable" 
-                        id="skill-description">{{ skill.description }}</div>
+                <div class="row-s-{{ row + 1 }} row-e-{{ row + 1 }} col-s-1 col-e-13 padding-top border-medium border-top border-solid border-grey clickable" 
+                     id="skill-description">{{ skill.description }}</div>
                 
-                <div class="row-s-{{ row + 1 }} row-e-{{ row + 1 }} col-s-1 col-e-13" style="margin-top: 40px">
+                <div class="row-s-{{ row + 1 }} row-e-{{ row + 1 }} col-s-1 col-e-13" style="margin-top: 50px">
                     <h3>Intents</h3>
                 </div>
                 <div class="row-s-{{ row + 2 }} row-e-10 col-s-1 col-e-13 box flex table row padding-top-l">

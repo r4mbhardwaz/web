@@ -66,7 +66,7 @@ document.querySelector("#create-skill").addEventListener("click", ev => {
         },
         language: inv("skill-language"),
         description: inv("skill-description"),
-        public: inv("skill-public") == "on"
+        public: !!document.querySelector("[name=skill-public]").checked
     };
 
     if (!canSend) return;

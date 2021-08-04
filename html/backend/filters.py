@@ -17,6 +17,8 @@ def filter_datetime(value, format="full"):
         str = format_datetime(dt, "HH:mm:ss")
     elif format in ["date"]:
         str = format_datetime(dt, "EE, d. MMMM yyyy")
+    elif format in ["date-short"]:
+        str = format_datetime(dt, "d.MM.yyyy")
     elif format in ["full", "long"]:
         str = format_datetime(dt, "EEEE, d. MMMM yyyy HH:mm:ss")
     return str
