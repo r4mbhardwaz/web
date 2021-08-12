@@ -1,6 +1,17 @@
-import { swup } from "./lib/_swup.js";
-import "./http.js";
+import { Sentry } from "./lib/sentry.tracing.js";
+window.Sentry = Sentry;
+Sentry.init({
+    dsn: "https://baca96aeb1024d239816efe2317b7ab7@o947865.ingest.sentry.io/5897117",
+    // this assumes your build process sets "npm_package_version" in the env
+    release: "jarvis@0.0.1",
+    integrations: [new Sentry.Integrations.BrowserTracing()],
 
+    // We recommend adjusting this value in production, or using tracesSampler
+    // for finer control
+    tracesSampleRate: 1.0,
+});
+
+import "./http.js";
 
 async function init() {
     // let pagename = window.location.pathname.substring(1).replace(/\/?([a-f0-9.]{6,}|server$)/, "").replaceAll("/", ".");
@@ -60,7 +71,5 @@ window.removeInfoBox = function(all = true) {
     }
 };
 
-window.swup = swup
 
 init();
-swup.on('contentReplaced', init);

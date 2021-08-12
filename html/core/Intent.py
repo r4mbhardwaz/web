@@ -91,7 +91,6 @@ class Intent:
     def _reverse_slots(self, only_keep_reference: bool = True) -> None:
         for slotname in self.intent["slots"]:
             slot = self.intent["slots"][slotname]
-            print(slot)
             if isinstance(slot, Slot) or isinstance(slot, dict):
                 sid = slot.id if isinstance(slot, Slot) else slot["_id"] if "_id" in slot else slot["id"]
                 self.intent["slots"][slotname] = sid if only_keep_reference else slot.__dict__()

@@ -3,12 +3,13 @@ import json
 from __main__ import app, Slot
 from flask import request
 from flask.wrappers import Response
-from ..decorators import login_required
+from ..decorators import login_required, retrain
 from jarvis import Security
 
 
 @app.route("/api/slot/create", methods=["POST"])
 @login_required
+@retrain
 def slot_create_new():
     json_data = request.get_json(force=True)
     # TODO: check json_data["name"] format with regex
@@ -25,6 +26,7 @@ def slot_create_new():
 
 @app.route("/api/slot/<slot_id>/add-data", methods=["POST"])
 @login_required
+@retrain
 def api_add_data_to_slot(slot_id: str):
     json_data = request.get_json(force=True)
     if "value" in json_data and "synonyms" in json_data:
@@ -48,6 +50,7 @@ def api_add_data_to_slot(slot_id: str):
 
 @app.route("/api/slot/<slot_id>/set", methods=["POST"])
 @login_required
+@retrain
 def api_set_slot_key(slot_id: str):
     json_data = request.get_json(force=True)
     key = json_data["key"]
@@ -62,6 +65,7 @@ def api_set_slot_key(slot_id: str):
 
 @app.route("/api/slot/<slot_id>/delete/<slot_value_id>")
 @login_required
+@retrain
 def api_slot_remove(slot_id: str, slot_value_id: str):
     slot = Slot.load(slot_id)
     if slot:
@@ -77,12 +81,14 @@ def api_slot_remove(slot_id: str, slot_value_id: str):
 
 @app.route("/api/slot/<slot_id>/delete")
 @login_required
+@retrain
 def api_slot_delete(slot_id: str):
     return json.dumps({"success": False, "error": "not implemented"})
 
 
 @app.route("/api/slot/<slot_id>/<item_id>/change", methods=["POST"])
 @login_required
+@retrain
 def api_slot_item_change(slot_id: str, item_id: str):
     json_data = request.get_json(force=True)
     if "value" in json_data:
@@ -109,6 +115,7 @@ def api_slot_item_change(slot_id: str, item_id: str):
 
 @app.route("/api/slot/<slot_id>/import", methods=["POST"])
 @login_required
+@retrain
 def api_slot_import(slot_id):
     json_data = request.get_json(force=True)
     if "values" not in json_data:
@@ -164,6 +171,7 @@ def api_slot_load_data(slot_id):
 
 @app.route("/api/slot/<slot_id>/empty", methods=["POST"])
 @login_required
+@retrain
 def api_slot_empty(slot_id):
     slot = Slot.load(slot_id)
     if not slot:
