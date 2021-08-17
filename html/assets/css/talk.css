@@ -1,0 +1,12 @@
+body {
+    padding: 0 !important
+}
+
+#chat-input {
+    position: fixed;
+    bottom: 100px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 50vw;
+}

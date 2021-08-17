@@ -16,7 +16,7 @@ from core.Slot import Slot
 from core.Intent import Intent
 from core.User import User
 from functools import wraps
-from jarvis import Database, Security, Config
+from jarvis import Database, Security, Config, Logger, Exiter
 from flask import Flask, render_template, session, redirect, request
 from flask.wrappers import Response
 from flask_babel import Babel, format_datetime
@@ -38,13 +38,37 @@ log.setLevel(logging.ERROR)
 http_api_port = Config().get("api", {
     "port": 5522
 })["port"] - 1
+http_port = Config().get("webui", {
+    "port": 5520
+})["port"]
+
+
+def wait_for_database():
+    try:
+        running = Database.reachable()
+        wait_index = 0
+        wait_time  = [1, 3, 5, 10, 30, 60]
+        while not running and Exiter.running:
+            running = Database.reachable()
+            Logger.e1("HealthCheck", "Error", f"Database is not running. Retrying in {wait_time[wait_index]}s", "")
+            time.sleep(wait_time[wait_index])
+            if not (wait_index + 1 >= len(wait_time)):
+                wait_index += 1
+    except Exception:
+        Logger.e1("HealthCheck", "Error", "Failed to check Database availability", traceback.format_exc())
+
+wait_for_database()
 
 def API_endpoint(path, data):
-    x = requests.post(f"http://127.0.0.1:{http_api_port}/{path}", json={**data, **{ 
-        "$username": session["username"],
-        "$password": session["password"]
-    }}).json()
-    return x
+    user = User.from_id(session["uid"])
+    if user:
+        x = requests.post(f"http://127.0.0.1:{http_api_port}/{path}", json={**data, **{ 
+            "$username": user.username,
+            "$password": user.password
+        }}).json()
+        return x
+    else:
+        return { "success": False, "error": "Invalid user" }
 
 
 
@@ -58,13 +82,12 @@ from backend.decorators import *
 from backend.filters import *
 
 # Default endpoints like assistant, login, etc...
-import backend.defaults
+import backend.pages
 
 # Backend endpoints, /skill/..., /intent/...
 import backend.skill
 import backend.slot
 import backend.intent
-import backend.logs
 
 # API functions
 import backend.api.train
@@ -77,4 +100,4 @@ import backend.api.api
 
 # Start the application
 # app.run(host="0.0.0.0", port=443, ssl_context=context)
-app.run(host="0.0.0.0", port=80)
+app.run(host="0.0.0.0", port=http_port) # default: 5520

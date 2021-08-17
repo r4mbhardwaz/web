@@ -6,7 +6,7 @@ from flask import session, redirect, request
 def login_required(func):
     @wraps(func)
     def wrap(*args, **kwargs):
-        if "username" in session:
+        if "uid" in session and session["uid"]:
             return func(*args, **kwargs)
         else:
             return redirect(f"/login?url={request.path}", code=302)
