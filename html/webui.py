@@ -14,9 +14,8 @@ from datetime import datetime
 from core.Skill import Skill
 from core.Slot import Slot
 from core.Intent import Intent
-from core.User import User
 from functools import wraps
-from jarvis import Database, Security, Config, Logger, Exiter
+from jarvis import Database, Security, Config, Logger, Exiter, User
 from flask import Flask, render_template, session, redirect, request
 from flask.wrappers import Response
 from flask_babel import Babel, format_datetime

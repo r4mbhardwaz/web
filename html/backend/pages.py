@@ -1,7 +1,7 @@
-from __main__ import app, Skill, User
+from __main__ import app, Skill
 from flask import render_template, redirect, session, request
 from .decorators import login_required
-from jarvis import Config, Security, Database
+from jarvis import Config, Security, Database, User, UserPasswordResetRequest
 import traceback
 
 
@@ -44,41 +44,56 @@ def login_post():
 
 @app.route("/register", methods=['GET'])
 def register_get():
-    return render_template("pages/login.html", register=True, register_is_first=User.count()==0)
+    return render_template("pages/login.html", register=True, register_is_first=User.count()==0, allow_registrations=Config().get("web-allow-registrations", False))
 
 
 @app.route("/register", methods=['POST'])
 def register_post():
-    try:
-        username = request.form["username"]
-        password = request.form["password"]
-        name = request.form["name"]
+    username = request.form["username"]
+    password = request.form["password"]
+    name = request.form["name"]
 
-        settings = {}
-        settings_keys_prefix = "privacy-"
-        settings_keys = ["location", "contacts", "calendar"]
-        for key in settings_keys:
-            full_key = f"{settings_keys_prefix}{key}"
-            if full_key in request.form:
-                print(request.form[full_key])
-                settings[key] = request.form[full_key] == "on"
-            else:
-                settings[key] = False
-
-        Config().set("web-allow-registrations", "allow-registrations" in request.form and request.form["allow-registrations"] == "on")
-
-        # ABOVE LINE WORKS
-
-        url = session["redirect_url"] if "redirect_url" in session else "/"
-
-        new_user = User.new(username, password, { "name": name, "privacy": settings })
-        if new_user:
-            session["uid"] = new_user.id
-            return redirect(url, code=302)
+    privacy = {}
+    privacy_keys_prefix = "permissions-"
+    privacy_keys = ["location", "contacts", "calendar"]
+    for key in privacy_keys:
+        full_key = f"{privacy_keys_prefix}{key}"
+        if full_key in request.form:
+            print(request.form[full_key])
+            privacy[key] = request.form[full_key] == "on"
         else:
-            return redirect("/register?error", code=302)
-    except Exception:
-        print(traceback.format_exc())
+            privacy[key] = False
+
+    Config().set("web-allow-registrations", "allow-registrations" in request.form and request.form["allow-registrations"] == "on")
+
+    url = session["redirect_url"] if "redirect_url" in session else "/"
+
+    new_user = User.new(username, password, name=name, privacy=privacy)
+    if new_user:
+        session["uid"] = new_user.id
+        return redirect(url, code=302)
+    else:
+        return redirect("/register?error", code=302)
+
+
+@app.route("/reset", methods=['GET'])
+def reset_get():
+    return render_template("pages/reset.html")
+
+
+@app.route("/reset", methods=['POST'])
+def reset_post():
+    email = request.form["email"]
+    user = User.from_email(email)
+    if user is None:
+        return redirect("/reset?done")
+    return redirect("/reset?done")
+    # UserPasswordResetRequest().attach_to(user).send_mail()
+
+
+@app.route("/reset/<reset_id>", methods=['GET'])
+def reset_get_reset_id(reset_id):
+    return render_template("pages/reset")
 
 
 @app.route("/assistant")
@@ -102,13 +117,11 @@ def logs():
 
 
 @app.route("/privacy")
-@login_required
 def privacy_policy():
     return render_template("pages/privacy.html")
 
 
 @app.route("/terms")
-@login_required
 def terms_of_service():
     return render_template("pages/terms.html")
 
@@ -141,3 +154,10 @@ def device_info(dev_id: str):
 @app.route("/_session")
 def show_session():
     return dict(session)
+
+
+@app.route("/_session/clear")
+def clear_session():
+    for key in dict(session):
+        del session[key]
+    return { "success": True }

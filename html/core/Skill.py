@@ -3,10 +3,9 @@
 #
 
 import time
-from jarvis import Database, Security
+from jarvis import Database, Security, User
 from .Slot import Slot
 from .Intent import Intent
-from .User import User
 from functools import wraps
 
 

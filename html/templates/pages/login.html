@@ -8,64 +8,17 @@
     <title>Jarvis - {{ "Register your account" if register else "Log into your account" }}</title>
 
     <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/entry-pages.css">
     <script type="module" src="/assets/js/global.js"></script>
 
     <style>
         .input-form {
-            --width: {{ "1000px" if register else "400px" }};
+            --width: {{ "1000px" if register and (register_is_first or allow_registrations) else "400px" }};
             position: absolute;
             width: var(--width);
             left: calc((100vw - var(--width)) / 2);
             right: calc((100vw - var(--width)) / 2);
-        }
-        .input-form form {
-            width: 100%;
-        }
-        .input-form form button[type=submit] {
-            position: absolute;
-            right: 0;
-            width: 50%;
-        }
-
-        .checkbox-sides {
-            align-items: flex-start !important;
-        }
-        .checkbox-sides > input[type=checkbox] {
-            /* label has 39px height, input has 28px */
-            transform: translateY(calc((38px - 28px) / 2));
-        }
-        .checkbox-sides > label > span {
-            transition: var(--transition);
-            opacity: 0;
-            display: block;
-        }
-        .checkbox-sides > label > span:first-of-type {
-            transform: translateY(-10px);
-        }
-        .checkbox-sides > label > span.visible:first-of-type {
-            transform: translateY(0);
-        }
-        .checkbox-sides > label > span:last-of-type {
-            transform: translateY(-10px);
-        }
-        .checkbox-sides > label > span.visible:last-of-type { /* height of span is exactly 20px, so that is ok */
-            transform: translateY(-20px);
-        }
-        .checkbox-sides > label > span.visible {
-            opacity: 1;
-        }
-        .checkbox-sides > label {
-            margin-left: 20px;
-        }
-
-        div.col-8 {
-            padding-left: 50px !important;
-        }
-        p.legal {
-            text-align: right;
-            font-size: 13px;
-            margin-right: 0px;
-        }
+        }        
     </style>
     <script defer>
         document.addEventListener("DOMContentLoaded", ev => {
@@ -92,44 +45,60 @@
         <div class="row">
             <nav class="breadcrumb">
                 <a href="/">Jarvis Server</a>
-                <a href="/">{{ "Register" if register else "Login" }}</a>
+                <a href="/{{ "register" if register else "login" }}">{{ "Register" if register else "Login" }}</a>
             </nav>
         </div>
 
-        <form class="input-form" action="/{{ 'register' if register else 'login' }}" method="post">
+        {% if register and not register_is_first and not allow_registrations: %} {# registrations are closed #}
+
+        <div class="input-form">
+            <h1>Registrations closed</h1>
+
+            <p> No more registrations are allowed. <br>
+                Please ask your Administrator to open registrations again.
+            
+                <br><br>
+
+                You can still <a href="/login">Login</a>
+            </p>
+        </div>
+
+        {% else: %} {# the user is either registrating or logging in now and has the appropriate permission (registrations are not closed) #}
+
+        <form class="input-form" action="" method="post">
 
             {% if register: %}
             <div class="row">
-                <div class="col-4">
+                <div class="col-5">
                     <h1>Register</h1>
                 </div>
-                <div class="col-8">
+                <div class="col-7">
                     <h1>Permissions</h1>
                 </div>
             </div>
             {% else: %}
-            <h1>Login</h1>
+            <h1>Welcome Back!</h1>
             {% endif %}
 
             {% if register: %}
             <div class="row">
-                <div class="col-4">
-                    {% endif %}
+                <div class="col-5">
+            {% endif %}
 
-                    {% if success is defined: %} {% if success: %}
-                        <script>redirect("{{ url }}");</script>
-                    {% else: %}
-                        <div class="notification red">Username or password not correct <br> Try again</div>
-                    {% endif %} {% endif %}
-        
+                    {% if register: %}
                     <div class="row">
                         <div>
-                            {% if register: %}
                             <div class="input">
                                 <input type="text" name="name" placeholder=" " required autofocus>
                                 <span>First name or nickname</span>
                             </div>
-                            {% endif %}
+                    {% else: %}
+                    <div>
+                        {% if success is defined and not success: %}
+                            <div class="notification red">Username or password not correct <br> Try again</div>
+                        {% endif %}
+                    {% endif %}
+
                             <div class="input">
                                 <input type="text" name="username" placeholder=" " required{{ " autofocus" if not register else "" }}>
                                 <span>Username</span>
@@ -148,34 +117,43 @@
                                 </label>
                             </div>
                             {% endif %}
+
                             {% if register: %}
                             <p class="legal">By clicking 'Register', you agree to our <a href="/terms" target="_blank">Terms</a> and 
-                                    <a href="/privacy" target="_blank">Privacy Policy</a> </p>
+                                <a href="/privacy" target="_blank">Privacy Policy</a> </p>
                             {% endif %}
+
                             <button type="submit" name="login" class="green">{{ "Register" if register else "Login" }}</button>
+
+                            {% if not register %}
+                            <div class="flex space-between mini-actions">
+                                <a href="/register">Register</a>
+                                <a href="/reset">Forgot password?</a>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
 
             {% if register: %}
                 </div>
-                <div class="col-8">
+                <div class="col-7">
                     <div class="options">
                         <div class="checkbox-sides">
-                            <input type="checkbox" class="switch" id="location" name="privacy-location" checked>
+                            <input type="checkbox" class="switch" id="location" name="permissions-location" checked>
                             <label for="location">Location<br>
                                 <span class="dark-grey visible">"Jarvis, how's the weather tomorrow?"</span>
                                 <span class="dark-grey">Jarvis won't be able to get your GPS location</span>
                             </label>
                         </div>
                         <div class="checkbox-sides">
-                            <input type="checkbox" class="switch" id="contacts" name="privacy-contacts" checked>
+                            <input type="checkbox" class="switch" id="contacts" name="permissions-contacts" checked>
                             <label for="contacts">Contacts<br>
                                 <span class="dark-grey visible">"Jarvis, call Elon!"</span>
                                 <span class="dark-grey">Jarvis won't be able to call and message your friends</span>
                             </label>
                         </div>
                         <div class="checkbox-sides">
-                            <input type="checkbox" class="switch" id="calendar" name="privacy-calendar" checked>
+                            <input type="checkbox" class="switch" id="calendar" name="permissions-calendar" checked>
                             <label for="calendar">Calendar<br>
                                 <span class="dark-grey visible">"Jarvis, next week is the Expo"</span>
                                 <span class="dark-grey">Jarvis won't be able to access your local calendar</span>
@@ -191,6 +169,7 @@
             </div>
             {% endif %}
         </form>
+        {% endif %}
     </div>
 </body>
 

@@ -1,0 +1,62 @@
+.input-form form {
+    width: 100%;
+}
+.input-form button[type=submit] {
+    --width: 50%;
+    position: static;
+    right: 0;
+    margin-left: calc(100% - var(--width));
+    width: var(--width);
+}
+
+.checkbox-sides {
+    align-items: flex-start !important;
+}
+.checkbox-sides > input[type=checkbox] {
+    /* label has 39px height, input has 28px */
+    transform: translateY(calc((38px - 28px) / 2));
+}
+.checkbox-sides > label > span {
+    transition: var(--transition);
+    opacity: 0;
+    display: block;
+}
+.checkbox-sides > label > span:first-of-type {
+    transform: translateY(-10px);
+}
+.checkbox-sides > label > span.visible:first-of-type {
+    transform: translateY(0);
+}
+.checkbox-sides > label > span:last-of-type {
+    transform: translateY(-10px);
+}
+.checkbox-sides > label > span.visible:last-of-type { /* height of span is exactly 20px, so that is ok */
+    transform: translateY(-20px);
+}
+.checkbox-sides > label > span.visible {
+    opacity: 1;
+}
+.checkbox-sides > label {
+    margin-left: 20px;
+}
+
+form > div.row > div {
+    margin: 0 !important;
+}
+form > div.row > div:last-child {
+    padding-left: 50px !important;
+}
+p.legal {
+    text-align: right;
+    font-size: 13px;
+    margin-right: 0px;
+}
+
+.notification {
+    position: static !important;
+    margin-bottom: 20px;
+}
+
+.mini-actions {
+    margin-top: 15px;
+}

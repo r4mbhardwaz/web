@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis - Reset Password</title>
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/entry-pages.css">
+    <script type="module" src="/assets/js/global.js"></script>
+
+    <style>
+        .input-form {
+            --width: 400px;
+            position: absolute;
+            width: var(--width);
+            left: calc((100vw - var(--width)) / 2);
+            right: calc((100vw - var(--width)) / 2);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="swup">
+        <div class="row">
+            <nav class="breadcrumb">
+                <a href="/">Jarvis Server</a>
+                <a href="/reset">Reset Password</a>
+            </nav>
+        </div>
+
+        <form class="input-form" action="" method="post">
+            <h1>Forgot your password?</h1>
+        
+            <p>Enter your email address and we'll send you a link to reset your password.</p>
+    
+            <div class="input">
+                <input type="email" name="email" id="email" placeholder=" " required>
+                <span>Email address</span>
+            </div>
+            <button type="submit" name="login" class="green">Reset Password</button>
+        </form>
+    </div>
+</body>
+
+</html>
