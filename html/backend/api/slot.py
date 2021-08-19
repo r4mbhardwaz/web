@@ -1,10 +1,11 @@
 import time
 import json
-from __main__ import app, Slot
+from __main__ import app, Slot, Skill
 from flask import request
 from flask.wrappers import Response
 from ..decorators import login_required, retrain
 from jarvis import Security
+import re
 
 
 @app.route("/api/slot/create", methods=["POST"])
@@ -190,4 +191,49 @@ def api_slot_empty(slot_id):
 @app.route("/api/slot/all")
 @login_required
 def api_slot_get_all():
-    return json.dumps({"success": True, "slots": Slot.all()})
+    user_created_slots = Slot.all()
+    snips_builtin_slots = []
+
+    # """
+    # Entity	        Identifier	        Category	        Supported Languages
+    # AmountOfMoney	snips/amountOfMoney	Grammar Entity	    de, en, es, fr, it, ja, ko, pt_br, pt_pt
+    # Duration    	snips/duration	    Grammar Entity	    de, en, es, fr, it, ja, ko, pt_br, pt_pt
+    # Number      	snips/number	    Grammar Entity	    de, en, es, fr, it, ja, ko, pt_br, pt_pt
+    # Ordinal     	snips/ordinal	    Grammar Entity	    de, en, es, fr, it, ja, ko, pt_br, pt_pt
+    # Temperature 	snips/temperature	Grammar Entity	    de, en, es, fr, it, ja, ko, pt_br, pt_pt
+    # Datetime    	snips/datetime	    Grammar Entity	    de, en, es, fr, it, ja, ko, pt_br, pt_pt
+    # Date        	snips/date	        Grammar Entity	    en
+    # Time        	snips/time	        Grammar Entity	    en
+    # DatePeriod  	snips/datePeriod	Grammar Entity	    en
+    # TimePeriod  	snips/timePeriod	Grammar Entity	    en
+    # Percentage  	snips/percentage	Grammar Entity	    de, en, es, fr, it, ja, pt_br, pt_pt
+    # MusicAlbum  	snips/musicAlbum	Gazetteer Entity	de, en, es, fr, it, ja, pt_br, pt_pt
+    # MusicArtist 	snips/musicArtist	Gazetteer Entity	de, en, es, fr, it, ja, pt_br, pt_pt
+    # MusicTrack  	snips/musicTrack	Gazetteer Entity	de, en, es, fr, it, ja, pt_br, pt_pt
+    # City        	snips/city	        Gazetteer Entity	de, en, es, fr, it, ja, pt_br, pt_pt
+    # Country     	snips/country	    Gazetteer Entity	de, en, es, fr, it, ja, pt_br, pt_pt
+    # Region      	snips/region	    Gazetteer Entity	de, en, es, fr, it, ja, pt_br, pt_pt
+    # """
+
+    # def get_slots_for_language(lang: str):
+    #     slots = []
+    #     for obj in Slot.BUILTINS:
+    #         if lang in obj["languages"]:
+    #             slots.append({ 
+    #                 "name": obj["slot_name"], 
+    #                 "full-name": obj["name"], 
+    #                 "description": obj["code-samples"], 
+    #                 "static": True }) ## this has to match the database stlye!!!
+    #     return slots
+
+    # regex = "http([a-zA-Z0-9:/.]+)/intent/edit/([0-9a-f]+)/([0-9a-f]+)"
+    # language = "en"
+    # if request.referrer and bool(re.match(regex, request.referrer)):
+    #     domain, skill_id, intent_id = re.search(regex, request.referrer).groups()
+    #     skill = Skill.load(skill_id)
+    #     if skill:
+    #         language = skill["language"]
+
+    # snips_builtin_slots = get_slots_for_language(language)
+
+    return json.dumps({"success": True, "slots": user_created_slots + snips_builtin_slots})

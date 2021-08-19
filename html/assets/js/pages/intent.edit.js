@@ -338,6 +338,7 @@ window.addSlot = ev => {
             const chooser = document.createElement("div");
 
             const addElement = document.createElement("div");
+            addElement.classList.add("border-grey");
             addElement.classList.add("border-dashed");
             addElement.classList.add("box");
             addElement.classList.add("clickable");
@@ -411,7 +412,7 @@ window.addSlot = ev => {
                         }, 700);
                         return;
                     }
-                    window.intentAddSlot(slot.id, slotElement)
+                    window.intentAddSlot(slot.static ? slot.name : slot.id, slotElement)
                     .then(_=>{})
                     .catch(_=>{})
                     .finally(_=>{
@@ -424,6 +425,7 @@ window.addSlot = ev => {
                 slotElement.classList.add("centered");
                 slotElement.classList.add("col-3");
                 slotElement.setAttribute("title", slot.description);
+
                 let color = slot.quality < 0.25 ? "red" : slot.quality > 0.5 ? "green" : "orange";
                 let colorStr = slot.quality < 0.25 ? "Poor Quality" : slot.quality > 0.5 ? "Excellent Quality" : "Medium Quality";
                 const edit = document.createElement("i");
@@ -435,14 +437,23 @@ window.addSlot = ev => {
                     ev.stopPropagation();
                     redirect(`/slot/edit/${skillId}/${intentId}/${ev.currentTarget.dataset.slotid}`);
                 });
-
+                
                 const slotName = document.createElement("p");
                 slotName.innerHTML = slot.name
-    
+                
                 const slotQuality = document.createElement("span");
                 slotQuality.classList.add(color);
-                slotQuality.innerHTML = colorStr;
-    
+                slotQuality.innerHTML = colorStr + `<br><br><span class="static-slot-description">${slot.description}</span>`; // TODO: find clean solution, this is just temporary
+
+                if (slot.static) { // internal slots
+                    var desc = `From: ${JSON.stringify(slot.description[0])}\nTo: ${JSON.stringify(slot.description[1])}`;
+                    slotElement.setAttribute("title", desc);
+                    slotQuality.classList.remove(color);
+                    slotQuality.innerHTML = `<div class="static-slot-description v-center">
+                        <div><pre>${slot.description[0].join("\n")}</pre></div>
+                    </div>`
+                }
+
                 slotElement.appendChild(edit);
                 slotElement.appendChild(slotName);
                 slotElement.appendChild(slotQuality);

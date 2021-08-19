@@ -73,12 +73,15 @@ if (nluContainer) {
             console.error(er);
         });
 
-    setInterval(function() {
+    (function getNluStatus() {
         get(`/api/assistant/status`, {}, false)
-        .then(JSON.parse)
-        .then(d => { setNLUStatus(d.result) })
-        .catch(er => {  setNLUStatus("red", "NLU offline")  })
-    }, 1000);
+            .then(JSON.parse)
+            .then(d => { setNLUStatus(d.result) })
+            .catch(er => {  setNLUStatus("red", "NLU offline")  })
+            .finally(_ => {
+                setTimeout(getNluStatus, 3000);
+            })
+    })();
 
     id("nlu-input").enter(ev => {
         const utterance = id("nlu-input").get(0).value;

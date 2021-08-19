@@ -1,4 +1,4 @@
-from __main__ import app, login_required, Response, Skill, API_endpoint
+from __main__ import app, login_required, Response, Skill, Slot, API_endpoint
 from flask import request
 
 import json
@@ -49,8 +49,15 @@ def get_intents(skills, slots):
                 del intent["utterances"][i]["id"]
                 for j in range(len(intent["utterances"][i]["data"])):
                     if "slot" in intent["utterances"][i]["data"][j]:
+                        # print(intent["utterances"][i]["data"][j])
+                        # print(slots[intent["utterances"][i]["data"][j]["slot"]])
+                        # if intent["utterances"][i]["data"][j]["slot"].startswith(Slot.BUILTIN_PREFIX):
+                        #     intent["utterances"][i]["data"][j]["slot_name"] = slots[intent["utterances"][i]["data"][j]["slot"]]["name"]
+                        #     intent["utterances"][i]["data"][j]["entity"] = intent["utterances"][i]["data"][j]["slot"].replace(Slot.BUILTIN_PREFIX, "snips/")
+                        # else:
                         intent["utterances"][i]["data"][j]["slot_name"] = slots[intent["utterances"][i]["data"][j]["slot"]]["name"]
                         intent["utterances"][i]["data"][j]["entity"] = slots[intent["utterances"][i]["data"][j]["slot"]]["entity"]
+                        
                         del intent["utterances"][i]["data"][j]["slot"]
             intents[unique_intent_name] = {
                 "utterances": intent["utterances"]
@@ -64,6 +71,11 @@ def get_entities(skills):
             for slot_name in intent["slots"]:
                 entity = intent["slots"][slot_name]
                 entity_name = entity["name"]
+
+                # if "static" in entity and entity["static"]:
+                #     entities[entity["slot_name"].replace(Slot.BUILTIN_PREFIX, "snips/")] = {}
+                #     continue
+
                 del entity["description"]
                 del entity["modified-at"]
                 del entity["created-at"]

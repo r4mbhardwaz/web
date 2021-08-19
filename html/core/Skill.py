@@ -107,11 +107,11 @@ class Skill:
         Database().table("skills").find({"_id": { "$eq": self.id } }).delete()
 
 
-    @staticmethod
-    def load(id):
+    @classmethod
+    def load(cls, id):
         res = Database().table("skills").find({ "_id": { "$eq": id } })
         if res.found:
-            return Skill(res[0])
+            return cls(res[0])
         return None
 
     @staticmethod

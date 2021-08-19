@@ -130,7 +130,7 @@ id("slot-strictness").change(ev => {
     const slotId = qry("[data-slotid]").get(0).dataset.slotid;
     post(`/api/slot/${slotId}/set`, {
         key: "strictness",
-        value: ev.currentTarget.value
+        value: parseFloat(ev.currentTarget.value)
     });
 });
 

@@ -62,7 +62,17 @@
             border-radius: var(--border-radius);
             color: #fff;
             margin-bottom: 10px;
-        }        
+        }
+        .static-slot-description,
+        .static-slot-description pre {
+            font-size: 12px;
+            color: #888; /* TODO: this is not part of the color pallette */
+        }
+        .custom .row > div:not(.custom .row:first-child > div:first-child) {
+            border: 2px solid var(--grey);
+            border-radius: var(--border-radius);
+            justify-content: flex-start;
+        }
     </style>
 </head>
 
@@ -150,7 +160,11 @@
                                 <i class="clickable size-19 hover-bg-blue hover-white transition absolute top-xs right-xs" data-changeslottype="{{ slot_name }}">expand_more</i>
                                 <p class="v-margin-s">{{ slot.name }}</p>
                                 {% if slot.data | length == 0: %}
+                                {% if slot.static: %}
+                                <span class="small dark-grey transition">{{ slot.id }}</span>
+                                {% else: %}
                                 <span class="small red transition">Not data yet.</span>
+                                {% endif %}
                                 {% else: %}
                                     <span class="small">{{ slot.data[0].value }} {{ " - " + slot.data[0].synonyms[:1] | join(", ") if slot.data[0].synonyms | length > 0 else "" }}{{ ", +%s more" % (slot.data[0].synonyms | length - 1) if slot.data[0].synonyms | length > 1 else "" }}</span><br>
                                     <span class="small">{{ slot.data | length }} entr{{ "ies" if slot.data | length > 1 else "y" }}</span>

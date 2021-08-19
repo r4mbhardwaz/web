@@ -119,7 +119,10 @@ class Intent:
                     total_entity_count += 1
 
         if len(self.intent["slots"]) > 0:
-            entity_quote = total_entity_count / len(self.intent["utterances"])
+            try:
+                entity_quote = total_entity_count / len(self.intent["utterances"])
+            except ZeroDivisionError:
+                entity_quote = 0
             for i in [0.5, 0.75, 0.9, 1, 1.2]:
                 if entity_quote < i:
                     quality -= 0.04
