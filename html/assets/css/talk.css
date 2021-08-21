@@ -1,7 +1,49 @@
-body {
-    padding: 0 !important
+@import url(./material.css);
+
+@font-face {
+    font-family: Apercu;
+    src: url(./apercu.woff) format("woff");
 }
 
+
+:root {
+    --background-color: #f1f1f1;
+    --text-color: #333;
+    
+}
+:root.night {
+    --background-color: #333;
+    --text-color: #f1f1f1;
+}
+
+
+* {
+    font-family: 'Apercu', 'Trebuchet MS', 'helvetica neue', sans-serif;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: .2s;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+input {
+
+}
+
+
+#mode {
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+    padding: 20px;
+    border: 2px solid
+}
 #chat-input {
     position: fixed;
     bottom: 100px;

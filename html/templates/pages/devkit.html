@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis - Development Kit</title>
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script src="/assets/js/lib/vue.js"></script>
+    <script type="module" src="/assets/js/global.js"></script>
+
+    <style>
+        div#devkit {
+            position: relative;
+            height: calc(100vh - 125px - 30px - 50px); /* body has 125px padding, h1 has 26.8px (0.67em) margin, we want a 50px padding for clean boxes */
+            display: grid;
+            grid-template-areas: "head head head" "library code parser" "library code status";
+            grid-template-columns: 3fr 4fr 2fr;
+            grid-template-rows: 100px 8fr 1fr;
+            grid-gap: 20px;
+        }
+        div#devkit > div {
+            border: 2px solid var(--grey);
+            border-radius: var(--border-radius);
+            width: 100%;
+            height: 100%;
+            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        div#devkit > div > .loading {
+            position: absolute;
+            top: -20px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            color: var(--dark-grey);
+        }
+        div#devkit > div > .loading + span {
+            display: block;
+            text-align: center;
+            color: var(--dark-grey);
+            position: absolute;
+            top: calc(50% + 5px);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+        }
+        div#devkit > h1 {
+            grid-area: head;
+        }
+        div#library {
+            grid-area: library;
+        }
+        div#library div {
+            padding-left: 15px;
+        }
+        div#library i {
+            position: absolute;
+            transform: translate(-30px, 2px);
+            font-size: 15px;
+        }
+        div#library i[data-layer=user]::after {
+            content: "\e7fd";
+            color: var(--green);
+        }
+        /*
+        div#library i[data-layer=lang]::after {
+            content: "\e8e2";
+            color: var(--blue);
+        }
+        */
+        div#library i[data-layer=entity]::after {
+            content: "\e01e";
+            color: var(--blue);
+        }
+        /*
+        div#library i[data-layer=skill]::after {
+            content: "\e838";
+            color: var(--blue);
+        }
+        */
+        div#library i[data-layer=config]::after {
+            content: "\f10b";
+            color: var(--blue);
+        }
+        div#library i[data-layer=intent]::after {
+            content: "\e87b";
+            color: var(--blue);
+        }
+        div#parser {
+            grid-area: parser;
+        }
+        div#code {
+            grid-area: code;
+        }
+        div#status {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            grid-area: status;
+        }
+        div#status > div {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            width: fit-content;
+            width: -webkit-fit-content;
+            transform: translateY(-2px);
+        }
+        div#status > div > span {
+            display: block;
+            margin-left: 10px;
+            transform: translateY(2px);
+        }
+        div.container {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="swup">
+        <div class="row">
+            <nav class="breadcrumb">
+                <a href="/">Jarvis Server</a>
+                <a href="/devkit">Development Kit</a>
+            </nav>
+        </div>
+
+        <div id="devkit">
+            <h1>Development Kit</h1>
+
+            <div id="library">  <folder-structure :layer="''" :label="'/'" :nodes="folderStructure"></folder-structure> </div>
+            <div id="code">     <div class="loading fast"></div> <span>Loading</span> </div>
+            <div id="parser">   <div class="loading fast"></div> <span>Loading</span> </div>
+            <div id="status">   <assistant-status></assistant-status> </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

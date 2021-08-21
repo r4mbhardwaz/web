@@ -6,16 +6,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Jarvis Talk</title>
 
-        <link rel="stylesheet" href="/assets/css/main.css">
         <link rel="stylesheet" href="/assets/css/talk.css">
+        <script src="/assets/js/lib/vue.js"></script>
         <script type="module" src="/assets/js/global.js"></script>
     </head>
     <body>
         <!-- <h1 class="h-center">Jarvis</h1> -->
 
-        <div class="input blue" id="chat-input">
-            <input type="text" placeholder=" ">
-            <span>What's up?</span>
+        <i id="mode">dark_mode</i>
+
+        <input type="text" placeholder="What's up?" id="chat-input">
+
+        <div id="chats">
+            
         </div>
     </body>
 </html>

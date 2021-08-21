@@ -87,6 +87,7 @@ import backend.pages
 import backend.skill
 import backend.slot
 import backend.intent
+import backend.devkit
 
 # API functions
 import backend.api.train
@@ -95,6 +96,8 @@ import backend.api.slot
 import backend.api.intent
 import backend.api.device
 import backend.api.api
+import backend.api.conversation
+import backend.api.devkit
 
 
 # Start the application
