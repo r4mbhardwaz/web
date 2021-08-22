@@ -14,37 +14,63 @@ const app = Vue.createApp({
         }
     }
 });
-window.app = app;
 
+
+app.createApp(CodeEditor);
+
+
+function loadFileIntoEditor(node) {
+    post(`/api/devkit/file`, {
+        path: node.path
+    })
+    .then(JSON.parse)
+    .then(d => {
+        
+    })
+    .catch(er => {
+        console.error(er);
+    })
+    .finally(_ => {
+        console.log("finally");
+    });
+}
 
 (function keepFolderPanelUpToDate() {
+    let isLoadingData = Vue.ref(true);
 
     app.component('folder-structure', {
-        props: [ "label", "nodes", "layer" ],
+        props: [ "label", "nodes", "layer", "data" ],
         data() {
             return {
+                loading: isLoadingData
             }
         },
-        template: `<div>
-                        <i :data-layer="layer"></i>
-                        <span> {{ label }} </span>
+        methods: {
+            loadFile(node) {
+                loadFileIntoEditor(node);
+            }
+        },
+        template: `<div v-if="loading" class="loader">
+                    </div>
+                    <div v-else>
+                        <i v-if="label" :data-layer="layer"></i>
+                        <span v-if="label" @click="loadFile(data)"> {{ label }} </span>
                         <folder-structure
-                        v-for="node in nodes"
-                        :nodes="node.children"
-                        :layer="node.layer"
-                        :label="node.name"></folder-structure>
+                            v-for="node in nodes"
+                            :nodes="node.children"
+                            :layer="node.layer"
+                            :data="node"
+                            :label="node.name"></folder-structure>
                     </div>`
     });
 
     (function getFolderStructure() {
+        isLoadingData.value = true;
         get(`/api/devkit/folders`)
         .then(JSON.parse)
         .then(d => {
             if (d.success) {
-                console.log(d.result);
-
                 let hide = [ "__pycache__", ".pyc", "__init__.py" ]
-                // let hide = [  ]
 
                 function f(el) {
                     let keep = true;
@@ -54,15 +80,11 @@ window.app = app;
                         }
                     });
                     if (!keep) {
-                        console.log("removing", el);
                         return keep;
                     }
 
                     if (el.children) {
-                        console.log("before", el.children);
                         el.children = el.children.filter(f);
-                        console.log("after", el.children);
-                        // return el.children.length;
                         return true;
                     } else {
                         return true;
@@ -112,6 +134,7 @@ window.app = app;
             console.error(er);
         })
         .finally(_ => {
+            isLoadingData.value = false;
             // setTimeout(getFolderStructure, 5000);
         })
     })();
