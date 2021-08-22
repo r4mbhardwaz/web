@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>CodeFlask Sample</title>
+  <style>
+    body {
+      font-family: Arial;
+      margin: 50px;
+    }
+    .code {
+      position: relative;
+      width: 500px;
+      height: 200px;
+      border: 2px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="header1">Code editor:</h1>
+
+  <div class="code">// Feel free to play with the code. :)
+
+function Hey(phrase) {
+    phrase = phrase || "Hey";
+    return console.log(phrase);
+}</div>
+<script src="../../assets/js/lib/prism.js"></script>
+  <script src="https://unpkg.com/codeflask/build/codeflask.min.js"></script>  
+  <script>
+    const flask = new CodeFlask('.code', {
+      language: 'js',
+      lineNumbers: true
+    });
+  </script>
+</body>
+</html>

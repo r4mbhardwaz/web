@@ -8,8 +8,14 @@
     <title>Jarvis - Development Kit</title>
 
     <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/custom/prism.css">
+
     <script src="/assets/js/lib/vue.js"></script>
+    <!-- <script src="/assets/js/lib/prism.js"></script> -->
+    <script src="/assets/js/lib/codeflask.js"></script>
     <script type="module" src="/assets/js/global.js"></script>
+
+    
 
     <style>
         div#devkit {
@@ -108,6 +114,14 @@
         div#code {
             grid-area: code;
         }
+        div#code-editor {
+            width: 100%;
+            height: 100%;
+            border-radius: 3px;
+            font-family: jetbrains-mono;
+
+            position: relative;
+        }
         div#status {
             position: absolute;
             right: 0;
@@ -153,9 +167,7 @@
 
             <div id="library">  <folder-structure :nodes="folderStructure"></folder-structure> </div>
             <!-- <div id="code">     <div class="loading fast"></div> <span>Loading</span> </div> -->
-            <div id="code">     
-                <prism-editor class="" v-model="code" :highlight="highlighter" line-numbers></prism-editor>    
-            </div>
+            <div id="code">     <div id="code-editor"></div>    </div>
             <div id="parser">   <div class="loading fast"></div> <span>Loading</span> </div>
             <div id="status">   <assistant-status></assistant-status> </div>
         </div>

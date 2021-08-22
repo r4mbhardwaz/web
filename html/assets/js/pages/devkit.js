@@ -16,7 +16,10 @@ const app = Vue.createApp({
 });
 
 
-app.createApp(CodeEditor);
+window.editor = new CodeFlask('#code-editor', { 
+    language: 'js',
+    lineNumbers: true
+});
 
 
 function loadFileIntoEditor(node) {
