@@ -4,7 +4,7 @@ setInterval(() => {
     function updateDownloadOnlyHandler() {
         const icon = qry("#update-download-only i").get(0);
         loading(icon);
-        post(`/api/update/download`).then(JSON.parse).then(d => {
+        axios.post(`/api/update/download`).then(x => x.data).then(d => {
             if (d.success) {
                 qry("#update-options").classList.toggle("visible");
                 qry("#update-options").classList.toggle("hidden");
@@ -25,8 +25,8 @@ let updateObject = null;
 let version = null;
 
 function updateStatus(firstTime=false) {
-    get(`/api/version`)
-    .then(JSON.parse)
+    axios.get(`/api/version`)
+    .then(x => x.data)
     .then(d => {
         if (version != null && version != d.remote) {
             // A NEW VERSION WHILE VISITING THE WEBSITE
@@ -50,8 +50,8 @@ updateStatus(true);
 
 function checkForUpdate(el) {
     if (el) { loading(el.children[0]); }
-    post(`/api/update/poll`)
-    .then(JSON.parse)
+    axios.post(`/api/update/poll`)
+    .then(x => x.data)
     .then(d => {
         if (d.success) {
             redirect(window.location.href);
@@ -151,8 +151,8 @@ function insertUpdateOptions(downloadPending, installationPending, installationS
 
 function cancelScheduleInstall(el) {
     loading(el.childNodes[0]);
-    post(`/api/update/schedule/cancel`, {})
-    .then(JSON.parse)
+    axios.post(`/api/update/schedule/cancel`, {})
+    .then(x => x.data)
     .then(d => {
         if (d.success) {
             qry(".scheduled-installation-info").forEach(element => {
@@ -200,10 +200,10 @@ function scheduleInstall() {
             return;
         }
 
-        post(`/api/update/schedule`, {
+        axios.post(`/api/update/schedule`, {
             install: datePicked
         })
-        .then(JSON.parse)
+        .then(x => x.data)
         .then(d => {
             if (d.success) {
                 let storedWith = id("update-download-progress").get(0).style.width;
@@ -226,8 +226,8 @@ function downloadUpdate(el) {
     try {
         loading(el.childNodes[0]);
     } catch (err) {}
-    post(`/api/update/download`, {})
-    .then(JSON.parse)
+    axios.post(`/api/update/download`, {})
+    .then(x => x.data)
     .then(d => {
         if (d.success) {
             insertUpdateOptions(false, true, updateObject["schedule-install"]);

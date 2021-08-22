@@ -40,7 +40,7 @@
 <script src="/assets/js/lib/chart.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", ev => {
-        post(`/api/host`, {})
+        http.post(`/api/host`, {})
         .then(JSON.parse)
         .then(d => {
             d.data.sort((a, b) => a.timestamp - b.timestamp);

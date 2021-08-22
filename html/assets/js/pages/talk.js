@@ -12,11 +12,11 @@ class Conversation {
     }
 
     write(msg) {
-        post(`/api/conversation/write`, this.convoId ? {
+        axios.post(`/api/conversation/write`, this.convoId ? {
             message: msg,
             id: this.convoId
         } : { message: msg })
-        .then(JSON.parse)
+        .then(x => x.data)
         .then(d => {
             
         }).catch(er => {

@@ -23,8 +23,8 @@ qry("[data-removeslot]").click(ev => {
     target.classList.remove("hover-bg-red");
     target.classList.add("hover-bg-orange");
     
-    post(`/api/intent/${skillId}/${intentId}/${slotName}/remove`)
-    .then(JSON.parse)
+    axios.post(`/api/intent/${skillId}/${intentId}/${slotName}/remove`)
+    .then(x => x.data)
     .then(d => {
         if (d.success) {
             const slotContainer = target.parentElement.parentElement;
@@ -96,11 +96,11 @@ window.submitNewIntentSlotData = function(trainingExampleID, data) {
     const skillId = qry("[data-skillid]").get(0).dataset.skillid;
     const intentId = qry("[data-intentid]").get(0).dataset.intentid;    
 
-    post(`/api/intent/${skillId}/${intentId}/modify-training-data`, {
+    axios.post(`/api/intent/${skillId}/${intentId}/modify-training-data`, {
         id: trainingExampleID,
         data: data
     })
-    .then(JSON.parse)
+    .then(x => x.data)
     .then(d => {
         if (!d.success) {
             throw new Error(window.INTENT_ERRORS[d.code]);
@@ -128,10 +128,10 @@ window.attachRemoveUtteranceHandler = function() {
 
         loading(target.children[0]);
         
-        post(`/api/intent/${skillId}/${intentId}/delete-training-data`, {
+        axios.post(`/api/intent/${skillId}/${intentId}/delete-training-data`, {
             "training-data-id": utteranceId
         })
-        .then(JSON.parse)
+        .then(x => x.data)
         .then(d => {
             loadingStop(target.children[0]);
             if (d.success) {
@@ -177,10 +177,10 @@ window.addUtterance = function(event) {
 
         loading(document.querySelector("[data-addutterance] > i"));
         
-        post(`/api/intent/${skillId}/${intentId}/add-training-data`, {
+        axios.post(`/api/intent/${skillId}/${intentId}/add-training-data`, {
             sentence: sentence
         })
-        .then(JSON.parse)
+        .then(x => x.data)
         .then(d => {
             loadingStop(document.querySelector("[data-addutterance] > i"));
             if (d.success) {
@@ -222,10 +222,10 @@ window.updateIntentSlotName = function(newValue, element, oldValue) {
 
     const container = element.parentElement;
     
-    post(`/api/intent/${skillId}/${intentId}/${slotName}/rename`, {
+    axios.post(`/api/intent/${skillId}/${intentId}/${slotName}/rename`, {
         "new-name": newValue
     })
-    .then(JSON.parse)
+    .then(x => x.data)
     .then(d => {
         if (d.success) {
             document.querySelectorAll("[data-removeslot]").forEach(el => {
@@ -268,11 +268,11 @@ window.intentAddSlot = function(slotId, element) {
             return;
         }
 
-        post(`/api/intent/${skillId}/${intentId}/${endPoint}`, {
+        axios.post(`/api/intent/${skillId}/${intentId}/${endPoint}`, {
             name: name,
             "slot-id": slotId
         })
-        .then(JSON.parse)
+        .then(x => x.data)
         .then(d => {
             if (d.success) {
                 element.classList.add("border-green");
@@ -330,7 +330,7 @@ window.addSlot = ev => {
     });
 
     return new Promise((finalResolve, finalReject) => {
-        get(`/api/slot/all`).then(JSON.parse).then(d => {
+        axios.get(`/api/slot/all`).then(x => x.data).then(d => {
             if (!d.success) {
                 throw new Error("server side error");
             }
@@ -355,8 +355,8 @@ window.addSlot = ev => {
                         return /^[A-Za-z]{1}[A-Za-z0-9]{1,}$/.test(i)
                     }, () => true).then(r => {
                         if (r) {
-                            post(`/api/slot/create`, { name: r.input, description: r.text })
-                                .then(JSON.parse)
+                            axios.post(`/api/slot/create`, { name: r.input, description: r.text })
+                                .then(x => x.data)
                                 .then(d => {
                                     if (d.success) {
                                         redirect(`/slot/edit/${skillId}/${intentId}/${d.id}`);
@@ -494,11 +494,11 @@ window.updateIntentName = function(newName, element, oldName) {
 
     id("intent-name").text(newName);
 
-    post(`/api/intent/${skillId}/${intentId}/set`, {
+    axios.post(`/api/intent/${skillId}/${intentId}/set`, {
         key: "name",
         value: newName
     })
-    .then(JSON.parse)
+    .then(x => x.data)
     .then(d => {
         if (d.success) {
         } else {
@@ -520,11 +520,11 @@ window.launchDescriptionChange = function() {
 
         id("intent-description").text(d.text);
 
-        post(`/api/intent/${skillId}/${intentId}/set`, {
+        axios.post(`/api/intent/${skillId}/${intentId}/set`, {
             key: "description",
             value: d.text
         })
-        .then(JSON.parse)
+        .then(x => x.data)
         .then(d => {
             if (d.success) {
             } else {

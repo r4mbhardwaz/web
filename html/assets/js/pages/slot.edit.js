@@ -11,10 +11,10 @@ window.submitNewData = function(ev) {
     const synonyms          = synonymsElement.value;
     const target            = ev.currentTarget;
     const slotId            = qry("[data-slotid]").get(0).dataset.slotid;
-    post(`/api/slot/${slotId}/add-data`, {
+    axios.post(`/api/slot/${slotId}/add-data`, {
         value: value,
         synonyms: synonyms
-    }).then(JSON.parse).then(d => {
+    }).then(x => x.data).then(d => {
         if (d.success) {
             const noData = document.getElementById("no-data-yet");
             if (noData) {
@@ -50,8 +50,8 @@ window.slotValueDelete = function(ev) {
     const slotId = qry("[data-slotid]").get(0).dataset.slotid;
     target.classList.add("orange");
     loading(target.children[0])
-    get(`/api/slot/${slotId}/delete/${target.dataset.slotdataid}`)
-        .then(JSON.parse)
+    axios.get(`/api/slot/${slotId}/delete/${target.dataset.slotdataid}`)
+        .then(x => x.data)
         .then(d => {
             target.classList.remove("orange");
             loadingStop(target.children[0])
@@ -73,7 +73,7 @@ window.slotValueDelete = function(ev) {
 window.updateSlotValue = function(newValue, element, oldValue="") {
     const slotId = qry("[data-slotid]").get(0).dataset.slotid;
     const itemId = element.dataset.itemid;
-    post(`/api/slot/${slotId}/${itemId}/change`, { value: newValue }).then(JSON.parse).then(d => {
+    axios.post(`/api/slot/${slotId}/${itemId}/change`, { value: newValue }).then(x => x.data).then(d => {
         if (!d.success) {
             throw new Error("Failed to update slot value");
         }
@@ -86,7 +86,7 @@ window.updateSlotValue = function(newValue, element, oldValue="") {
 window.updateSlotSynonyms = function(newValue, element, oldValue="") {
     const slotId = qry("[data-slotid]").get(0).dataset.slotid;
     const itemId = element.dataset.itemid;
-    post(`/api/slot/${slotId}/${itemId}/change`, { synonyms: newValue }).then(JSON.parse).then(d => {
+    axios.post(`/api/slot/${slotId}/${itemId}/change`, { synonyms: newValue }).then(x => x.data).then(d => {
         if (!d.success) {
             throw new Error("Failed to update slot synonyms");
         }
@@ -102,7 +102,7 @@ window.updateSlotDeleteHandler = function() {
 
 id("slot-synonyms").change(ev => {
     const slotId = qry("[data-slotid]").get(0).dataset.slotid;
-    post(`/api/slot/${slotId}/set`, {
+    axios.post(`/api/slot/${slotId}/set`, {
         key: "use-synonyms",
         value: ev.currentTarget.checked
     });
@@ -111,7 +111,7 @@ id("slot-synonyms").change(ev => {
 id("slot-name").change(ev => {
     const slotId = qry("[data-slotid]").get(0).dataset.slotid;
     if (ev.currentTarget.value.trim() != "") {
-        post(`/api/slot/${slotId}/set`, {
+        axios.post(`/api/slot/${slotId}/set`, {
             key: "name",
             value: ev.currentTarget.value
         });
@@ -120,7 +120,7 @@ id("slot-name").change(ev => {
 
 id("slot-extensible").change(ev => {
     const slotId = qry("[data-slotid]").get(0).dataset.slotid;
-    post(`/api/slot/${slotId}/set`, {
+    axios.post(`/api/slot/${slotId}/set`, {
         key: "extensible",
         value: ev.currentTarget.checked
     });
@@ -128,7 +128,7 @@ id("slot-extensible").change(ev => {
 
 id("slot-strictness").change(ev => {
     const slotId = qry("[data-slotid]").get(0).dataset.slotid;
-    post(`/api/slot/${slotId}/set`, {
+    axios.post(`/api/slot/${slotId}/set`, {
         key: "strictness",
         value: parseFloat(ev.currentTarget.value)
     });
@@ -137,11 +137,11 @@ id("slot-strictness").change(ev => {
 id("slot-description").change(ev => {
     const slotId = qry("[data-slotid]").get(0).dataset.slotid;
 
-    post(`/api/slot/${slotId}/set`, {
+    axios.post(`/api/slot/${slotId}/set`, {
         key: "description",
         value: id("slot-description").get(0).value
     })
-    .then(JSON.parse)
+    .then(x => x.data)
     .then(d => {
         if (d.success) {
         } else {
@@ -156,8 +156,8 @@ id("slot-description").change(ev => {
 qry("[data-emptyslot]").click(ev => {
     const slotId = qry("[data-slotid]").get(0).dataset.slotid;
 
-    post(`/api/slot/${slotId}/empty`)
-    .then(JSON.parse)
+    axios.post(`/api/slot/${slotId}/empty`)
+    .then(x => x.data)
     .then(d => {
         if (d.success) {
             redirect(window.location.pathname);
@@ -330,10 +330,10 @@ window.showCSVColumnSelector = function(data, headers, result) {
 
             const slotId = qry("[data-slotid]").get(0).dataset.slotid;
 
-            post(`/api/slot/${slotId}/import`, {
+            axios.post(`/api/slot/${slotId}/import`, {
                 values: relevantData
             })
-            .then(JSON.parse)
+            .then(x => x.data)
             .then(d => {
                 if (d.success) {
                     box.hide();
@@ -373,11 +373,11 @@ infiniteScroll(_ => {
         }
         window._slotDataCurrentlyLoading = true;
         bottomNews("<span class='v-center'><i class='rotating green margin-right'>loop</i> Loading more Slot Data </span>", "green", -1);
-        post(`/api/slot/${slotId}/load-data`, {
+        axios.post(`/api/slot/${slotId}/load-data`, {
             start: window._numSlotDataLoaded,
             count: window._numSlotDataLoadAtOnce
         })
-        .then(JSON.parse)
+        .then(x => x.data)
         .then(d => {
             if (d.success) {
                 let code = "";

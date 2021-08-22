@@ -15,20 +15,15 @@ const app = Vue.createApp({
     }
 });
 
-
-window.editor = new CodeFlask('#code-editor', { 
-    language: 'js',
-    lineNumbers: true
-});
-
-
 function loadFileIntoEditor(node) {
-    post(`/api/devkit/file`, {
+    axios.post(`/api/devkit/file`, {
         path: node.path
     })
-    .then(JSON.parse)
+    .then(x => x.data)
     .then(d => {
-        
+        if (window.editor) {
+            window.editor.updateCode(d.result);
+        }
     })
     .catch(er => {
         console.error(er);
@@ -37,6 +32,47 @@ function loadFileIntoEditor(node) {
         console.log("finally");
     });
 }
+
+(function enableFullScreenCapabilities() {
+    app.component('fullscreen-toggle', {
+        props: [ "on", "off" ],
+        data() {
+            return {
+                isFullscreen: false
+            }
+        },
+        methods: {
+            fullscreenToggle() {
+                const el = document.querySelector("#devkit");
+
+                this.isFullscreen = !this.isFullscreen;
+
+                if (this.isFullscreen) {
+                    this.requestFullScreen(el);
+                } else {
+                    this.exitFullScreen();
+                }
+            },
+            requestFullScreen(element) {
+                var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
+            
+                if (requestMethod) { // Native full screen.
+                    requestMethod.call(element);
+                } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+                    var wscript = new ActiveXObject("WScript.Shell");
+                    if (wscript !== null) {
+                        wscript.SendKeys("{F11}");
+                    }
+                }
+            },
+            exitFullScreen() {
+                document.exitFullscreen();
+            }
+        },
+        template: `<i class="fullscreen" @click="fullscreenToggle()">{{ isFullscreen ? off : on }}</i>`
+    });
+
+})();
 
 (function keepFolderPanelUpToDate() {
     let isLoadingData = Vue.ref(true);
@@ -69,8 +105,8 @@ function loadFileIntoEditor(node) {
 
     (function getFolderStructure() {
         isLoadingData.value = true;
-        get(`/api/devkit/folders`)
-        .then(JSON.parse)
+        axios.get(`/api/devkit/folders`)
+        .then(x => x.data)
         .then(d => {
             if (d.success) {
                 let hide = [ "__pycache__", ".pyc", "__init__.py" ]
@@ -185,8 +221,8 @@ function loadFileIntoEditor(node) {
     });
 
     (function getAssistantStatus() {
-        get(`/api/assistant/status`)
-        .then(JSON.parse)
+        axios.get(`/api/assistant/status`)
+        .then(x => x.data)
         .then(d => {
             if (d.success) {
                 if (d.result.training) {
@@ -208,3 +244,5 @@ function loadFileIntoEditor(node) {
 })();
 
 app.mount("#devkit");
+
+

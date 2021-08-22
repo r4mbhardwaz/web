@@ -5,7 +5,7 @@ qry(".delete-skill").click(ev => {
 
     loading(target.children[0])
 
-    post(`/api/skill/${skillId}/delete`, {})
+    axios.post(`/api/skill/${skillId}/delete`, {})
     .then(d => {
         redirect(window.location.pathname);
     }).catch(er => {
@@ -21,7 +21,7 @@ function makeSkillPrivate(ev) {
 
     loading(target.children[0])
 
-    post(`/api/skill/${skillId}/private`).then(JSON.parse).then(d => {
+    axios.post(`/api/skill/${skillId}/private`).then(x => x.data).then(d => {
         if (d.success) {
             target.parentNode.classList.add("hidden");
             target.parentNode.classList.remove("visible");
@@ -54,7 +54,7 @@ function makeSkillPublic(ev) {
 
     loading(target.children[0])
 
-    post(`/api/skill/${skillId}/public`).then(JSON.parse).then(d => {
+    axios.post(`/api/skill/${skillId}/public`).then(x => x.data).then(d => {
         if (d.success) {
             target.parentNode.classList.add("hidden");
             target.parentNode.classList.remove("visible");

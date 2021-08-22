@@ -1,7 +1,7 @@
 import "../http.js";
 
 function updateStatistics() {
-    get("/api/db-stats", {}).then(JSON.parse).then(d => {
+    axios.get("/api/db-stats", {}).then(x => x.data).then(d => {
         let oldStats = {}
         let oldDate = undefined;
 

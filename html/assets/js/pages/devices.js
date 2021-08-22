@@ -11,10 +11,10 @@ ADD_DEVICES.addEventListener("click", ev => {
         alert("Localhost detected", "You cannot register a new device from a localhost address.<br>Please switch to a reachable address");
         return;
     }
-    post(`/api/device/new`, {
+    axios.post(`/api/device/new`, {
         name: "My new device"
     })
-    .then(JSON.parse)
+    .then(x => x.data)
     .then(res => {
         if (!res.success)
             throw new Error(res.error);
@@ -34,8 +34,8 @@ ADD_DEVICES.addEventListener("click", ev => {
 
 let oldData = null;
 function fetchDevices(oneTimer=false) {
-    get(`/api/devices`)
-        .then(JSON.parse)
+    axios.get(`/api/devices`)
+        .then(x => x.data)
         .then(d => {
             if (!d.success) { throw new Error(d.error); }
             if (JSON.stringify(d) == oldData) { return; }
@@ -120,8 +120,8 @@ window.generateQrCode = (id, el=undefined, config={}) => {
 }
 
 window.changeDeviceName = (newVal, el, oldVal) => {
-    post(`/api/device/set`, { id: el.dataset.id, key: "name", value: newVal })
-        .then(JSON.parse)
+    axios.post(`/api/device/set`, { id: el.dataset.id, key: "name", value: newVal })
+        .then(x => x.data)
         .then(d => {
             if (!d.success)
                 throw new Error(d.error);
@@ -134,8 +134,8 @@ window.changeDeviceName = (newVal, el, oldVal) => {
 window.deleteDevice = (id, el) => {
     if (el)
         loading(el.children[0]);
-        post(`/api/device/delete`, { id: id })
-            .then(JSON.parse)
+        axios.post(`/api/device/delete`, { id: id })
+            .then(x => x.data)
             .then(d => {
                 if (!d.success)
                     throw new Error(d.error);

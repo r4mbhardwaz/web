@@ -13,7 +13,7 @@ window.setColor = function(colorClass) {
 }
 
 window.searchIcon = function(searchTerm) {
-    get(`/api/search-icon?search=${searchTerm}`).then(JSON.parse).then(d => {
+    axios.get(`/api/search-icon?search=${searchTerm}`).then(x => x.data).then(d => {
         let code = `<div class="row">`;
         for (let i = 1; i <= d.length; i++) {
             code += `<div class="col-2" onclick="setIcon('${d[i]}')"> <i>${d[i]}</i> </div>`;
@@ -32,7 +32,7 @@ window.setIcon = function(code) {
 }
 
 window.searchRepos = function(value) {
-    get(`/api/git/repos/${value}`).then(JSON.parse).then(d => {
+    axios.get(`/api/git/repos/${value}`).then(x => x.data).then(d => {
         let code = ``;
         for (let i = 0; i < d.length; i++) {
             const repo = d[i];
@@ -71,8 +71,8 @@ document.querySelector("#create-skill").addEventListener("click", ev => {
 
     if (!canSend) return;
 
-    post(`/api/skill/new`, skillObject)
-    .then(JSON.parse)
+    axios.post(`/api/skill/new`, skillObject)
+    .then(x => x.data)
     .then(d => {
         if (d.success) {
             redirect(`/skill/edit/${d.id}`);
