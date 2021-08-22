@@ -59,9 +59,19 @@
         div#library div {
             padding-left: 15px;
         }
+        div#library span {
+            display: block;
+            padding: 5px 10px;
+            transition: .1s;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        div#library span:hover {
+            background-color: var(--grey);
+        }
         div#library i {
             position: absolute;
-            transform: translate(-30px, 2px);
+            transform: translate(-25px, 7px);
             font-size: 15px;
         }
         div#library i[data-layer=user]::after {
@@ -139,10 +149,13 @@
         </div>
 
         <div id="devkit">
-            <h1>Development Kit</h1>
+            <h1>--</h1>
 
-            <div id="library">  <folder-structure :layer="''" :label="'/'" :nodes="folderStructure"></folder-structure> </div>
-            <div id="code">     <div class="loading fast"></div> <span>Loading</span> </div>
+            <div id="library">  <folder-structure :nodes="folderStructure"></folder-structure> </div>
+            <!-- <div id="code">     <div class="loading fast"></div> <span>Loading</span> </div> -->
+            <div id="code">     
+                <prism-editor class="" v-model="code" :highlight="highlighter" line-numbers></prism-editor>    
+            </div>
             <div id="parser">   <div class="loading fast"></div> <span>Loading</span> </div>
             <div id="status">   <assistant-status></assistant-status> </div>
         </div>
