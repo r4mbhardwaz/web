@@ -53,8 +53,8 @@ window.setNLUStatus = function(result, orText) {
 };
 
 if (nluContainer) {
-    axios.get(`/api/assistant/status`, {}, false)
-        .then(x => x.data)
+    http.get(`/api/assistant/status`, {}, false)
+        .then(JSON.parse)
         .then(d => {
             if (d.success) {
                 const assistant = d.result;
@@ -74,8 +74,8 @@ if (nluContainer) {
         });
 
     (function getNluStatus() {
-        axios.get(`/api/assistant/status`, {}, false)
-            .then(x => x.data)
+        http.get(`/api/assistant/status`, {}, false)
+            .then(JSON.parse)
             .then(d => { setNLUStatus(d.result) })
             .catch(er => {  setNLUStatus("red", "NLU offline")  })
             .finally(_ => {
@@ -86,10 +86,10 @@ if (nluContainer) {
     id("nlu-input").enter(ev => {
         const utterance = id("nlu-input").get(0).value;
         id("nlu-output").text("<i class='rotating' style='margin:10px;position:static'>loop</i>");
-        axios.post(`/api/assistant/parse`, {
+        http.post(`/api/assistant/parse`, {
             utterance: utterance
         })
-        .then(x => x.data)
+        .then(JSON.parse)
         .then(d => {
             if (d.success) {
                 const output = id("nlu-output").get(0);

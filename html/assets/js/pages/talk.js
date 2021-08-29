@@ -12,11 +12,11 @@ class Conversation {
     }
 
     write(msg) {
-        axios.post(`/api/conversation/write`, this.convoId ? {
+        http.post(`/api/conversation/write`, this.convoId ? {
             message: msg,
-            id: this.convoId
+            $id: this.convoId
         } : { message: msg })
-        .then(x => x.data)
+        .then(JSON.parse)
         .then(d => {
             
         }).catch(er => {
@@ -27,13 +27,10 @@ class Conversation {
 window.conversation = new Conversation();
 
 
-
-
 (function attachInputHandler() {
     document.querySelector("#chat-input").addEventListener("keydown", ev => {
         if (ev.keyCode == 13 || ev.key == "Enter") {
             const value = document.querySelector("#chat-input").value;
-
             window.conversation.write(value);
         }
     });

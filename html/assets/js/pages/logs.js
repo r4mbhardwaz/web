@@ -21,8 +21,8 @@ const severity = {
 
 function getAllLogs() {
     return new Promise((res, rej) => {
-        axios.get(`/api/logs/get?min=${currentFilter.timeframe}&sev=${currentFilter.severity}`)
-        .then(x => x.data)
+        http.get(`/api/logs/get?min=${currentFilter.timeframe}&sev=${currentFilter.severity}`)
+        .then(JSON.parse)
         .then(d => {
             if (d.success) {
                 id("entries").text(`${d.length} Entries`);
@@ -171,12 +171,12 @@ function deleteLogEntry(event, el, timestamp, referrer, tag) {
     event.stopPropagation();
     loading(el.childNodes[0]);
 
-    axios.post(`/api/log/delete`, {
+    http.post(`/api/log/delete`, {
         timestamp: timestamp,
         referrer: referrer,
         tag: tag
     })
-    .then(x => x.data)
+    .then(JSON.parse)
     .then(d => {
         if (d.success) {
             el.parentElement.parentElement.remove();

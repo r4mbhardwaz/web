@@ -28,10 +28,10 @@ qry("[data-newintent]").click(ev => {
         const name = data.input;
         const description = data.text;
 
-        axios.post(`/api/intent/${skillId}/add`, {
+        http.post(`/api/intent/${skillId}/add`, {
             name: name,
             description: description
-        }).then(x => x.data).then(d => {
+        }).then(JSON.parse).then(d => {
             if (d.success) {
                 redirect(`/intent/edit/${skillId}/${d.id}`);
             } else {
@@ -52,7 +52,7 @@ qry("[data-deleteintent]").click(ev => {
 
     loading(target.children[0])
     
-    axios.post(`/api/intent/${target.dataset.skillid}/${intentId}/delete`).then(x => x.data).then(d => {
+    http.post(`/api/intent/${target.dataset.skillid}/${intentId}/delete`).then(JSON.parse).then(d => {
         if (d.success) {
             target.parentNode.remove();
         } else {
@@ -70,11 +70,11 @@ window.updateSkillName = function(newName, element, oldName) {
 
     id("skill-name").text(newName);
 
-    axios.post(`/api/skill/${skillId}/set`, {
+    http.post(`/api/skill/${skillId}/set`, {
         key: "name",
         value: newName
     })
-    .then(x => x.data)
+    .then(JSON.parse)
     .then(d => {
         if (d.success) {
         } else {
@@ -97,11 +97,11 @@ window.launchDescriptionChange = function() {
 
         id("skill-description").text(d.text);
 
-        axios.post(`/api/skill/${skillId}/set`, {
+        http.post(`/api/skill/${skillId}/set`, {
             key: "description",
             value: d.text
         })
-        .then(x => x.data)
+        .then(JSON.parse)
         .then(d => {
             if (d.success) {
             } else {

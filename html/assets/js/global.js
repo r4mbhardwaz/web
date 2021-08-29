@@ -11,7 +11,9 @@ Sentry.init({
     tracesSampleRate: 1.0,
 });
 
+
 import "./http.js";
+
 
 async function init() {
     // let pagename = window.location.pathname.substring(1).replace(/\/?([a-f0-9.]{6,}|server$)/, "").replaceAll("/", ".");

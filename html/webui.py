@@ -34,10 +34,10 @@ log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
 
-http_api_port = Config().get("api", {
-    "port": 5522
-})["port"] - 1
-http_port = Config().get("webui", {
+http_api_port = Config().get("http-api", {
+    "port": 5521
+})["port"]
+http_port = Config().get("http", {
     "port": 5520
 })["port"]
 
