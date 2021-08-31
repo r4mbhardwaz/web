@@ -1,3 +1,6 @@
+:root {
+    --nlu-width: 450px;
+}
 div.nlu {
     position: fixed;
     right: 0;
@@ -6,15 +9,11 @@ div.nlu {
     border-style: none none none solid;
     border-radius: 0px !important;
     box-shadow: none !important;
-    width: 400px;
+    width: var(--nlu-width);
     /* padding: 250px 30px; */
-    padding: 125px 30px;
+    padding: 125px 20px;
     transition: var(--transition);
     display: none;
-}
-
-div.nlu.ready {
-    padding: 125px 30px;
 }
 
 div.nlu + .container {
@@ -33,6 +32,6 @@ div.nlu + .container {
     }
     div.nlu + .container {
         margin-left: 7.5vw !important;
-        width: calc(100vw - 2*7.5vw - 400px);
+        width: calc(100vw - 2*7.5vw - var(--nlu-width));
     }
 }

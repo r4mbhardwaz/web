@@ -188,7 +188,7 @@ qry("[data-importdata]").click(ev => {
 
     box.content.innerHTML =
     `<div class="input file">
-        <input type="file" id="import-data-file">
+        <input type="file" id="import-data-file" accept=".csv">
         <label for="import-data-file" class="v-padding h-padding-l border border-blue border-radius transition bg-blue hover-bg-lighter-grey white hover-blue" data-fileinput>
             Import from local CSV file
         </label>
