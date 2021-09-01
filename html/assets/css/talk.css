@@ -31,8 +31,29 @@ body {
 
 
 
-input {
+#chats {
+    position: absolute;
+    left: 20vw;
+    right: 20vw;
+    bottom: 200px;
+}
 
+#chats > div {
+    padding: 15px 20px;
+    background-color: var(--chat-color);
+    --chat-color: #ccc;
+    border-radius: 5px;
+    position: relative;
+    width: fit-content;
+    margin-top: 10px;
+}
+
+#chats > div.own {
+    float: right;
+}
+
+#chats > div.remote {
+    float: left;
 }
 
 
