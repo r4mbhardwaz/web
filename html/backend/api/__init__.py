@@ -7,3 +7,4 @@ from . import skill
 from . import slot
 from . import train
 from . import updates
+from . import stream
